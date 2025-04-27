@@ -10,10 +10,19 @@ export const useAuthStore = defineStore('auth', {
     login(id) {
       this.isLogin = true;
       this.memberId = id;
+      localStorage.setItem('memberId', id)
     },
     logout() {
       this.isLogin = false;
       this.memberId = null;
+      localStorage.removeItem('memberId')
+    },
+    restoreSession() {
+      const id = localStorage.getItem('memberId')
+      if (id) {
+        this.memberId = Number(id)
+        this.isLogin = true
+      }
     }
   }
 });
