@@ -125,148 +125,145 @@
   </script>
   
   <style scoped>
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-}
-
-.modal {
-  background: white;
-  padding: 30px;
-  border-radius: 12px;
-  width: 80%;
-  max-width: 1000px;
-  display: flex;
-  justify-content: space-between;
-  text-align: left;
-}
-
-h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  width: 100%;
-}
-
-.modal-content {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.left-section {
-  width: 60%; /* 왼쪽 부분의 너비 */
-  margin-right: 20px;
-}
-
-.right-section {
-  width: 35%; /* 오른쪽 부분의 너비 */
-  background-color: #f5f8ff;
-  padding: 15px;
-  border-radius: 8px;
-}
-
-.section {
-  margin-bottom: 20px;
-}
-
-.section h3 {
-  margin-bottom: 8px;
-  font-size: 16px;
-  color: #333;
-}
-
-.box {
-  background-color: #f5f8ff;
-  padding: 12px;
-  border-radius: 8px;
-  font-size: 14px;
-}
-
-.content-box {
-  min-height: 100px;
-  white-space: pre-wrap;
-}
-
-.modal-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
-
-.delete-btn {
-  background-color: #ff6b6b;
-  border: none;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.delete-btn:hover {
-  background-color: #ff4d4d;
-}
-
-.close-btn {
-  background-color: #ccc;
-  border: none;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.close-btn:hover {
-  background-color: #bbb;
-}
-
-/* 답장 리스트 스타일링 */
-.reply-list {
-  list-style-type: none;
-  padding: 0;
-}
-
-.reply-item {
-  background-color: #fff;
-  padding: 12px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.reply-item strong {
-  font-weight: bold;
-}
-
-.reply-item p {
-  margin: 5px 0;
-}
-
-.reply-item small {
-  color: #777;
-  font-size: 12px;
-}
-
-/* 답장 상세보기 모달 */
-.reply-modal {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  max-width: 500px;
-  width: 80%;
-  text-align: left;
-}
-
-.reply-modal .section {
-  margin-bottom: 15px;
-}
-</style>
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+  
+  .modal {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    width: 80%;
+    max-width: 1000px;
+    display: flex;
+    justify-content: space-between;
+    text-align: left;
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    width: 100%;
+  }
+  
+  .modal-content {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .left-section {
+    width: 60%; /* 왼쪽 부분의 너비 */
+    margin-right: 20px;
+  }
+  
+  .right-section {
+    width: 35%; /* 오른쪽 부분의 너비 */
+    background-color: #f5f8ff;
+    padding: 15px;
+    border-radius: 8px;
+  }
+  
+  .section {
+    margin-bottom: 20px;
+  }
+  
+  .section h3 {
+    margin-bottom: 8px;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .box {
+    background-color: #f5f8ff;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+  
+  .content-box {
+    min-height: 100px;
+    white-space: pre-wrap;
+  }
+  
+  .modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  .delete-btn {
+    background-color: #ff6b6b;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .delete-btn:hover {
+    background-color: #ff4d4d;
+  }
+  
+  .close-btn {
+    background-color: #ccc;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .close-btn:hover {
+    background-color: #bbb;
+  }
+  
+  /* 답장 리스트 스타일링 */
+  .reply-list {
+    list-style-type: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  
+  .reply-item {
+    background-color: #fff;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease; /* 부드러운 전환 효과 추가 */
+  }
+  
+  /* 마우스를 올렸을 때 강조 효과 */
+  .reply-item:hover {
+    background-color: #f5f8ff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 강조 */
+    transform: scale(1.02); /* 약간 확대되는 효과 */
+  }
+  
+  /* 답장 상세보기 모달 */
+  .reply-modal {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 80%;
+    text-align: left;
+  }
+  
+  .reply-modal .section {
+    margin-bottom: 15px;
+  }
+  </style>
+  
