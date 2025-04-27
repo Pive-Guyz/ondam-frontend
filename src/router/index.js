@@ -6,6 +6,11 @@ import MainPage from '@/views/MainPage.vue'
 
 const routes = [
   { path: '/', component: MainPage },
+  {
+    path: '/counselee-test',
+    name: 'CounseleeTestPage',
+    component: () => import('../views/CounseleePage.vue'),
+  },
   // { path: '/diary', component: DiaryPage}
 ]
 
