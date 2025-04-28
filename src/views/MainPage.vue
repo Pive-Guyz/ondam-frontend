@@ -17,6 +17,7 @@ const goTo = (path) => {
 }
 </script>
 
+
 <style scoped>
 .container {
   display: flex;
@@ -44,3 +45,4 @@ const goTo = (path) => {
   background-color: #357ab8;
 }
 </style>
+
