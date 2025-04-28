@@ -1,4 +1,43 @@
-!.gitignore
+# Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,vue,vuejs
+# Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,vue,vuejs
+
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+
+# Local History for Visual Studio Code
+.history/
+
+# Built Visual Studio Code Extensions
+*.vsix
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.ionide
+
+### Vue ###
+# gitignore template for Vue.js projects
+#
+# Recommended template: Node.gitignore
+
+docs/_book
+test/
+
+### Vuejs ###
+# Recommended template: Node.gitignore
+
+node_modules/
+dist/
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+lerna-debug.log
+dist-ssr
+*.local
 
 # Logs
 logs
@@ -9,14 +48,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
 .idea
 .DS_Store
 *.suo
@@ -24,3 +56,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Special
+!.gitignore
+
+# End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,vue,vuejs
