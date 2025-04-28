@@ -1,14 +1,19 @@
-import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
 import router from './router'
-import { createPinia } from 'pinia'
 import './assets/main.css'
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 
-
-// createApp(App).mount('#app')
 const app = createApp(App)
+const pinia = createPinia()
 
-app.use(createPinia()) // Pinia 사용 등록
+app.use(pinia)
 app.use(router)
 app.mount('#app')
+
+import { useAuthStore } from '@/stores/auth'
+const authStore = useAuthStore()
+authStore.restoreSession()  // 로그인 상태 복원!
+
+
