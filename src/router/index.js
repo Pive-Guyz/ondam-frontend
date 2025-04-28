@@ -4,11 +4,13 @@ import { createRouter, createWebHistory } from 'vue-router'
 import StartPage from '../views/StartPage.vue'
 import MainPage from '../views/MainPage.vue'
 import DiaryPage from '../views/DiaryPage.vue'
+import ReceivedDiaryPage from '../views/ReceivedDiaryPage.vue'
 
 const routes = [
   { path: '/', component: StartPage},
   { path: '/main', component: MainPage},
-  { path: '/diary', component: DiaryPage}
+  { path: '/diary', component: DiaryPage},
+  { path: '/diary/received', component: ReceivedDiaryPage}
 ]
 
 const router = createRouter({
