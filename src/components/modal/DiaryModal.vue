@@ -1,73 +1,74 @@
 <template>
     <div class="modal-overlay" @click.self="$emit('close')">
-      <div class="modal">
+      <div class="modal-container">
         <h2>📓 일기 상세보기</h2>
-        
-        <div class="modal-content">
-          <!-- 왼쪽: 일기 내용 -->
-          <div class="left-section">
-            <div class="section">
-              <h3>제목</h3>
-              <div class="box">{{ diary?.title || '제목 없음' }}</div> <!-- 제목이 없을 경우 대비 -->
+        <div class="modal">
+          <div class="modal-content">
+            <!-- 왼쪽: 일기 내용 -->
+            <div class="left-section">
+              <div class="section">
+                <div class="section-header">제목</div> <!-- 여기 추가 -->
+                <div class="box">{{ diary?.title || '제목 없음' }}</div>
+              </div>
+    
+              <div class="section">
+                <div class="section-header">작성 시간</div> <!-- 여기 추가 -->
+                <div class="box">{{ formatDate(diary?.createdAt) || '작성일 정보 없음' }}</div>
+              </div>
+    
+              <div class="section">
+                <div class="section-header">내용</div> <!-- 여기 추가 -->
+                <div class="box content-box">{{ diary?.content || '내용이 없습니다.' }}</div>
+              </div>
+    
+              <div class="modal-buttons">
+                <button class="delete-btn" @click="onDelete">삭제</button>
+                <button class="close-btn" @click="$emit('close')">닫기</button>
+              </div>
             </div>
-  
-            <div class="section">
-              <h3>작성 시간</h3>
-              <div class="box">{{ formatDate(diary?.createdAt) || '작성일 정보 없음' }}</div> <!-- 작성시간 없을 경우 대비 -->
-            </div>
-  
-            <div class="section">
-              <h3>내용</h3>
-              <div class="box content-box">{{ diary?.content || '내용이 없습니다.' }}</div> <!-- 내용 없을 경우 대비 -->
-            </div>
-  
-            <div class="modal-buttons">
-              <button class="delete-btn" @click="onDelete">삭제</button>
-              <button class="close-btn" @click="$emit('close')">닫기</button>
-            </div>
-          </div>
-  
+    
           <!-- 오른쪽: 답장 리스트 -->
-        <div class="right-section">
-          <div class="section">
-            <h3>답장 목록</h3>
-            <div v-if="replies.length > 0">
-              <ul class="reply-list">
-                <li v-for="reply in replies" :key="reply.id" class="reply-item" @click="openReplyModal(reply)">
-                  {{ reply.title }}
-                </li>
-              </ul>
-            </div>
-            <div v-else>
-              <p>답장이 없습니다.</p>
+          <div class="right-section">
+            <div class="section">
+              <div class="section-header">답장 목록</div> <!-- 여기 추가 -->
+              <div v-if="replies.length > 0">
+                <ul class="reply-list">
+                  <li v-for="reply in replies" :key="reply.id" class="reply-item" @click="openReplyModal(reply)">
+                    {{ reply.title }}
+                  </li>
+                </ul>
+              </div>
+              <div v-else>
+                <p>답장이 없습니다.</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- 답장 상세보기 모달 -->
-      <div v-if="selectedReply" class="modal-overlay" @click.self="selectedReply = null">
-        <div class="reply-modal">
-          <h2>답장 상세보기</h2>
-          <div class="section">
-            <h3>제목</h3>
-            <div class="box">{{ selectedReply.title }}</div>
+        <!-- 답장 상세보기 모달 -->
+        <div v-if="selectedReply" class="modal-overlay" @click.self="selectedReply = null">
+          <div class="reply-modal">
+            <h2>답장 상세보기</h2>
+            <div class="section">
+              <div class="section-header">제목</div>
+              <div class="box">{{ selectedReply.title }}</div>
+            </div>
+
+            <div class="section">
+              <div class="section-header">내용</div>
+              <div class="box content-box">{{ selectedReply.content }}</div>
+            </div>
+
+            <div class="section">
+              <div class="section-header">작성 시간</div>
+              <div class="box">{{ formatDate(selectedReply.createdAt) }}</div>
+            </div>
+
+            <button class="close-btn" @click="selectedReply = null">닫기</button>
           </div>
-
-          <div class="section">
-            <h3>내용</h3>
-            <div class="box content-box">{{ selectedReply.content }}</div>
-          </div>
-
-          <div class="section">
-            <h3>작성 시간</h3>
-            <div class="box">{{ formatDate(selectedReply.createdAt) }}</div>
-          </div>
-
-          <button class="close-btn" @click="selectedReply = null">닫기</button>
         </div>
       </div>
-    </div>
+  </div>
   </div>
   </template>
   
@@ -125,6 +126,16 @@
   </script>
   
   <style scoped>
+.section-header {
+  background-color: #d0e4ff; /* 연한 파란색 */
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 15px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
   .modal-overlay {
     position: fixed;
     top: 0;
@@ -138,22 +149,29 @@
     z-index: 999;
   }
   
-  .modal {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    width: 80%;
-    max-width: 1000px;
-    display: flex;
-    justify-content: space-between;
-    text-align: left;
-  }
-  
-  h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    width: 100%;
-  }
+  .modal-container {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  width: 60%; /* 줄였음: 원래 80% */
+  max-width: 900px;
+  display: flex;
+  flex-direction: column; /* 제목 위, 내용 아래 */
+  align-items: center;
+  text-align: center;
+}
+
+.modal {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
   
   .modal-content {
     display: flex;

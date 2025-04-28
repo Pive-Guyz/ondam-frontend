@@ -1,48 +1,119 @@
 <template>
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
-        <h2 class="text-2xl font-bold mb-6 text-center text-indigo-700">로그인</h2>
-        <input
-          v-model="email"
-          type="text"
-          placeholder="이메일"
-          class="w-full mb-4 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-        <input
-          v-model="password"
-          type="password"
-          placeholder="비밀번호"
-          class="w-full mb-6 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-        <button
-          class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition duration-300"
-          @click="handleLogin"
-        >
-          로그인
-        </button>
-        <button
-          class="w-full mt-4 text-indigo-500 hover:underline text-sm"
-          @click="$emit('close')"
-        >
-          닫기
-        </button>
-      </div>
+  <div class="modal-container">
+    <div class="modal-content">
+      <h2 class="modal-title">로그인</h2>
+      <input
+        v-model="email"
+        type="text"
+        placeholder="이메일"
+        class="input-field"
+      />
+      <input
+        v-model="password"
+        type="password"
+        placeholder="비밀번호"
+        class="input-field"
+      />
+      <button
+        class="login-btn"
+        @click="handleLogin"
+      >
+        로그인
+      </button>
+      <button
+        class="close-btn"
+        @click="$emit('close')"
+      >
+        닫기
+      </button>
     </div>
-  </template>
-  
-  <script setup>
-    import { ref } from 'vue';
+  </div>
+</template>
 
-    const emit = defineEmits(['close', 'login']);
+<script setup>
+  import { ref } from 'vue';
 
-    const email = ref('');
-    const password = ref('');
+  const emit = defineEmits(['close', 'login']);
 
-    const handleLogin = () => {
-        emit('login', {
-            email: email.value,
-            password: password.value,
-        });
-    };
-  </script>
-  
+  const email = ref('');
+  const password = ref('');
+
+  const handleLogin = () => {
+    emit('login', {
+      email: email.value,
+      password: password.value,
+    });
+  };
+</script>
+
+<style scoped>
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 24px;
+  text-align: center;
+  color: #4F46E5; /* Indigo color */
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 16px;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #6366F1; /* Indigo focus color */
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5);
+}
+
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #4F46E5; /* Indigo color */
+  color: white;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-btn:hover {
+  background-color: #4338CA; /* Darker indigo */
+}
+
+.close-btn {
+  width: 100%;
+  margin-top: 16px;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #4F46E5; /* Indigo color */
+  cursor: pointer;
+  text-decoration: underline;
+}
+</style>

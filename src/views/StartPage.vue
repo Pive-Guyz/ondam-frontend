@@ -1,26 +1,33 @@
 <template>
-    <div class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
-      <h1 class="text-8xl font-extrabold text-white mb-14 drop-shadow-2xl tracking-wide">
+  <v-app>
+    <v-container class="d-flex flex-column justify-center align-center min-h-screen" style="background: linear-gradient(135deg, #4f46e5, #7e22ce, #ec4899);">
+      <h1 class="display-2 font-weight-bold text-white mb-6 drop-shadow-2xl">
         On:Dam
       </h1>
-      <div class="space-x-6">
-        <button
-          class="px-8 py-4 bg-white text-indigo-600 text-lg font-semibold rounded-xl shadow-lg hover:bg-indigo-100 transition duration-300 ease-in-out"
+      <v-row class="text-center">
+        <v-btn
+          color="primary"
+          class="mr-4"
           @click="openLoginModal"
+          large
         >
           로그인
-        </button>
-        <button
-          class="px-8 py-4 bg-indigo-800 text-white text-lg font-semibold rounded-xl shadow-lg hover:bg-indigo-900 transition duration-300 ease-in-out"
+        </v-btn>
+        <v-btn
+          color="deep-purple accent-4"
+          class="ml-4"
+          large
         >
           회원가입
-        </button>
-      </div>
+        </v-btn>
+      </v-row>
+
       <!-- 로그인 모달 -->
       <LoginModal v-if="showLoginModal" @close="closeLoginModal" @login="handleLogin" />
-    </div>
-  </template>
-  
+    </v-container>
+  </v-app>
+</template>
+
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -58,8 +65,29 @@ const handleLogin = async ({ email, password }) => {
   }
 };
 </script>
-  
-  <style scoped>
-  /* 폰트를 더 예쁘게 하고 싶으면 구글 폰트 추가도 가능해요 */
-  </style>
-  
+
+<style scoped>
+/* 배경을 설정하고, 글씨에 그림자 추가 */
+.v-container {
+  background: linear-gradient(135deg, #4f46e5, #7e22ce, #ec4899);
+  min-height: 100vh;
+}
+
+h1 {
+  font-weight: bold;
+  font-size: 5rem;
+  text-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.v-btn {
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.v-btn:hover {
+  transform: scale(1.05);
+}
+
+.v-btn:focus {
+  outline: none;
+}
+</style>
