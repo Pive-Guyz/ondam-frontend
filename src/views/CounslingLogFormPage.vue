@@ -72,26 +72,14 @@
 import { reactive } from 'vue';
 import { createCounsel } from '@/api/counsel/counselCommand';
 import Counsel from '@/models/Counsel';
+import { useRoute } from 'vue-router';
 
+const route = useRoute();
+
+const counseleeId = Number(route.params.id);         // id param도 숫자로 변환
+const counseleeName = route.query.counseleeName || '';
+const memberId = Number(route.query.memberId);       // ← 여기 Number()로 변환 필수
 const today = new Date().toISOString().split('T')[0];
-const counseleeName = '박우석'; // 나중에 props로 교체 가능
-const counseleeId = 2;          // 예시: 현재 상담하는 내담자 ID
-const memberId = 1;             // 예시: 현재 로그인한 상담사 ID
-
-const props = defineProps({
-    memberId: {
-        type: [String, Number],
-        required: true,
-    },
-    counseleeId: {
-        type: [String, Number],
-        required: true,
-    },
-    counseleeName: {
-        type: String,
-        default: '',
-    },
-});
 
 const form = reactive({
     type: '',

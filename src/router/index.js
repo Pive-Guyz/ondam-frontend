@@ -18,15 +18,20 @@ const routes = [
     component: () => import('../views/CounseleePage.vue'),
   },
   {
-    path: '/counseling-log-form',
+    path: '/counselees/:id/log-form',
     name: 'CounselingLogFormPage',
     component: () => import('../views/CounslingLogFormPage.vue'),
   },
   {
     path: '/counselees/:id/logs',
     name: 'CounseleeCounselPage',
-    component: () => import('../views/CounseleeCounselPage.vue'),
+    component: () => import('../views/CounseleeCounselPage.vue')
   },
+  {
+    path: '/counselees/register',
+    name: 'CounseleeRegisterPage',
+    component: () => import('@/views/CounseleeRegisterPage.vue'),
+  }
 ]
 
 const router = createRouter({
