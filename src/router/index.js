@@ -36,9 +36,10 @@ const routes = [
 
   { path: '/report', component: ReportPage },
   {
-    path: '/counseling-log-form',
+    path: '/counselees/:id/counsel-log',
     name: 'CounselingLogFormPage',
     component: () => import('../views/CounslingLogFormPage.vue'),
+    props: true
   },
   {
     path: '/counselees/:id/logs',

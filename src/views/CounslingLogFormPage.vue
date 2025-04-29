@@ -72,9 +72,11 @@
 import { reactive } from 'vue';
 import { createCounsel } from '@/api/counsel/counselCommand';
 import Counsel from '@/models/Counsel';
-import { useRoute } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
+import { requestGptPrompt } from '@/api/analysis/analysisCommand';
 
 const route = useRoute();
+const router = useRouter();
 
 const counseleeId = Number(route.params.id);         // id param도 숫자로 변환
 const counseleeName = route.query.counseleeName || '';
@@ -130,10 +132,10 @@ const submitForm = async () => {
         counselType: form.type,
         time: formattedTime,
         nextCreatedAt: nextDateWithTime,
-        counseleeId: counseleeId,
-        memberId: memberId,
+        counseleeId,
+        memberId,
     });
-    console.log('counsel data chk : ', counsel);
+
     try {
         counsel.validateAll();
     } catch (err) {
@@ -143,14 +145,48 @@ const submitForm = async () => {
 
     try {
         const response = await createCounsel(counsel);
-        alert('상담 일지가 성공적으로 등록되었습니다.');
-        console.log('서버 응답:', response.data);
-        // TODO: 등록 후 페이지 이동 or 초기화
+        const counselId = response.data.id;
+
+        if (!counselId) {
+            throw new Error('counselId가 서버 응답에 없습니다.');
+        }
+
+        // ✅ GPT 분석 요청: 약간의 딜레이를 두고 요청
+        setTimeout(async () => {
+            try {
+                await requestGptPrompt({
+                    counselId,
+                    messages: [
+                        {
+                            role: 'user',
+                            content: `상담 기록 ID ${counselId}에 대해 분석을 시작해줘.`,
+                        }
+                    ]
+                });
+                console.log('✅ GPT 요청 성공');
+            } catch (err) {
+                console.warn('❌ GPT 요청 실패:', err);
+            }
+        }, 5000); // 1초 기다림
+
+        // ✅ 분석 기다리지 않고 리포트 페이지로 이동
+        router.push({
+            name: 'CounselingReport',
+            params: { counselId: String(counselId) },
+            query: {
+                reportTitle: `${counseleeName} 상담일지`,
+                reportDate: today,
+                duration: `${paddedHour}:${paddedMinute}`,
+                nextSchedule: form.nextDate,
+                counselorComment: form.opinion,
+            }
+        });
     } catch (error) {
         console.error('등록 실패:', error);
         alert('상담 일지 등록에 실패했습니다. 다시 시도해주세요.');
     }
 };
+
 
 
 const cancelForm = () => {
