@@ -1,6 +1,8 @@
 <template>
-    <div class="emotion-analysis-container">
-        <h2 class="section-title">📊 감정 분석</h2>
+    <v-card class="pa-6 elevation-2 emotion-analysis-card">
+        <v-card-title class="text-h5 font-weight-bold mb-6">
+            📊 감정 분석
+        </v-card-title>
 
         <div class="charts-section">
             <div class="chart-box">
@@ -31,14 +33,14 @@
                         <td>{{ item.reason }}</td>
                         <td>
                             <span :class="['tag', getCategoryClass(item.emotionCategoryName)]">
-                                {{ convertCategory(item.emotionCategoryName) }}
+                                {{ getNormalizedCategory(item.emotionCategoryName) }}
                             </span>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-    </div>
+    </v-card>
 </template>
 
 <script setup>
@@ -53,10 +55,8 @@ const emotionAnalysisList = ref([]);
 
 const pieSeries = ref([]);
 const pieOptions = ref({});
-
 const barSeries = ref([]);
 const barOptions = ref({});
-
 const barHeight = ref(300);
 
 const categoryColorMap = {
@@ -67,20 +67,25 @@ const categoryColorMap = {
     '대인관계': '#FFD66B'
 };
 
-function getCategoryClass(category) {
-    if (category.includes('긍정적')) return 'positive';
-    if (category.includes('부정적')) return 'negative';
-    if (category.includes('성장/회복')) return 'growth';
-    if (category.includes('중립/혼합')) return 'neutral';
-    return 'relationship';
-}
-
-function convertCategory(category) {
+// 카테고리 변환 공통 함수
+function getNormalizedCategory(category) {
     if (category.includes('긍정적')) return '긍정적';
     if (category.includes('부정적')) return '부정적';
     if (category.includes('성장/회복')) return '성장/회복';
     if (category.includes('중립/혼합')) return '중립/혼합';
     return '대인관계';
+}
+
+// 카테고리에 따라 태그 색상 클래스 매핑
+function getCategoryClass(category) {
+    const normalized = getNormalizedCategory(category);
+    return {
+        '긍정적': 'positive',
+        '부정적': 'negative',
+        '성장/회복': 'growth',
+        '중립/혼합': 'neutral',
+        '대인관계': 'relationship'
+    }[normalized];
 }
 
 async function fetchData() {
@@ -92,7 +97,7 @@ async function fetchData() {
         const emotionCount = {};
 
         emotionAnalysisList.value.forEach(item => {
-            const category = convertCategory(item.emotionCategoryName);
+            const category = getNormalizedCategory(item.emotionCategoryName);
             categoryCount[category] = (categoryCount[category] || 0) + 1;
             emotionCount[item.emotion] = (emotionCount[item.emotion] || 0) + 1;
         });
@@ -116,26 +121,23 @@ async function fetchData() {
         const emotionSeries = Object.values(emotionCount);
 
         const barColors = emotionLabels.map(emotion => {
-            const emotionItem = emotionAnalysisList.value.find(e => e.emotion === emotion);
-            if (!emotionItem) return '#CCCCCC';
-            const category = convertCategory(emotionItem.emotionCategoryName);
+            const item = emotionAnalysisList.value.find(e => e.emotion === emotion);
+            const category = getNormalizedCategory(item?.emotionCategoryName || '');
             return categoryColorMap[category] || '#CCCCCC';
         });
-
-        const maxCount = Math.max(...emotionSeries);
 
         barSeries.value = [{ name: '출현 빈도', data: emotionSeries }];
         barOptions.value = {
             chart: {
                 type: 'bar',
-                toolbar: { show: false },
+                toolbar: { show: false }
             },
             plotOptions: {
                 bar: {
                     horizontal: true,
                     borderRadius: 8,
-                    distributed: true,
-                },
+                    distributed: true
+                }
             },
             dataLabels: {
                 enabled: true,
@@ -144,22 +146,22 @@ async function fetchData() {
                 style: {
                     fontSize: '14px',
                     fontWeight: 'bold',
-                    colors: ['#555'],
-                },
+                    colors: ['#555']
+                }
             },
             xaxis: {
                 categories: emotionLabels,
                 labels: { show: false },
                 axisBorder: { show: false },
-                axisTicks: { show: false },
+                axisTicks: { show: false }
             },
             yaxis: {
                 labels: {
                     style: {
                         fontSize: '14px',
-                        color: '#333',
-                    },
-                },
+                        color: '#333'
+                    }
+                }
             },
             grid: {
                 xaxis: { lines: { show: false } },
@@ -168,14 +170,14 @@ async function fetchData() {
                     top: 20,
                     bottom: 20,
                     left: 10,
-                    right: 10,
-                },
+                    right: 10
+                }
             },
-            colors: barColors,
+            colors: barColors
         };
 
-
         barHeight.value = Math.max(300, emotionLabels.length * 40);
+
     } catch (error) {
         console.error('Error fetching analysis data:', error);
     }
@@ -187,11 +189,9 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.emotion-analysis-container {
-    padding: 2rem;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+.emotion-analysis-card {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
 }
 
 .section-title {
@@ -210,6 +210,7 @@ onMounted(() => {
     display: flex;
     gap: 4rem;
     justify-content: space-between;
+    margin-bottom: 2rem;
 }
 
 .chart-box {
