@@ -61,6 +61,16 @@ const routes = [
     path: '/counselees/:id/logs',
     name: 'CounseleeCounselPage',
     component: () => import('../views/CounseleeCounselPage.vue'),
+  },
+  {
+    path: '/test-report',  // 삭제 예정(모달 확인용)
+    name: 'TestReportDiary',
+    component: () => import('@/views/TestDiaryReport.vue')
+  },
+  {
+    path: '/test-reply',  // 삭제 예정(모달 확인용)
+    name: 'TestReportReply',
+    component: () => import('@/views/TestReplyReport.vue')
   }
 ]
 
