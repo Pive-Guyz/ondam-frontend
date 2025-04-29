@@ -11,7 +11,6 @@ import AdminPage from '../views/AdminPage.vue'
 import MemberList from '../views/MemberList.vue'
 import ReportPage from '@/views/ReportPage.vue'
 
-import ReportPage from '@/views/ReportPage.vue'
 
 const routes = [
 
