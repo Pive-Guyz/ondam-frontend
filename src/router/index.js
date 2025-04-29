@@ -11,6 +11,7 @@ import AdminPage from '../views/AdminPage.vue'
 import MemberList from '../views/MemberList.vue'
 import ReportPage from '@/views/ReportPage.vue'
 
+import ReportPage from '@/views/ReportPage.vue'
 
 const routes = [
 
@@ -28,6 +29,7 @@ const routes = [
   { path: '/AdminPage', component: AdminPage},
   { path: '/MemberList', component: MemberList},
 
+  { path: '/MyPage', component: MyPage},
   { path: '/report', component: ReportPage },
   {
     path: '/counseling-log-form',
