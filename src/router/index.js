@@ -22,7 +22,11 @@ const routes = [
     name: 'CounselingLogFormPage',
     component: () => import('../views/CounslingLogFormPage.vue'),
   },
-
+  {
+    path: '/counselees/:id/logs',
+    name: 'CounseleeCounselPage',
+    component: () => import('../views/CounseleeCounselPage.vue'),
+  },
 ]
 
 const router = createRouter({

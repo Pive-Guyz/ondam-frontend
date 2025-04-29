@@ -37,16 +37,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(item, idx) in paginatedItems" :key="item.id">
+                    <tr v-for="(item, idx) in paginatedItems" :key="item.id"
+                        @click="goToCounselLogs(item.id, item.name)" style="cursor: pointer;">
                         <td>{{ startIndex + idx + 1 }}</td>
                         <td>{{ item.name }}</td>
-                        <td>{{ item.gender }}</td>
+                        <td>{{ item.gender === 'M' ? '남' : item.gender === 'F' ? '여' : '-' }}</td>
                         <td>{{ item.birthday }}</td>
-                        <td>{{ item.severityLevel }}</td>
+                        <td>{{ item.severityLevel ?? '-' }}</td>
                         <td>{{ formatDate(item.createdAt) }}</td>
                         <td>{{ item.endDate ? formatDate(item.endDate) : 'N/A' }}</td>
                         <td>
-                            <v-btn size="small" variant="outlined" @click="writeCounsel(item.id)">상담서 작성</v-btn>
+                            <v-btn size="small" @click.stop="writeCounsel(item.id)">
+                                상담서 작성
+                            </v-btn>
                         </td>
                     </tr>
                 </tbody>
@@ -62,8 +65,10 @@
 import { ref, computed, onMounted } from 'vue';
 import { fetchCounselees, searchCounseleesByName } from '@/api/counselee/counseleeQuery';
 import Counselee from '@/models/Counselee';
+import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 
+const router = useRouter();
 const authStore = useAuthStore();
 const memberId = authStore.memberId ?? 1;
 
@@ -80,6 +85,14 @@ const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage);
 const paginatedItems = computed(() =>
     counselees.value.slice(startIndex.value, startIndex.value + itemsPerPage)
 );
+
+const goToCounselLogs = (id, name) => {
+    router.push({
+        name: 'CounseleeCounselPage',
+        params: { id },
+        query: { name }, // 이름은 query로 전달
+    });
+};
 
 const loadCounselees = async () => {
     try {
