@@ -9,23 +9,36 @@ import SignUpPage from '../views/SignUpPage.vue'
 import MyPage from '../views/MyPage.vue'
 import AdminPage from '../views/AdminPage.vue'
 import MemberList from '../views/MemberList.vue'
+import ReportPage from '@/views/ReportPage.vue'
+
 
 const routes = [
 
-  { path: '/', component: StartPage},
-  { path: '/main', component: MainPage},
-  { path: '/diary', component: DiaryPage},
-  { path: '/diary/received', component: ReceivedDiaryPage},
+  { path: '/', component: StartPage },
+  { path: '/main', component: MainPage },
+  { path: '/diary', component: DiaryPage },
+  { path: '/diary/received', component: ReceivedDiaryPage },
   {
-    path: '/counselee-test',
-    name: 'CounseleeTestPage',
+    path: '/counselees',
+    name: 'CounseleePage',
     component: () => import('../views/CounseleePage.vue'),
   },
   { path: '/SignUp', component: SignUpPage},
   { path: '/MyPage', component: MyPage},
   { path: '/AdminPage', component: AdminPage},
-  { path: '/MemberList', component: MemberList}
+  { path: '/MemberList', component: MemberList},
 
+  { path: '/report', component: ReportPage },
+  {
+    path: '/counseling-log-form',
+    name: 'CounselingLogFormPage',
+    component: () => import('../views/CounslingLogFormPage.vue'),
+  },
+  {
+    path: '/counselees/:id/logs',
+    name: 'CounseleeCounselPage',
+    component: () => import('../views/CounseleeCounselPage.vue'),
+  }
 ]
 
 const router = createRouter({
