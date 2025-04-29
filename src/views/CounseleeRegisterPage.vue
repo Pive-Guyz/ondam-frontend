@@ -43,11 +43,12 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import { reactive } from 'vue'
-import { useAuthStore } from '@/stores/auth'
-import { createCounselee } from '@/api/counselee/counseleeCommand'
-import { formatPhoneNumber, formatBirthday } from '@/common/formatter'
-import FormLabel from '@/components/form/FormLabel.vue'
+import { reactive } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+import { createCounselee } from '@/api/counselee/counseleeCommand';
+import { formatPhoneNumber, formatBirthday } from '@/utils/formatter';
+import FormLabel from '@/components/form/FormLabel.vue';
+
 const router = useRouter();
 const authStore = useAuthStore()
 
