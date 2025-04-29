@@ -5,6 +5,7 @@ import StartPage from '../views/StartPage.vue'
 import MainPage from '../views/MainPage.vue'
 import DiaryPage from '../views/DiaryPage.vue'
 import ReceivedDiaryPage from '../views/ReceivedDiaryPage.vue'
+import ReportPage from '@/views/ReportPage.vue'
 
 const routes = [
 
@@ -17,6 +18,7 @@ const routes = [
     name: 'CounseleePage',
     component: () => import('../views/CounseleePage.vue'),
   },
+  { path: '/report', component: ReportPage },
   {
     path: '/counseling-log-form',
     name: 'CounselingLogFormPage',

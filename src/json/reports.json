@@ -1,0 +1,182 @@
+[
+    {
+        "reporter": "이상현",
+        "reported": "김명숙",
+        "reason": "폭력적인 언행",
+        "details": "채팅 중 폭력적인 단어를 다수 사용했습니다.",
+        "date": "2025-04-20 10:30:42",
+        "type": "일기 #1",
+        "status": "Pending"
+    },
+    {
+        "reporter": "고재원",
+        "reported": "박선영",
+        "reason": "욕설 및 비하 발언",
+        "details": "답글에서 비속어와 비하 발언을 반복했습니다.",
+        "date": "2025-04-20 20:50:55",
+        "type": "답장 #1",
+        "status": "Pending"
+    },
+    {
+        "reporter": "진재현",
+        "reported": "김정웅",
+        "reason": "스팸 또는 광고",
+        "details": "광고 링크를 반복적으로 게시했습니다.",
+        "date": "2025-04-21 10:10:42",
+        "type": "일기 #2",
+        "status": "Rejected"
+    },
+    {
+        "reporter": "박종수",
+        "reported": "유하은",
+        "reason": "개인 정보 노출",
+        "details": "댓글에 타인의 개인 전화번호를 노출했습니다.",
+        "date": "2025-04-22 15:30:00",
+        "type": "답장 #2",
+        "status": "Approved"
+    },
+    {
+        "reporter": "박도윤",
+        "reported": "남지연",
+        "reason": "허위 사실 유포",
+        "details": "허위 사실을 기반으로 악성 루머를 퍼뜨렸습니다.",
+        "date": "2025-04-23 13:50:55",
+        "type": "답장 #3",
+        "status": "Pending"
+    },
+    {
+        "reporter": "김영호",
+        "reported": "고명자",
+        "reason": "욕설 및 비하 발언",
+        "details": "일기 내용에 다수의 욕설 표현이 포함되어 있습니다.",
+        "date": "2025-04-23 18:50:55",
+        "type": "일기 #3",
+        "status": "Pending"
+    },
+    {
+        "reporter": "윤성현",
+        "reported": "이서준",
+        "reason": "타인 사칭",
+        "details": "다른 사용자를 사칭하여 활동했습니다.",
+        "date": "2025-04-24 09:20:31",
+        "type": "일기 #4",
+        "status": "Approved"
+    },
+    {
+        "reporter": "남지혜",
+        "reported": "안수빈",
+        "reason": "욕설 및 비하 발언",
+        "details": "댓글에 상대방을 심하게 모욕하는 표현을 사용했습니다.",
+        "date": "2025-04-24 22:50:55",
+        "type": "답장 #5",
+        "status": "Rejected"
+    },
+    {
+        "reporter": "이민수",
+        "reported": "서주현",
+        "reason": "광고성 링크",
+        "details": "답글에 외부 쇼핑몰 링크를 무단으로 홍보했습니다.",
+        "date": "2025-04-25 08:30:10",
+        "type": "일기 #5",
+        "status": "Pending"
+    },
+    {
+        "reporter": "배진우",
+        "reported": "정유리",
+        "reason": "성적인 표현",
+        "details": "댓글에 부적절한 성적 표현을 사용했습니다.",
+        "date": "2025-04-25 09:45:00",
+        "type": "답장 #6",
+        "status": "Approved"
+    },
+    {
+        "reporter": "정서윤",
+        "reported": "박지민",
+        "reason": "폭력적인 언행",
+        "details": "메시지에서 폭력적인 위협을 가했습니다.",
+        "date": "2025-04-25 11:20:00",
+        "type": "답장 #7",
+        "status": "Pending"
+    },
+    {
+        "reporter": "김은비",
+        "reported": "최민석",
+        "reason": "허위 사실 유포",
+        "details": "허위 사실을 게시하여 타인에게 피해를 주었습니다.",
+        "date": "2025-04-25 13:10:22",
+        "type": "일기 #6",
+        "status": "Pending"
+    },
+    {
+        "reporter": "이주호",
+        "reported": "이서진",
+        "reason": "스팸 또는 광고",
+        "details": "계속 같은 내용의 광고 메시지를 보내고 있습니다.",
+        "date": "2025-04-25 14:50:55",
+        "type": "답장 #8",
+        "status": "Rejected"
+    },
+    {
+        "reporter": "한수지",
+        "reported": "홍진호",
+        "reason": "욕설 및 비하 발언",
+        "details": "답글에 인신공격성 발언을 포함했습니다.",
+        "date": "2025-04-25 15:50:30",
+        "type": "답장 #9",
+        "status": "Approved"
+    },
+    {
+        "reporter": "정하늘",
+        "reported": "장민호",
+        "reason": "광고성 링크",
+        "details": "일기 내용에 상업적 광고를 삽입했습니다.",
+        "date": "2025-04-25 16:10:15",
+        "type": "일기 #7",
+        "status": "Pending"
+    },
+    {
+        "reporter": "박수빈",
+        "reported": "유준상",
+        "reason": "타인 사칭",
+        "details": "다른 회원을 사칭하여 허위 정보를 퍼뜨렸습니다.",
+        "date": "2025-04-25 16:50:00",
+        "type": "답장 #10",
+        "status": "Approved"
+    },
+    {
+        "reporter": "이정은",
+        "reported": "김다솜",
+        "reason": "성적인 표현",
+        "details": "댓글에 부적절한 성적 발언을 남겼습니다.",
+        "date": "2025-04-25 17:10:42",
+        "type": "답장 #11",
+        "status": "Rejected"
+    },
+    {
+        "reporter": "윤지후",
+        "reported": "박하늘",
+        "reason": "개인 정보 노출",
+        "details": "타인의 이메일 주소를 무단 공개했습니다.",
+        "date": "2025-04-25 17:40:55",
+        "type": "답장 #12",
+        "status": "Pending"
+    },
+    {
+        "reporter": "김주호",
+        "reported": "송지효",
+        "reason": "폭력적인 언행",
+        "details": "게시글에서 폭력적인 협박성 발언을 사용했습니다.",
+        "date": "2025-04-25 18:20:00",
+        "type": "일기 #8",
+        "status": "Pending"
+    },
+    {
+        "reporter": "최서연",
+        "reported": "류진",
+        "reason": "허위 사실 유포",
+        "details": "허위사실로 특정인을 비방하는 내용을 게시했습니다.",
+        "date": "2025-04-25 19:00:00",
+        "type": "일기 #9",
+        "status": "Approved"
+    }
+]
