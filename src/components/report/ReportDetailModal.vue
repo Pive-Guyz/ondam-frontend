@@ -13,12 +13,9 @@
             </div>
 
             <!-- 신고 정보 -->
-            <v-text-field label="신고 당한 회원" :model-value="reportData?.reported || ''" variant="outlined"
-                density="compact" readonly class="mb-4" />
-            <v-text-field label="신고 사유" :model-value="reportData?.reason || ''" variant="outlined" density="compact"
-                readonly class="mb-4" />
-            <v-textarea label="상세 내용" :model-value="reportData?.details || ''" variant="outlined" density="compact"
-                readonly rows="6" class="mb-6" />
+            <v-text-field label="신고 당한 회원" :model-value="detail?.reportedMemberName" readonly />
+            <v-text-field label="신고 사유" :model-value="detail?.reportCategoryName" readonly />
+            <v-textarea label="상세 내용" :model-value="detail?.reason" readonly />
 
             <!-- 버튼 -->
             <div class="d-flex justify-center" style="gap: 30px;">
@@ -34,12 +31,27 @@
 </template>
 
 <script setup>
-defineProps({
+import { ref, watch } from 'vue'
+import { fetchReportDetail } from '@/api/report/reportQuery'
+
+const props = defineProps({
     isOpen: Boolean,
     reportData: Object
 })
 
-defineEmits(['update:isOpen', 'view', 'process'])
+const detail = ref(null)
+
+watch(() => props.isOpen, async (opened) => {
+    if (opened && props.reportData?.id) {
+        try {
+            const res = await fetchReportDetail(props.reportData.id)
+            console.log('상세 내용:', res.data) // ✅ 여기 확인
+            detail.value = res.data
+        } catch (e) {
+            console.error('상세 조회 실패', e)
+        }
+    }
+})
 </script>
 
 <style scoped>
