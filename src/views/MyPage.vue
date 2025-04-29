@@ -106,8 +106,8 @@
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  padding-top: 80px;
-    padding-bottom: 500px;
+  padding-top: 200px;
+    padding-bottom: 480px;
   }
   
   .mypage-container {
