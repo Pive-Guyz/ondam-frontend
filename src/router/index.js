@@ -5,14 +5,15 @@ import StartPage from '../views/StartPage.vue'
 import MainPage from '../views/MainPage.vue'
 import DiaryPage from '../views/DiaryPage.vue'
 import ReceivedDiaryPage from '../views/ReceivedDiaryPage.vue'
+import MyReplyListPage from '../views/MyReplyListPage.vue'
 import ReportPage from '@/views/ReportPage.vue'
-
 const routes = [
 
-  { path: '/', component: StartPage },
-  { path: '/main', component: MainPage },
-  { path: '/diary', component: DiaryPage },
-  { path: '/diary/received', component: ReceivedDiaryPage },
+  { path: '/', component: StartPage},
+  { path: '/main', component: MainPage},
+  { path: '/diary', component: DiaryPage},
+  { path: '/diary/received', component: ReceivedDiaryPage},
+  { path: '/diary/reply', component: MyReplyListPage},
   {
     path: '/counselees',
     name: 'CounseleePage',
