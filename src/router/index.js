@@ -4,6 +4,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import StartPage from '../views/StartPage.vue'
 import MainPage from '../views/MainPage.vue'
 import DiaryPage from '../views/DiaryPage.vue'
+import ReportPage from '@/views/ReportPage.vue'
 
 const routes = [
   { path: '/', component: StartPage },
@@ -13,6 +14,7 @@ const routes = [
     name: 'CounseleeTestPage',
     component: () => import('../views/CounseleePage.vue'),
   },
+  { path: '/report', component: ReportPage },
 ]
 
 const router = createRouter({
