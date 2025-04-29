@@ -7,7 +7,7 @@
         <div class="charts-section">
             <div class="chart-box">
                 <h3 class="chart-title">감정 유형별 전체 비율</h3>
-                <ApexCharts type="pie" :options="pieOptions" :series="pieSeries" height="350" />
+                <ApexCharts type="pie" :options="pieOptions" :series="pieSeries" height="300" />
             </div>
             <div class="chart-box">
                 <h3 class="chart-title">감정별 출현 빈도</h3>
@@ -20,10 +20,10 @@
             <table class="emotion-table">
                 <thead>
                     <tr>
-                        <th style="width: 15%;">감정</th>
+                        <th style="width: 10%;">감정</th>
                         <th style="width: 35%;">근거 발화</th>
-                        <th style="width: 35%;">판단 이유</th>
-                        <th style="width: 10%;">감정 유형</th>
+                        <th style="width: 40%;">판단 이유</th>
+                        <th style="width: 15%;">감정 유형</th>
                     </tr>
                 </thead>
                 <tbody>

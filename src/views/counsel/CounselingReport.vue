@@ -1,8 +1,12 @@
 <template>
-    <v-container class="py-8" v-if="data">
+    <v-app style="background-color: #F5F7FA;">
+
+        <SideBar/>
+    <v-main>
+    <v-container class="py-15" v-if="data">
         <!-- 상담 일지 제목 및 날짜 -->
-        <v-card class="mb-8 pa-6 elevation-2">
-            <v-card-title class="text-h5 font-weight-bold">{{ reportTitle }}</v-card-title>
+        <v-card class="mb-8 pa-10 pb-15 pl-10 elevation-2">
+            <v-card-title class="text-h5 font-weight-bold" style="color: #344FA3;">{{ reportTitle }}</v-card-title>
             <v-card-subtitle>{{ reportDate }}</v-card-subtitle>
         </v-card>
 
@@ -27,6 +31,8 @@
         <!-- 분석 데이터 컴포넌트들 -->
         <TroubleSummary :summary="data.troubleSummary" />
         <EmotionAnalysis :emotions="data.emotionAnalysisList" />
+        
+        <EffectiveStatement :effectiveStatement="data.effectiveStatement" />
         <CounselSummary :summary="data.shortenedCounsel" />
 
         <!-- 상담사 소견, 다음 상담 일정 -->
@@ -51,6 +57,8 @@
             <v-card-title>로딩 중...</v-card-title>
         </v-card>
     </v-container>
+</v-main>
+</v-app>
 </template>
 
 <script setup>
@@ -58,8 +66,10 @@ import { ref, computed, onMounted, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 
+import SideBar from'@/components/common/SideBar.vue';
 import TroubleSummary from '@/components/analysis/TroubleSummary.vue';
 import EmotionAnalysis from '@/components/analysis/EmotionAnalysis.vue';
+import EffectiveStatement from '@/components/analysis/EffectiveStatement.vue'
 import CounselSummary from '@/components/analysis/CounselSummary.vue';
 
 // 라우터에서 counselId 가져오기
