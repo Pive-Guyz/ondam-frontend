@@ -8,6 +8,7 @@ import ReceivedDiaryPage from '../views/ReceivedDiaryPage.vue'
 import SignUpPage from '../views/SignUpPage.vue'
 import MyPage from '../views/MyPage.vue'
 import AdminPage from '../views/AdminPage.vue'
+import MemberList from '../views/MemberList.vue'
 
 const routes = [
 
@@ -22,7 +23,8 @@ const routes = [
   },
   { path: '/SignUp', component: SignUpPage},
   { path: '/MyPage', component: MyPage},
-  { path: '/AdminPage', component: AdminPage}
+  { path: '/AdminPage', component: AdminPage},
+  { path: '/MemberList', component: MemberList}
 
 ]
 
