@@ -21,7 +21,6 @@ import CounselingReport from '@/views/counsel/CounselingReport.vue';
 import MyReplyListPage from '../views/MyReplyListPage.vue'
 
 
-import ReportPage from '@/views/ReportPage.vue'
 
 const routes = [
 
