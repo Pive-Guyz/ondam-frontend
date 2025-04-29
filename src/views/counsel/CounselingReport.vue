@@ -1,34 +1,35 @@
 <template>
     <v-container class="py-8" v-if="data">
+        <!-- 상담 일지 제목 및 날짜 -->
         <v-card class="mb-8 pa-6 elevation-2">
             <v-card-title class="text-h5 font-weight-bold">{{ reportTitle }}</v-card-title>
             <v-card-subtitle>{{ reportDate }}</v-card-subtitle>
         </v-card>
 
+        <!-- 상담 내용 -->
         <v-card class="mb-8 pa-6 elevation-2">
-            <v-card-title class="text-h6 font-weight-bold">상담 내용</v-card-title>
-            <v-card-text>
-                <v-textarea outlined readonly rows="6" value="오늘 어떻게 오시게 되었나요? ... (예시 텍스트)"></v-textarea>
+            <v-card-title class="text-h6 font-weight-bold">📑 상담 내용</v-card-title>
+            <v-card-text class="content-area">
+                <div class="scroll-wrapper">
+                    <div ref="contentBox" class="counsel-content-box" :class="{ expanded: isExpanded }">
+                        <div v-html="formattedCounselContent" style="margin-bottom: 40px;"></div>
+                    </div>
+
+                    <div v-if="isContentOverflow" class="expand-btn-box" :class="{ 'background-visible': !isExpanded }">
+                        <v-btn size="small" color="primary" variant="tonal" @click="toggleExpand">
+                            {{ isExpanded ? '닫기' : '더 보기' }}
+                        </v-btn>
+                    </div>
+                </div>
             </v-card-text>
         </v-card>
 
+        <!-- 분석 데이터 컴포넌트들 -->
         <TroubleSummary :summary="data.troubleSummary" />
         <EmotionAnalysis :emotions="data.emotionAnalysisList" />
-
-        <v-card class="mb-8 pa-6 elevation-2">
-            <v-card-title class="text-h6 font-weight-bold">효과적 발화</v-card-title>
-            <v-card-text>
-                <p class="mb-4 font-italic">"{{ data.effectiveStatement.content }}"</p>
-                <v-list dense>
-                    <v-list-item><strong>내담자 반응:</strong> {{ data.effectiveStatement.response }}</v-list-item>
-                    <v-list-item><strong>이유:</strong> {{ data.effectiveStatement.reason }}</v-list-item>
-                    <v-list-item><strong>결과:</strong> {{ data.effectiveStatement.result }}</v-list-item>
-                </v-list>
-            </v-card-text>
-        </v-card>
-
         <CounselSummary :summary="data.shortenedCounsel" />
 
+        <!-- 상담사 소견, 다음 상담 일정 -->
         <v-row>
             <v-col cols="12" md="6">
                 <v-card class="pa-6 elevation-2">
@@ -53,7 +54,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { ref, computed, onMounted, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 
@@ -61,23 +62,113 @@ import TroubleSummary from '@/components/analysis/TroubleSummary.vue';
 import EmotionAnalysis from '@/components/analysis/EmotionAnalysis.vue';
 import CounselSummary from '@/components/analysis/CounselSummary.vue';
 
+// 라우터에서 counselId 가져오기
 const route = useRoute();
 const counselId = route.params.counselId;
 
+// 상태 변수
 const reportTitle = ref('상담일지');
 const reportDate = ref('');
 const data = ref(null);
+const counselContent = ref('');
+const isExpanded = ref(false);
+const isContentOverflow = ref(false);
+const contentBox = ref(null);
 
-const fetchData = async () => {
+// 상담 내용 포맷팅
+const formattedCounselContent = computed(() => {
+    return counselContent.value.replace(/\\n/g, '<br>').replace(/\r\n|\r|\n/g, '<br>');
+});
+
+// 상담 내용 펼치기/접기 토글
+const toggleExpand = () => {
+    isExpanded.value = !isExpanded.value;
+};
+
+// 상담 분석 데이터 가져오기
+const fetchAnalysisData = async () => {
     try {
         const response = await axios.get(`http://localhost:8080/api/v1/analysis/${counselId}/analysis`);
         data.value = response.data;
-        reportDate.value = new Date().toISOString().split('T')[0];
-        console.log(response);
     } catch (error) {
         console.error('Failed to fetch analysis data', error);
     }
 };
 
+// 상담 원문 내용 가져오기
+const fetchCounselContent = async () => {
+    try {
+        const response = await axios.get(`http://localhost:8080/api/v1/counsels/${counselId}`);
+        counselContent.value = response.data.content;
+    } catch (error) {
+        console.error('Failed to fetch counsel content', error);
+    }
+};
+
+// overflow(스크롤) 감지
+const checkContentOverflow = async () => {
+    await nextTick();
+    if (contentBox.value) {
+        isContentOverflow.value = contentBox.value.scrollHeight > contentBox.value.clientHeight;
+    }
+};
+
+// 전체 데이터 가져오기
+const fetchData = async () => {
+    await Promise.all([fetchAnalysisData(), fetchCounselContent()]);
+    reportDate.value = new Date().toISOString().split('T')[0];
+    await nextTick();
+    checkContentOverflow();
+};
+
+// 컴포넌트 로드 시 데이터 가져오기
 onMounted(fetchData);
 </script>
+
+<style scoped>
+.content-area {
+    position: relative;
+    padding: 0;
+    overflow: hidden;
+}
+
+.scroll-wrapper {
+    position: relative;
+}
+
+.counsel-content-box {
+    margin: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    line-height: 1.6;
+    font-size: 14px;
+    max-height: 150px;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+}
+
+.counsel-content-box.expanded {
+    max-height: 10000px;
+    /* 충분히 크게 */
+}
+
+.expand-btn-box {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 12px 0;
+    text-align: center;
+    z-index: 10;
+}
+
+.expand-btn-box.background-visible {
+    background: linear-gradient(to top, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+}
+
+.v-btn {
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+</style>
