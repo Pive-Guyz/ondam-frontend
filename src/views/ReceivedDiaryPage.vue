@@ -1,21 +1,23 @@
 <template>
-  <div class="received-diary-view">
+  <div class="diary-container">
     <div class="header">
-      <h2 class="page-title">오늘 받은 다이어리</h2>
-      <v-btn @click="goBack" outlined color="primary" class="back-btn">뒤로가기</v-btn>
+      <h2 class="title">📨 오늘 받은 다이어리</h2>
+      <button class="back-btn" @click="goBack">뒤로가기</button>
     </div>
 
-    <v-divider class="my-4"></v-divider>
+    <div class="divider"></div>
 
     <div v-if="receivedDiaryList.length === 0" class="empty-message">
-      받은 다이어리가 없습니다.
+      아직 받은 다이어리가 없습니다. 📨
     </div>
 
-    <v-list v-else class="diary-list">
-      <v-list-item v-for="diary in receivedDiaryList" :key="diary.id" @click="openDiaryDetail(diary)" class="diary-item">
-        <v-list-item-title class="diary-title">{{ diary.title }}</v-list-item-title>
-      </v-list-item>
-    </v-list>
+    <ul v-else class="diary-list">
+      <li v-for="diary in receivedDiaryList" :key="diary.id" @click="openDiaryDetail(diary)">
+        <div class="diary-item">
+          <span class="diary-title">{{ diary.title }}</span>
+        </div>
+      </li>
+    </ul>
 
     <ReceivedDiaryModal
       v-if="selectedDiary"
@@ -43,20 +45,41 @@ const selectedDiary = ref(null)
 const fetchReceivedDiaries = async () => {
   try {
     const response = await axios.get('http://localhost:8080/api/v1/diaryRecord/findDiaryRecordByReceiverId', {
-      params: { receiverId: authStore.memberId }, // ✅ 로그인한 사용자의 memberId 사용
+      params: { receiverId: authStore.memberId },
     })
-     // 각 다이어리에 대해 diaryId로 제목 조회
-     const diariesWithTitle = await Promise.all(response.data.map(async (diaryRecord) => {
-      const diaryResponse = await axios.get(`http://localhost:8080/api/v1/diary/findDiaryById`, {
-        params: { id: diaryRecord.diaryId }
+
+    const diaryRecords = response.data
+
+    const diariesWithTitle = await Promise.all(
+      diaryRecords.map(async (diaryRecord) => {
+        try {
+          const diaryResponse = await axios.get(`http://localhost:8080/api/v1/diary/findDiaryById`, {
+            params: { id: diaryRecord.diaryId },
+          })
+
+          const diaryData = diaryResponse.data
+
+          // 조건에 맞지 않으면 null 반환
+          if (diaryData.deleted_at || diaryData.is_blinded === 'Y') {
+            return null
+          }
+
+          return {
+            ...diaryRecord,
+            title: diaryData.title,
+          }
+        } catch (error) {
+          console.warn(`다이어리 ID ${diaryRecord.diaryId} 조회 실패`, error)
+          return null
+        }
       })
-      return {
-        ...diaryRecord,
-        title: diaryResponse.data.title  // 다이어리 제목 추가
-      }
-    }))
-    
-    receivedDiaryList.value = diariesWithTitle  // 다이어리 제목 포함된 목록으로 업데이트
+    )
+
+    // null 아닌 것만 필터링
+    receivedDiaryList.value = diariesWithTitle.filter(
+  (d) => d !== null && d.title && d.title.trim() !== ''
+)
+
   } catch (error) {
     console.error('받은 다이어리 조회 실패:', error)
   }
@@ -91,51 +114,97 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.received-diary-view {
-  padding: 40px;
-  background-color: #f0f8ff;
+.diary-container {
+  padding: 40px 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #f9fafc;
   min-height: 100vh;
   font-family: 'Roboto', sans-serif;
 }
 
-.page-title {
-  font-size: 2rem;
-  color: #0277bd;
-  font-weight: bold;
+.header {
+  text-align: center;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.title {
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 10px;
 }
 
 .back-btn {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 10px 16px;
   background-color: #0277bd;
   color: white;
-  border-radius: 25px;
-  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.back-btn:hover {
+  background-color: #01579b;
+}
+
+.divider {
+  width: 40%;
+  height: 2px;
+  background-color: #dbe0e6;
+  margin: 0 auto 30px auto;
 }
 
 .empty-message {
   text-align: center;
   color: #999;
-  font-size: 18px;
   margin-top: 80px;
+  font-size: 18px;
 }
 
 .diary-list {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.diary-list li {
+  background: white;
+  margin: 12px 0;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #dbe0e6;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.diary-list li:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .diary-item {
-  cursor: pointer;
-  padding: 10px 16px;
-}
-
-.diary-item:hover {
-  background-color: #e1f5fe;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .diary-title {
-  font-size: 1.1rem;
-  color: #01579b;
   font-weight: 600;
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.diary-date {
+  font-size: 14px;
+  color: #888;
 }
 </style>

@@ -21,6 +21,11 @@
     <div class="navigate-btn">
       <v-btn @click="goToReceivedDiary" color="primary" outlined>오늘 받은 다이어리</v-btn>
     </div>
+    <div class="navigate-btn">
+      <v-btn @click="goToMyReplies" color="primary" outlined>
+        내가 보낸 답장 보기
+      </v-btn>
+    </div>
 
     <DiaryModal
       v-if="selectedDiary"
@@ -96,6 +101,10 @@ const fetchDiaries = async () => {
 
 const openDiaryModal = (diary) => {  selectedDiary.value = diary }
 const closeDiaryModal = () => {  selectedDiary.value = null  }
+
+const goToMyReplies = () => {
+  router.push('/diary/reply')
+}
 
 onMounted(async () => {
   authStore.restoreSession()
