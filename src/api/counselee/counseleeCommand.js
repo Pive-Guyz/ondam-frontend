@@ -1,6 +1,6 @@
 // src/api/counseleeCommand.js
 
-import axios from './config/axios';
+import axios from '../config/axios';
 
 /**
  * 내담자 등록
