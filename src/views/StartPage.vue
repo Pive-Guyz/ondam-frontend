@@ -44,7 +44,7 @@ const closeLoginModal = () => {  showLoginModal.value = false;  };
 
 const handleLogin = async ({ email, password }) => {
   try {
-    const res = await axios.get('http://localhost:8080/member/findAllMembers'); // 예: 모든 회원 조회
+    const res = await axios.get('http://localhost:8080/api/v1/member/findAllMembers'); // 예: 모든 회원 조회
     const members = res.data;
 
     const found = members.find(
