@@ -3,7 +3,6 @@
       <div class="member-container">
         <h2 class="title">회원 관리</h2>
         <p class="sub-text">회원의 정보를 확인할 수 있습니다.</p>
-  
         <!-- 검색 및 정렬 -->
         <div class="top-bar">
           <input type="text" v-model="search" placeholder="Search" class="search-input" />
@@ -43,15 +42,40 @@
                     'guest': member.authority === 'Guest',
                     'other': member.authority !== 'Admin' && member.authority !== 'Guest'
                   }"
+                     @click="openModalForMember(member)"
+    style="cursor: pointer"
                 >
                   {{ member.authority }}
                 </span>
               </td>
-              <td><button class="view-btn">🔍</button></td>
+              <td>
+  <button class="view-btn" @click="openDetailModal(member)">🔍</button>
+  </td>
+ 
+
+
             </tr>
           </tbody>
         </table>
+        <div>
+    <!-- 예: 권한 옆에 있는 설정 버튼 -->
+    <button @click="openModal('User')">권한 변경</button>
+
+    <!-- 모달 -->
+    <RoleChangeModal
+      v-if="isModalOpen"
+      :currentRole="selectedRole"
+      @close="isModalOpen = false"
+      @updateRole="updateRole"
+    />
+  </div>
   
+        <MemberDetailModal
+  v-if="showDetailModal"
+  :member="selectedMember"
+  @close="showDetailModal = false"
+/>
+
         <!-- 페이지네이션 -->
         <div class="pagination">
           <button v-for="n in 5" :key="n" class="page-btn">{{ n }}</button>
@@ -62,16 +86,55 @@
   
   <script setup>
   import { ref, computed } from 'vue'
+  import MemberDetailModal from '@/components/member/MemberDetailModal.vue'
+  import RoleChangeModal from '@/components/member/RoleChangeModal.vue'
+
   
   const members = ref([
-    { id: 1, name: '김학순', email: 'e01fd0vb...@hotmail.com', birthday: '2000-04-24', phone: '010-4444-5854', address: null, authority: 'Admin' },
-    { id: 2, name: '박성현', email: 'ckw5ng...@gmail.com', birthday: '2000-07-24', phone: '010-4444-5854', address: null, authority: 'Guest' },
-    { id: 3, name: '최정용', email: 'dnty...@gmail.com', birthday: '2000-01-19', phone: '010-4444-5854', address: null, authority: 'User' },
-    // ... 나머지 더미 데이터
-  ])
+  { id: 1, name: '김학순', email: 'e01fd0vb@naver.com', birthday: '2000-04-24', phone: '010-4444-5854', address: null, authority: 'Admin' },
+  { id: 2, name: '박선영', email: 'ckw5ngac1@gmail.com', birthday: '2000-07-24', phone: '010-4444-5854', address: null, authority: 'Guest' },
+  { id: 3, name: '최정용', email: 'dnty6557@gmail.com', birthday: '2000-01-19', phone: '010-4444-5854', address: null, authority: 'User' },
+  { id: 4, name: '유채윤', email: 'gkdh8887@gmail.com', birthday: '2001-11-24', phone: '010-4444-5854', address: null, authority: 'User' },
+  { id: 5, name: '남지현', email: 'wldua773@gmail.com', birthday: '2002-07-18', phone: '010-4444-5854', address: null, authority: 'User' },
+  { id: 6, name: '고명자', email: 'tjwms5517@gmail.com', birthday: '1989-04-12', phone: '010-4444-5854', address: null, authority: 'User' },
+  { id: 7, name: '이서준', email: 'tjwms5577@gmail.com', birthday: '1997-12-12', phone: '010-4444-5854', address: null, authority: 'User' },
+  { id: 8, name: '한수연', email: 'tnqls6557@gmail.com', birthday: '2000-01-04', phone: '010-4444-5854', address: null, authority: 'User' },
+  { id: 9, name: '조현정', email: 'jojo22@gmail.com', birthday: '1996-05-15', phone: '010-5555-8888', address: null, authority: 'Guest' },
+  { id: 10, name: '신해정', email: 'shine999@gmail.com', birthday: '1994-08-11', phone: '010-3333-2222', address: null, authority: 'Guest' },
+  { id: 11, name: '임나영', email: 'limnayoung@gmail.com', birthday: '1998-09-20', phone: '010-4444-4444', address: null, authority: 'Admin' }
+])
+
   
   const search = ref('')
   const sort = ref('newest')
+
+  
+const isModalOpen = ref(false);
+const selectedRole = ref('User');
+
+const selectedMemberForRole = ref(null);
+
+const openModalForMember = (member) => {
+  selectedMemberForRole.value = member;
+  selectedRole.value = member.authority;
+  isModalOpen.value = true;
+};
+
+
+
+
+
+
+  const selectedMember = ref(null)
+const showDetailModal = ref(false)
+
+const openDetailModal = (member) => {
+  selectedMember.value = member
+  showDetailModal.value = true
+}
+
+
+
   
   const filteredMembers = computed(() => {
     return members.value
