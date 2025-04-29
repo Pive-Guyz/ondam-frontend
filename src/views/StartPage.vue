@@ -1,93 +1,118 @@
 <template>
-  <v-app>
-    <v-container class="d-flex flex-column justify-center align-center min-h-screen" style="background: linear-gradient(135deg, #4f46e5, #7e22ce, #ec4899);">
-      <h1 class="display-2 font-weight-bold text-white mb-6 drop-shadow-2xl">
-        On:Dam
-      </h1>
-      <v-row class="text-center">
-        <v-btn
-          color="primary"
-          class="mr-4"
-          @click="openLoginModal"
-          large
-        >
-          로그인
-        </v-btn>
-        <v-btn
-          color="deep-purple accent-4"
-          class="ml-4"
-          large
-        >
-          회원가입
-        </v-btn>
-      </v-row>
+  <div class="page-container">
+    <div class="login-box">
+      <h2 class="title">로그인</h2>
 
-      <!-- 로그인 모달 -->
-      <LoginModal v-if="showLoginModal" @close="closeLoginModal" @login="handleLogin" />
-    </v-container>
-  </v-app>
+      <div class="form-group">
+        <label>이메일</label>
+        <input v-model="email" type="text" placeholder="Value" />
+      </div>
+
+      <div class="form-group">
+        <label>비밀번호</label>
+        <input v-model="password" type="password" placeholder="Value" />
+      </div>
+
+      <div class="button-group">
+        <button class="sub-btn">이메일 찾기</button>
+        <button class="sub-btn">비밀번호 찾기</button>
+        <button class="sub-btn">회원가입</button>
+      </div>
+
+      <button class="login-btn" @click="login">로그인</button>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import axios from 'axios';
-import { useAuthStore } from '@/stores/auth';
-import LoginModal from '../components/modal/LoginModal.vue';
+import { ref } from 'vue'
 
-const router = useRouter();
-const authStore = useAuthStore();
+const email = ref('')
+const password = ref('')
 
-const showLoginModal = ref(false);
-const openLoginModal = () => {  showLoginModal.value = true;  };
-const closeLoginModal = () => {  showLoginModal.value = false;  };
-
-const handleLogin = async ({ email, password }) => {
-  try {
-    const res = await axios.get('http://localhost:8080/api/v1/member/findAllMembers'); // 예: 모든 회원 조회
-    const members = res.data;
-
-    const found = members.find(
-      (member) => member.email === email && member.password === password
-    );
-
-    if (found) {
-      alert('로그인 성공!'); // ✅ 성공 시 알림
-      authStore.login(found.id);
-      closeLoginModal();
-      router.push('/main'); // 로그인 성공 → 이동
-    } else {
-      alert('이메일 또는 비밀번호가 일치하지 않습니다.');
-    }
-  } catch (e) {
-    console.error('로그인 오류:', e);
-    alert('서버 오류가 발생했습니다.');
-  }
-};
+const login = () => {
+  console.log('로그인 시도:', email.value, password.value)
+  // 여기서 axios POST로 로그인 API 호출 가능
+}
 </script>
 
 <style scoped>
-/* 배경을 설정하고, 글씨에 그림자 추가 */
-.v-container {
-  background: linear-gradient(135deg, #4f46e5, #7e22ce, #ec4899);
-  min-height: 100vh;
+.page-container {
+  background-color: #f7f9fc;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-h1 {
+.login-box {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  width: 400px;
+  text-align: center;
+}
+
+.title {
+  font-size: 22px;
   font-weight: bold;
-  font-size: 5rem;
-  text-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  color: #2c3e50;
+  margin-bottom: 30px;
 }
 
-.v-btn {
-  transition: background-color 0.3s ease, transform 0.3s ease;
+.form-group {
+  text-align: left;
+  margin-bottom: 20px;
 }
 
-.v-btn:hover {
-  transform: scale(1.05);
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+  color: #2c3e50;
 }
 
-.v-btn:focus {
-  outline: none;
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #3c8df3;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.sub-btn {
+  border: 1px solid #3c8df3;
+  border-radius: 20px;
+  padding: 5px 10px;
+  background: white;
+  color: #3c8df3;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.sub-btn:hover {
+  background: #e6f0ff;
+}
+
+.login-btn {
+  background-color: #3c8df3;
+  color: white;
+  padding: 12px 0;
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.login-btn:hover {
+  background-color: #2f76ce;
 }
 </style>
