@@ -10,14 +10,16 @@ import MyPage from '../views/MyPage.vue'
 import AdminPage from '../views/AdminPage.vue'
 import MemberList from '../views/MemberList.vue'
 import ReportPage from '@/views/ReportPage.vue'
-
+import MyReplyListPage from '../views/MyReplyListPage.vue'
+import ReportPage from '@/views/ReportPage.vue'
 
 const routes = [
 
-  { path: '/', component: StartPage },
-  { path: '/main', component: MainPage },
-  { path: '/diary', component: DiaryPage },
-  { path: '/diary/received', component: ReceivedDiaryPage },
+  { path: '/', component: StartPage},
+  { path: '/main', component: MainPage},
+  { path: '/diary', component: DiaryPage},
+  { path: '/diary/received', component: ReceivedDiaryPage},
+  { path: '/diary/reply', component: MyReplyListPage},
   {
     path: '/counselees',
     name: 'CounseleePage',
