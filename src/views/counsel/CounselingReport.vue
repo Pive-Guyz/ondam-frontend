@@ -87,6 +87,7 @@ import CounselSummary from '@/components/analysis/CounselSummary.vue';
 
 // 입력 페이지에서 넘겨줘야 할 것들
 defineProps({
+    counselId: String,
     reportTitle: String,
     reportDate: String,
     duration: String,

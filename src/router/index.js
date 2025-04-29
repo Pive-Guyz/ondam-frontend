@@ -49,7 +49,7 @@ const routes = [
     path: '/counselees/register',
     name: 'CounseleeRegisterPage',
     component: () => import('@/views/CounseleeRegisterPage.vue'),
-  }
+  },
 ]
 
 const router = createRouter({

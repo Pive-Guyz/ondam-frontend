@@ -31,7 +31,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(counsel, idx) in counsels" :key="counsel.id" style="cursor: pointer;">
+                    <tr v-for="(counsel, idx) in paginatedCounsels" :key="counsel.id" style="cursor: pointer;"
+                        @click="goToCounselingReport(counsel)">
                         <td>{{ (currentPage - 1) * itemsPerPage + idx + 1 }}</td>
                         <td>{{ formatDate(counsel.createdAt) }}</td>
                         <td>{{ counsel.counselType || '-' }}</td>
@@ -128,6 +129,31 @@ const goToCounselLogForm = () => {
             counseleeName: String(counseleeName.value),  // ← 반드시 String으로 강제 변환
             memberId: String(memberId),             // ← 이것도 마찬가지
         },
+    });
+};
+
+const goToCounselingReport = (counsel) => {
+    if (!counsel) {
+        console.error('선택한 상담 데이터가 없습니다.');
+        return;
+    }
+
+    console.log(counseleeName.value);
+    console.log(formatDate(counsel.createdAt));
+    console.log(counsel.time);
+    console.log(formatDate(counsel.nextCreatedAt));
+    console.log(formatDate(counsel.opinion));
+
+    router.push({
+        name: 'CounselingReport',
+        params: { counselId: counsel.id }, // params로 넘기고
+        query: {
+            reportTitle: counseleeName.value,
+            reportDate: formatDate(counsel.createdAt),
+            duration: counsel.time,
+            nextSchedule: formatDate(counsel.nextCreatedAt),
+            counselorComment: counsel.opinion,
+        }
     });
 };
 </script>
