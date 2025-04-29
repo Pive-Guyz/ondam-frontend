@@ -1,6 +1,6 @@
 // src/api/counseleeQuery.js
 
-import axios from './config/axios';
+import axios from '../config/axios';
 
 /**
  * 내담자 목록 조회

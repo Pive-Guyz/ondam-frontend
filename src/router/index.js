@@ -6,7 +6,7 @@ import MainPage from '../views/MainPage.vue'
 import DiaryPage from '../views/DiaryPage.vue'
 import ReceivedDiaryPage from '../views/ReceivedDiaryPage.vue'
 import MyReplyListPage from '../views/MyReplyListPage.vue'
-
+import ReportPage from '@/views/ReportPage.vue'
 const routes = [
 
   { path: '/', component: StartPage},
@@ -15,11 +15,21 @@ const routes = [
   { path: '/diary/received', component: ReceivedDiaryPage},
   { path: '/diary/reply', component: MyReplyListPage},
   {
-    path: '/counselee-test',
-    name: 'CounseleeTestPage',
+    path: '/counselees',
+    name: 'CounseleePage',
     component: () => import('../views/CounseleePage.vue'),
   },
-
+  { path: '/report', component: ReportPage },
+  {
+    path: '/counseling-log-form',
+    name: 'CounselingLogFormPage',
+    component: () => import('../views/CounslingLogFormPage.vue'),
+  },
+  {
+    path: '/counselees/:id/logs',
+    name: 'CounseleeCounselPage',
+    component: () => import('../views/CounseleeCounselPage.vue'),
+  },
 ]
 
 const router = createRouter({
