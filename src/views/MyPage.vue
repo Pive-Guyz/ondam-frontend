@@ -44,27 +44,16 @@
   
             <div class="form-row">
               <div class="form-group">
-                <label>포인트</label>
-                <input v-model="form.point" disabled />
-              </div>
-              <div class="form-group">
-                <label>권한</label>
-                <input v-model="form.authority" disabled />
-              </div>
-            </div>
-  
-            <div class="form-row">
-              <div class="form-group">
                 <label>가입일</label>
                 <input v-model="form.createdAt" readonly />
               </div>
-              <div class="form-group toggle-group">
-  <label>일기 사용 여부</label>
-  <label class="switch">
-    <input type="checkbox" v-model="form.diaryAllowed" />
-    <span class="slider round"></span>
-  </label>
-</div>
+              <div class="form-group">
+                <label>권한</label>
+                <div class="authority-box">
+                  <span class="authority-role">{{ form.authority }}</span>
+                  <button class="authority-btn" @click="requestUpgrade">신청</button>
+                </div>
+              </div>
             </div>
           </div>
   
@@ -89,38 +78,41 @@
     phone: '01026437581',
     birthday: '19971216',
     address: '연희동',
-    point: '30P',
     authority: '게스트',
-    createdAt: '2025-04-24',
-    diaryAllowed: true,
+    createdAt: '2025-04-24'
   })
   
   const save = () => {
     console.log('저장된 데이터:', form.value)
+  }
+  
+  const requestUpgrade = () => {
+    alert('권한 승급 신청이 완료되었습니다.')
+    // 이후 axios 요청 등으로 서버 전송 가능
   }
   </script>
   
   <style scoped>
   .page-container {
     background-color: #f7f9fc;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  padding-top: 200px;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding-top: 200px;
     padding-bottom: 480px;
   }
   
   .mypage-container {
-  display: flex;
-  background: white;
-  padding: 30px 30px 20px;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-  width: fit-content;
-  max-width: 1100px; /* 더 넓게 */
-  gap: 32px;
-  align-items: flex-start;
-}
+    display: flex;
+    background: white;
+    padding: 30px 30px 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    width: fit-content;
+    max-width: 1100px;
+    gap: 32px;
+    align-items: flex-start;
+  }
   
   .profile-image-section {
     flex-shrink: 0;
@@ -142,15 +134,15 @@
   }
   
   .form-rows {
-  display: flex;
-  flex-direction: column;
-  gap: 30px; /* 행 간 간격 넓힘 */
-}
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
   
-.form-row {
-  display: flex;
-  gap: 60px; /* 열 간 간격 넓힘 */
-}
+  .form-row {
+    display: flex;
+    gap: 60px;
+  }
   
   .form-group {
     flex: 1;
@@ -171,14 +163,33 @@
     font-size: 14px;
   }
   
-  .toggle-group {
+  .authority-box {
+    display: flex;
     align-items: center;
+    justify-content: space-between;
+    border: 2px solid #3c8df3;
+    border-radius: 12px;
+    padding: 5px 6px;
+    background-color: #f9fbff;
   }
   
-  .toggle-switch {
-    width: 20px;
-    height: 20px;
-    accent-color: #20e3b2;
+  .authority-role {
+    font-size: 14px;
+    color: #3c8df3;
+  }
+  
+  .authority-btn {
+    background-color: white;
+    border: 1px solid #bfbfff;
+    color: #3c3caa;
+    border-radius: 9999px;
+    font-size: 12px;
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+  
+  .authority-btn:hover {
+    background-color: #f0f3ff;
   }
   
   .save-btn-wrapper {
@@ -199,48 +210,5 @@
   .save-btn:hover {
     background-color: #2f76ce;
   }
-
-  .switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 26px;
-  margin-top: 6px;
-}
-
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #ccc;
-  transition: 0.4s;
-  border-radius: 34px;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 20px;
-  width: 20px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: 0.4s;
-  border-radius: 50%;
-}
-
-input:checked + .slider {
-  background-color: #20e3b2;
-}
-
-input:checked + .slider:before {
-  transform: translateX(24px);
-}
   </style>
   
