@@ -9,15 +9,21 @@ import ReceivedDiaryPage from '../views/ReceivedDiaryPage.vue'
 // 상담 페이지
 import CounselingReport from '@/views/counsel/CounselingReport.vue';
 
+
+import MyReplyListPage from '../views/MyReplyListPage.vue'
+
+
+import ReportPage from '@/views/ReportPage.vue'
 const routes = [
 
-  { path: '/', component: StartPage },
-  { path: '/main', component: MainPage },
-  { path: '/diary', component: DiaryPage },
-  { path: '/diary/received', component: ReceivedDiaryPage },
+  { path: '/', component: StartPage},
+  { path: '/main', component: MainPage},
+  { path: '/diary', component: DiaryPage},
+  { path: '/diary/received', component: ReceivedDiaryPage},
+  { path: '/diary/reply', component: MyReplyListPage},
   {
-    path: '/counselee-test',
-    name: 'CounseleeTestPage',
+    path: '/counselees',
+    name: 'CounseleePage',
     component: () => import('../views/CounseleePage.vue'),
   },
   {
@@ -28,6 +34,17 @@ const routes = [
     props: true
   },
 
+  { path: '/report', component: ReportPage },
+  {
+    path: '/counseling-log-form',
+    name: 'CounselingLogFormPage',
+    component: () => import('../views/CounslingLogFormPage.vue'),
+  },
+  {
+    path: '/counselees/:id/logs',
+    name: 'CounseleeCounselPage',
+    component: () => import('../views/CounseleeCounselPage.vue'),
+  },
 ]
 
 const router = createRouter({
