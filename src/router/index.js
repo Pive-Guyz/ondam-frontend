@@ -13,8 +13,8 @@ const routes = [
   { path: '/diary', component: DiaryPage },
   { path: '/diary/received', component: ReceivedDiaryPage },
   {
-    path: '/counselee-test',
-    name: 'CounseleeTestPage',
+    path: '/counselees',
+    name: 'CounseleePage',
     component: () => import('../views/CounseleePage.vue'),
   },
   {
