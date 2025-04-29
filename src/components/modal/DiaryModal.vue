@@ -48,7 +48,10 @@
         <!-- 답장 상세보기 모달 -->
         <div v-if="selectedReply" class="modal-overlay" @click.self="selectedReply = null">
           <div class="reply-modal">
-            <h2>답장 상세보기</h2>
+            <h2 class="modal-title">
+              답장 상세보기
+              <button class="report-btn" @click="onReportReply">🚩 신고하기</button>
+            </h2>
             <div class="section">
               <div class="section-header">제목</div>
               <div class="box">{{ selectedReply.title }}</div>
@@ -76,6 +79,14 @@
     import { defineEmits, defineProps, ref, onMounted } from 'vue'
     import axios from 'axios'
   
+    const onReportReply = () => {
+      const confirmed = confirm('이 답장을 신고하시겠습니까?')
+      if (confirmed) {
+        alert('신고가 접수되었습니다. 검토 후 조치하겠습니다.')
+        // TODO: 이후 서버 신고 API 연동
+      }
+    }
+
   const props = defineProps({
     diary: Object
   })
@@ -159,6 +170,29 @@
   flex-direction: column; /* 제목 위, 내용 아래 */
   align-items: center;
   text-align: center;
+}
+
+.modal-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.report-btn {
+  background-color: #ffe5e5;
+  color: #d33;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.report-btn:hover {
+  background-color: #ffd6d6;
 }
 
 .modal {
