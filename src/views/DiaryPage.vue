@@ -18,6 +18,10 @@
       </li>
     </ul>
 
+    <div class="navigate-btn">
+      <v-btn @click="goToReceivedDiary" color="primary" outlined>오늘 받은 다이어리</v-btn>
+    </div>
+
     <DiaryModal
       v-if="selectedDiary"
       :diary="selectedDiary"
@@ -44,7 +48,7 @@ const selectedDiary = ref(null)
 const router = useRouter()
 
 const goHome = () => router.push('/main')
-
+const goToReceivedDiary = () => {  router.push('/diary/received')   }
 
 // 일기 작성
 const showWriteDiaryModal = ref(false)
