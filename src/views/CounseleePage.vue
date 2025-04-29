@@ -15,7 +15,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { fetchCounselees } from '@/api/counseleeQuery';
+import { fetchCounselees } from '@/api/counselee/counseleeQuery';
 
 const counselees = ref([]);
 const loading = ref(false);

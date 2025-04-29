@@ -8,14 +8,19 @@ import ReceivedDiaryPage from '../views/ReceivedDiaryPage.vue'
 
 const routes = [
 
-  { path: '/', component: StartPage},
-  { path: '/main', component: MainPage},
-  { path: '/diary', component: DiaryPage},
-  { path: '/diary/received', component: ReceivedDiaryPage},
+  { path: '/', component: StartPage },
+  { path: '/main', component: MainPage },
+  { path: '/diary', component: DiaryPage },
+  { path: '/diary/received', component: ReceivedDiaryPage },
   {
     path: '/counselee-test',
     name: 'CounseleeTestPage',
     component: () => import('../views/CounseleePage.vue'),
+  },
+  {
+    path: '/counseling-log-form',
+    name: 'CounselingLogFormPage',
+    component: () => import('../views/CounslingLogFormPage.vue'),
   },
 
 ]
