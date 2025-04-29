@@ -39,13 +39,13 @@
         <v-row>
             <v-col cols="12" md="6">
                 <v-card class="pa-6 elevation-2">
-                    <v-card-title class="text-h6 font-weight-bold">상담사 소견</v-card-title>
+                    <v-card-title class="text-h6 font-weight-bold mb-3">🚩 상담사 소견</v-card-title>
                     <v-card-text>내담자의 상황을 종합하여 분석하고, 필요한 방향을 제시한 내용입니다.</v-card-text>
                 </v-card>
             </v-col>
             <v-col cols="12" md="6">
                 <v-card class="pa-6 elevation-2">
-                    <v-card-title class="text-h6 font-weight-bold">다음 상담 일정</v-card-title>
+                    <v-card-title class="text-h6 font-weight-bold mb-3">📆 다음 상담 일정</v-card-title>
                     <v-card-text>2025년 05월 01일</v-card-text>
                 </v-card>
             </v-col>
@@ -160,7 +160,6 @@ onMounted(fetchData);
 
 .counsel-content-box.expanded {
     max-height: 10000px;
-    /* 충분히 크게 */
 }
 
 .expand-btn-box {
