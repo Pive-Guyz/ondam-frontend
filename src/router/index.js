@@ -24,7 +24,7 @@ const routes = [
     // 상담 일지 페이지
     path: '/counsel/:counselId',
     name: 'CounselingReport',
-    component:  () => import('../views/counsel/CounselingReport.vue'),
+    component:  () => import('@/views/counsel/CounselingReport.vue'),
     props: true
   },
 

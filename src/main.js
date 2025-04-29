@@ -3,7 +3,6 @@ import App from './App.vue'
 import router from './router'
 import { createPinia } from 'pinia'
 import vuetify from './plugins/vuetify'  // ✅ 추가!
-import '@mdi/font/css/materialdesignicons.css';
 import { useAuthStore } from '@/stores/auth'
 
 
@@ -17,5 +16,3 @@ app.mount('#app')
 
 const authStore = useAuthStore()
 authStore.restoreSession()  // 로그인 상태 복원!
-
-

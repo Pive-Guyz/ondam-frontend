@@ -8,7 +8,7 @@
 
         <!-- 상담 내용 -->
         <v-card class="mb-8 pa-6 elevation-2">
-            <v-card-title class="text-h6 font-weight-bold">📑 상담 내용</v-card-title>
+            <v-card-title class="text-h5 font-weight-bold">📑 상담 내용</v-card-title>
             <v-card-text class="content-area">
                 <div class="scroll-wrapper">
                     <div ref="contentBox" class="counsel-content-box" :class="{ expanded: isExpanded }">
