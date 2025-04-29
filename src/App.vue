@@ -1,7 +1,7 @@
 <template>
-  <main id="app">
+  <v-app>
     <RouterView />
-  </main>
+  </v-app>
 </template>
 
 <script setup>
