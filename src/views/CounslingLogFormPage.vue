@@ -94,6 +94,7 @@ const today = new Date().toISOString().split('T')[0];
 const isLoading = ref(false);
 
 const form = reactive({
+
     type: '',
     content: '',
     opinion: '',
@@ -183,12 +184,14 @@ const submitForm = async () => {
                 name: 'CounselingReport',
                 params: { counselId: String(counselId) },
                 query: {
-                    reportTitle: `${counseleeName} 상담일지`,
+                    counseleeId: counseleeId,
+                    reportTitle: `${counseleeName}`,
                     reportDate: today,
                     duration: `${paddedHour}시간 ${paddedMinute}분`,
                     weather: form.weather,
                     nextSchedule: form.nextDate,
                     counselorComment: form.opinion,
+                    memberId: counsel.memberId,
                 }
             });
 
