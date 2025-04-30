@@ -22,7 +22,7 @@
                 <v-btn color="primary" class="action-btn" @click="$emit('view')">
                     컨텐츠 보기
                 </v-btn>
-                <v-btn color="primary" class="action-btn" @click="$emit('process', reportData)">
+                <v-btn color="primary" class="action-btn" @click="handleApprove">
                     처리하기
                 </v-btn>
             </div>
@@ -33,6 +33,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { fetchReportDetail } from '@/api/report/reportQuery'
+import { approveReport } from '@/api/report/reportCommand'
 
 const props = defineProps({
     isOpen: Boolean,
@@ -40,25 +41,45 @@ const props = defineProps({
 })
 
 const detail = ref(null)
-
 // ✅ 템플릿에서 쓸 때 computed로 감싸기
 const detailData = computed(() => detail.value || {})
 
+watch(() => props.reportData, (val) => {
+    console.log('[🧩 reportData 변화]', val)
+})
+
 // 모달 처음 열릴 때
 watch(() => props.isOpen, async (opened) => {
-    if (opened && props.reportData?.id) {
-        const res = await fetchReportDetail(props.reportData.id)
+    if (opened && props.reportData?.reportId) {
+        console.log('[📌 상세조회 시도]', props.reportData.reportId)
+        const res = await fetchReportDetail(props.reportData.reportId)
+        console.log('[📌 상세 조회 응답]', res.data)
         detail.value = res.data
     }
 })
 
 // 모달 열려있는 상태에서 다른 신고 클릭한 경우
 watch(() => props.reportData, async (newData) => {
-    if (props.isOpen && newData?.id) {
-        const res = await fetchReportDetail(newData.id)
+    console.log('[🟡 reportData 변화]', newData)
+    if (props.isOpen && newData?.reportId) {
+        const res = await fetchReportDetail(newData.reportId)
+        console.log('[🟢 상세 조회 응답]', res.data)
         detail.value = res.data
     }
 })
+
+// ✅ 블라인드 처리 함수
+const handleApprove = async () => {
+    try {
+        await approveReport(props.reportData.reportId)
+        alert('신고가 승인되어 블라인드 처리되었습니다.')
+        emit('update:isOpen', false)
+        emit('refresh') // 리스트 갱신 트리거
+    } catch (err) {
+        console.error('신고 승인 실패', err)
+        alert('처리 중 오류가 발생했습니다.')
+    }
+}
 </script>
 
 <style scoped>

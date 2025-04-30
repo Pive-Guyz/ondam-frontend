@@ -17,7 +17,8 @@
         </v-row>
 
         <!-- 리스트 테이블 -->
-        <List :headers="headers" :items="paginatedReports.map(({ raw, ...visible }) => visible)" @row-click="openModal">
+        <List :headers="headers" :items="paginatedReports.map(({ raw, ...visible }) => ({ ...visible, raw }))"
+            @row-click="openModal">
             <template #status="{ value }">
                 <v-chip :class="statusClass(value)" class="status-chip" variant="tonal" size="small">
                     {{ value }}
@@ -25,9 +26,10 @@
             </template>
         </List>
 
+
         <!-- 상세 모달 -->
         <ReportDetailModal v-model:isOpen="isDetailOpen" :reportData="selectedReport" @view="handleView"
-            @process="openProcessModal" />
+            @process="openProcessModal" @refresh="fetchReports" />
 
         <!-- 처리 모달 -->
         <ReportProcessModal v-model:isOpen="isProcessOpen" @submit="handleStatusSubmit" />
@@ -47,7 +49,7 @@ import Pagination from '@/components/Pagination.vue'
 import ReportDetailModal from '@/components/report/ReportDetailModal.vue'
 import ReportProcessModal from '@/components/report/ReportProcessModal.vue'
 import { fetchReportList } from '@/api/report/reportQuery'
-import { updateReportStatus } from '@/api/report/reportCommand'
+import { updateReportStatus, approveReport } from '@/api/report/reportCommand'
 import { statusToText, textToStatus } from '@/utils/reportUtils'
 
 const selectedSort = ref('최근순')
@@ -73,13 +75,14 @@ async function fetchReports() {
         const res = await fetchReportList({ status: statusCode, order })
         console.log('신고목록 res:', res.data)
         reports.value = res.data.map(r => ({
+            id: r.id, // ✅ 반드시 포함해줘야 함
             reporter: r.reporterName,
             reported: r.reportedMemberName,
             reason: r.reportCategoryName,
             date: r.createdAt.slice(0, 16).replace('T', ' '),
             type: r.diaryId != null ? `일기 #${r.diaryId}` : `답장 #${r.replyId}`,
             status: statusToText(r.status),
-            raw: r  // 상세 조회용 원본
+            raw: { ...r, id: r.id } // 나중에 상세조회용으로 사용
         }))
     } catch (e) {
         console.error('신고 목록 조회 실패', e)
@@ -99,7 +102,15 @@ const paginatedReports = computed(() => {
 })
 
 function openModal(row) {
-    selectedReport.value = row.raw  // ✅ 반드시 .value로
+    console.log('🧪 클릭된 row:', row)
+    console.log('🧪 row.raw:', row.raw)
+
+    if (!row?.raw) {
+        console.warn('❌ 선택된 row.raw가 없습니다.')
+        return
+    }
+
+    selectedReport.value = row.raw
     isDetailOpen.value = true
 }
 
@@ -111,15 +122,29 @@ function openProcessModal() {
 async function handleStatusSubmit(newStatusText) {
     if (selectedReport.value) {
         const statusCode = textToStatus(newStatusText)
+        const reportId = selectedReport.value.id // ✅ 여기가 핵심!
+        console.log('✅ 최종 reportId:', reportId) // 콘솔에 찍어봐!
+
         try {
-            await updateReportStatus(selectedReport.value.id, statusCode)
-            await fetchReports() // 중요! 새로 목록 불러와야 반영됨
+            await updateReportStatus(reportId, statusCode)
+
+            // ✅ 승인일 경우 블라인드 처리까지!
+            if (statusCode === 1) {
+                await approveReport(reportId) // 이 값이 undefined라면 위에서 잘못된 거야
+            }
+
+            await fetchReports()
         } catch (err) {
             console.error('신고 상태 변경 실패', err)
+            alert('처리 중 오류가 발생했습니다.')
         }
+
+        isProcessOpen.value = false
+    } else {
+        console.warn('⚠️ selectedReport.value가 없음')
     }
-    isProcessOpen.value = false
 }
+
 
 function handleView() {
     console.log('컨텐츠 보기 클릭')
