@@ -37,6 +37,8 @@
   <script setup>
   import { ref, computed } from 'vue'
   import axios from 'axios'
+  import { useAuthStore } from '../../stores/auth'
+  const authStore = useAuthStore()
   
   // Props & emits
   const props = defineProps({
@@ -76,7 +78,12 @@
       }
   
       await writeReply(payload);
-      alert('답장이 전송되었습니다!')
+      let point = authStore.point
+      point = point + 10
+      authStore.point = point
+      localStorage.setItem('memberPoint', point)
+      alert(`답장이 전송되었습니다! 현재 포인트는 ${point}입니다.`)
+
       closeModal()
     } catch (error) {
       console.error('답장 보내기 실패:', error)

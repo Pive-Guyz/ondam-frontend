@@ -54,12 +54,14 @@ const submitDiary = async () => {
                 isBlinded: 'N',
                 memberId: authStore.memberId,
                 })
+    await writeDiary(payload);
     point = point - 10
     authStore.point = point // ✅ Pinia 상태 업데이트
     localStorage.setItem('memberPoint', point) // ✅ 로컬에도 반영
 
     emit('writeDiary')
     alert(`일기가 작성되었습니다✏️ 남은 포인트는 ${point}입니다.`)
+    close()
   } catch (err) {
     console.error('다이어리 작성 실패:', err)
     alert('작성에 실패했어요 😢')
