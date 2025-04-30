@@ -29,12 +29,18 @@ const close = () => {
   emit('close')
 }
 
+import { writeDiary } from '../../api/diary/diaryCommand'
 const submitDiary = async () => {
   if (!title.value || !content.value) {
     alert('제목과 내용을 모두 입력해주세요.')
     return
   }
-
+  const payload = {
+    title: title.value,
+    content: content.value,
+    isBlinded: 'N',
+    memberId: authStore.memberId
+  }
   try {
     console.log({
                 title: title.value,
@@ -42,17 +48,7 @@ const submitDiary = async () => {
                 isBlinded: 'N',
                 memberId: authStore.memberId,
                 })
-    await axios.post('http://localhost:8080/api/v1/diary/writeDiary', {
-      title: title.value,
-      content: content.value,
-      isBlinded: 'N',
-      memberId: authStore.memberId,
-    },
-    {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    })
+    await writeDiary(payload)
     emit('writeDiary')
     alert('일기가 작성되었습니다😊✏️')
     close()

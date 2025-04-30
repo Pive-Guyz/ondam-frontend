@@ -1,4 +1,11 @@
 <template>
+    <v-dialog v-model="isLoading" persistent max-width="300">
+        <v-card class="pa-5" style="text-align: center;">
+            <v-progress-circular indeterminate color="primary" size="40" class="mb-3" />
+            <div>GPT 분석 중입니다. 잠시만 기다려주세요...</div>
+        </v-card>
+    </v-dialog>
+
     <div class="counseling-log-form container">
         <h2 class="page-title">상담 일지 입력 페이지</h2>
 
@@ -66,32 +73,25 @@
             </form>
         </div>
     </div>
+
 </template>
 
 <script setup>
-import { reactive } from 'vue';
+import { ref, reactive } from 'vue';
 import { createCounsel } from '@/api/counsel/counselCommand';
 import Counsel from '@/models/Counsel';
+import { useRouter, useRoute } from 'vue-router';
+import { requestGptPrompt } from '@/api/analysis/analysisCommand';
 
+const route = useRoute();
+const router = useRouter();
+
+const counseleeId = Number(route.params.id);         // id param도 숫자로 변환
+const counseleeName = route.query.counseleeName || '';
+const memberId = Number(route.query.memberId);       // ← 여기 Number()로 변환 필수
 const today = new Date().toISOString().split('T')[0];
-const counseleeName = '박우석'; // 나중에 props로 교체 가능
-const counseleeId = 2;          // 예시: 현재 상담하는 내담자 ID
-const memberId = 1;             // 예시: 현재 로그인한 상담사 ID
 
-const props = defineProps({
-    memberId: {
-        type: [String, Number],
-        required: true,
-    },
-    counseleeId: {
-        type: [String, Number],
-        required: true,
-    },
-    counseleeName: {
-        type: String,
-        default: '',
-    },
-});
+const isLoading = ref(false);
 
 const form = reactive({
     type: '',
@@ -142,10 +142,10 @@ const submitForm = async () => {
         counselType: form.type,
         time: formattedTime,
         nextCreatedAt: nextDateWithTime,
-        counseleeId: counseleeId,
-        memberId: memberId,
+        counseleeId,
+        memberId,
     });
-    console.log('counsel data chk : ', counsel);
+
     try {
         counsel.validateAll();
     } catch (err) {
@@ -154,16 +154,69 @@ const submitForm = async () => {
     }
 
     try {
+        isLoading.value = true;
+
         const response = await createCounsel(counsel);
-        alert('상담 일지가 성공적으로 등록되었습니다.');
-        console.log('서버 응답:', response.data);
-        // TODO: 등록 후 페이지 이동 or 초기화
+        const counselId = response.data.id;
+
+        if (!counselId) {
+            throw new Error('counselId가 서버 응답에 없습니다.');
+        }
+
+        // ✅ GPT 분석 요청: 약간의 딜레이를 두고 요청 -> 요청 성공 시 바로 넘어가게 수정
+        // setTimeout(async () => {
+        try {
+            await requestGptPrompt({
+                counselId,
+                messages: [
+                    {
+                        role: 'user',
+                        content: form.content,
+                    }
+                ]
+            }, { timeout: 120000 });  // 2분내로 답 안오면 에러 처리
+
+            console.log('✅ GPT 요청 성공');
+
+            // 분석 성공 시 상담 일지 페이지로 이동
+            router.push({
+                name: 'CounselingReport',
+                params: { counselId: String(counselId) },
+                query: {
+                    reportTitle: `${counseleeName} 상담일지`,
+                    reportDate: today,
+                    duration: `${paddedHour}시간 ${paddedMinute}분`,
+                    weather: form.weather,
+                    nextSchedule: form.nextDate,
+                    counselorComment: form.opinion,
+                }
+            });
+
+        } catch (err) {
+            console.warn('❌ GPT 요청 실패:', err);
+
+            const errorCode = err.response?.data?.code;
+
+            if (errorCode === 'ECONNABORTED') {
+                alert('GPT 분석 요청이 시간 초과되었습니다. 다시 시도해주세요.');
+            } else if (!err.response) {
+                alert('서버에 연결할 수 없습니다. 서버가 실행 중인지 확인해주세요.');
+            } else if (errorCode === 'INVALID_COUNSEL_CONTENT') {
+                alert(err.response.data.message);
+            } else if (errorCode === 'INVALID_JSON_FORMAT') {
+                alert(err.response.data.message);
+            } else {
+                alert('GPT 분석에 실패했습니다. 나중에 다시 시도해주세요.');
+            }
+        }
+        // }, 5000); // 1초 기다림
     } catch (error) {
         console.error('등록 실패:', error);
         alert('상담 일지 등록에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+        isLoading.value = false;
     }
 };
-
 
 const cancelForm = () => {
     if (confirm('정말 입력한 내용을 초기화하시겠습니까?')) {
@@ -217,12 +270,26 @@ const cancelForm = () => {
 }
 
 .form-group input,
-.form-group select,
+
 .form-group textarea {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid #ccc;
     border-radius: 8px;
+}
+
+.form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    appearance: none;
+    /* 크롬, 사파리 */
+    -webkit-appearance: none;
+    /* 사파리 */
+    -moz-appearance: none;
+    /* 파이어폭스 */
+    background: url('data:image/svg+xml;utf8,<svg fill="black" height="20" width="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 10px center;
 }
 
 .time-select {

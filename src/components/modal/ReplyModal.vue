@@ -61,6 +61,7 @@
   }
   
   // 전송
+  import { writeReply } from '../../api/diary/replyCommand'
   const sendReply = async () => {
     try {
       if (!title.value || !content.value) {
@@ -74,7 +75,7 @@
         diaryRecordId: props.diaryRecord?.id
       }
   
-      await axios.post('http://localhost:8080/api/v1/reply/writeReply', payload)
+      await writeReply(payload);
       alert('답장이 전송되었습니다!')
       closeModal()
     } catch (error) {

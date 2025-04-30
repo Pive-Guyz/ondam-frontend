@@ -48,11 +48,10 @@ const formattedCreatedAt = computed(() => {
   return diary.value.createdAt ? new Date(diary.value.createdAt).toLocaleDateString('ko-KR') : ''
 })
 
+import { fetchDiaryById } from '../../api/diary/diaryCommand'
 const fetchDiaryDetails = async () => {
   try {
-    const response = await axios.get(`http://localhost:8080/api/v1/diary/findDiaryById`, {
-      params: { id: props.diaryId }
-    })
+    const response = await fetchDiaryById(props.diaryId);
     diary.value = response.data
   } catch (error) {
     console.error('다이어리 상세 정보 불러오기 실패:', error)

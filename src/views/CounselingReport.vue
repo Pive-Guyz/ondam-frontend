@@ -8,7 +8,7 @@
                     <v-row align="center" justify="space-between" no-gutters>
                         <div>
                             <div class="text-h6 font-weight-bold mb-1" style="color: #344FA3;">
-                                {{ reportTitle }} 상담 일지
+                                {{ reportTitle }}
                             </div>
                             <div class="text-body-2" style="color: #8c8c8c;">
                                 {{ reportDate }}
@@ -18,7 +18,7 @@
                             <span class="text-subtitle-1 font-weight-regular mr-3" style="font-size: 16px;">
                                 {{ duration }} 소요
                             </span>
-                            <v-icon color="orange" size="55" class="ml-5">mdi-white-balance-sunny</v-icon>
+                            <v-icon :icon="weatherIcon" :color="weatherColor" size="55" class="ml-5" />
                         </div>
                     </v-row>
                 </v-card>
@@ -77,7 +77,9 @@
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
-import axios from 'axios';
+
+import { fetchCounselById } from '@/api/counsel/counselQuery';
+import { getAnalysisResult } from '@/api/analysis/analysisQuery'
 
 import SideBar from '@/components/common/SideBar.vue';
 import TroubleSummary from '@/components/analysis/TroubleSummary.vue';
@@ -87,8 +89,10 @@ import CounselSummary from '@/components/analysis/CounselSummary.vue';
 
 // 입력 페이지에서 넘겨줘야 할 것들
 defineProps({
+    counselId: String,
     reportTitle: String,
     reportDate: String,
+    weather: String,
     duration: String,
     nextSchedule: String,
     counselorComment: String
@@ -96,9 +100,16 @@ defineProps({
 
 const route = useRoute();
 const counselId = route.params.counselId;
+const reportTitle = route.query.reportTitle;
+const reportDate = route.query.reportDate;
+const duration = route.query.duration;
+const nextSchedule = route.query.nextSchedule;
+const counselorComment = route.query.counselorComment;
 
 // 상태 변수
 const data = ref(null);
+const weatherIcon = ref('');
+const weatherColor = ref('');
 const counselContent = ref('');
 const isExpanded = ref(false);
 const isContentOverflow = ref(false);
@@ -114,7 +125,7 @@ const toggleExpand = () => {
 
 const fetchAnalysisData = async () => {
     try {
-        const response = await axios.get(`http://localhost:8080/api/v1/analysis/${counselId}/analysis`);
+        const response = await getAnalysisResult(counselId);
         data.value = response.data;
     } catch (error) {
         console.error('Failed to fetch analysis data', error);
@@ -123,11 +134,33 @@ const fetchAnalysisData = async () => {
 
 const fetchCounselContent = async () => {
     try {
-        const response = await axios.get(`http://localhost:8080/api/v1/counsels/${counselId}`);
+        const response = await fetchCounselById(counselId);
         counselContent.value = response.data.content;
     } catch (error) {
         console.error('Failed to fetch counsel content', error);
     }
+};
+
+const checkWeather = () => {
+    const weather = (route.query.weather || '').toString().trim();
+
+    if (weather === '맑음') {
+        weatherIcon.value = 'mdi-white-balance-sunny';
+        weatherColor.value = '#FFC107'; // amber (노랑)
+    } else if (weather === '흐림') {
+        weatherIcon.value = 'mdi-weather-cloudy';
+        weatherColor.value = '#607D8B'; // blue-grey
+    } else if (weather === '비') {
+        weatherIcon.value = 'mdi-weather-pouring';
+        weatherColor.value = '#3F51B5'; // indigo
+    } else if (weather === '눈') {
+        weatherIcon.value = 'mdi-snowflake';
+        weatherColor.value = '#81D4FA'; // light-blue
+    } else {
+        weatherIcon.value = 'mdi-help-circle';
+        weatherColor.value = '#9E9E9E'; // grey
+    }
+
 };
 
 const checkContentOverflow = async () => {
@@ -143,7 +176,11 @@ const fetchData = async () => {
     checkContentOverflow();
 };
 
-onMounted(fetchData);
+onMounted(async () => {
+    await fetchData();
+    checkWeather();
+});
+
 </script>
 
 <style scoped>
