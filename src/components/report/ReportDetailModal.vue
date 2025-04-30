@@ -22,7 +22,7 @@
                 <v-btn color="primary" class="action-btn" @click="$emit('view')">
                     컨텐츠 보기
                 </v-btn>
-                <v-btn color="primary" class="action-btn" @click="handleApprove">
+                <v-btn color="primary" class="action-btn" @click="$emit('process')">
                     처리하기
                 </v-btn>
             </div>
@@ -41,6 +41,9 @@ const props = defineProps({
 const emit = defineEmits(['update:isOpen', 'view', 'refresh'])
 
 const handleApprove = async () => {
+    console.log('🧪 props.reportData:', props.reportData)
+    console.log('🧪 props.reportData.id:', props.reportData?.id)
+
     try {
         await approveReport(props.reportData.id)
         alert('신고가 승인되어 블라인드 처리되었습니다.')

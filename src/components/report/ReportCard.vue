@@ -102,6 +102,7 @@ async function openModal(row) {
     try {
         const res = await fetchReportDetail(row.raw.id)
         selectedReport.value = res.data
+        console.log(selectedReport.value)
         isDetailOpen.value = true
     } catch (e) {
         console.error('신고 상세 조회 실패', e)
@@ -114,10 +115,13 @@ function openProcessModal() {
     isProcessOpen.value = true
 }
 
+
 async function handleStatusSubmit(newStatusText) {
     if (selectedReport.value) {
         const statusCode = textToStatus(newStatusText)
-        const reportId = selectedReport.value.id
+        const reportId = selectedReport.value.reportId
+        console.log('reportId', reportId)
+        console.log('🧪 최종 reportId:', reportId)
         try {
             await updateReportStatus(reportId, statusCode)
             if (statusCode === 1) {
