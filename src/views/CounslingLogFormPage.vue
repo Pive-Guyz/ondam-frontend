@@ -1,4 +1,11 @@
 <template>
+    <v-dialog v-model="isLoading" persistent max-width="300">
+        <v-card class="pa-5" style="text-align: center;">
+            <v-progress-circular indeterminate color="primary" size="40" class="mb-3" />
+            <div>GPT 분석 중입니다. 잠시만 기다려주세요...</div>
+        </v-card>
+    </v-dialog>
+
     <div class="counseling-log-form container">
         <h2 class="page-title">상담 일지 입력 페이지</h2>
 
@@ -66,10 +73,11 @@
             </form>
         </div>
     </div>
+
 </template>
 
 <script setup>
-import { reactive } from 'vue';
+import { ref, reactive } from 'vue';
 import { createCounsel } from '@/api/counsel/counselCommand';
 import Counsel from '@/models/Counsel';
 import { useRouter, useRoute } from 'vue-router';
@@ -82,6 +90,8 @@ const counseleeId = Number(route.params.id);         // id param도 숫자로 �
 const counseleeName = route.query.counseleeName || '';
 const memberId = Number(route.query.memberId);       // ← 여기 Number()로 변환 필수
 const today = new Date().toISOString().split('T')[0];
+
+const isLoading = ref(false);
 
 const form = reactive({
     type: '',
@@ -144,6 +154,8 @@ const submitForm = async () => {
     }
 
     try {
+        isLoading.value = true;
+
         const response = await createCounsel(counsel);
         const counselId = response.data.id;
 
@@ -151,43 +163,56 @@ const submitForm = async () => {
             throw new Error('counselId가 서버 응답에 없습니다.');
         }
 
-        // ✅ GPT 분석 요청: 약간의 딜레이를 두고 요청
-        setTimeout(async () => {
-            try {
-                await requestGptPrompt({
-                    counselId,
-                    messages: [
-                        {
-                            role: 'user',
-                            content: `상담 기록 ID ${counselId}에 대해 분석을 시작해줘.`,
-                        }
-                    ]
-                });
-                console.log('✅ GPT 요청 성공');
-            } catch (err) {
-                console.warn('❌ GPT 요청 실패:', err);
-            }
-        }, 5000); // 1초 기다림
+        // ✅ GPT 분석 요청: 약간의 딜레이를 두고 요청 -> 요청 성공 시 바로 넘어가게 수정
+        // setTimeout(async () => {
+        try {
+            await requestGptPrompt({
+                counselId,
+                messages: [
+                    {
+                        role: 'user',
+                        content: form.content,
+                    }
+                ]
+            }, { timeout: 120000 });  // 2분내로 답 안오면 에러 처리
 
-        // ✅ 분석 기다리지 않고 리포트 페이지로 이동
-        router.push({
-            name: 'CounselingReport',
-            params: { counselId: String(counselId) },
-            query: {
-                reportTitle: `${counseleeName} 상담일지`,
-                reportDate: today,
-                duration: `${paddedHour}:${paddedMinute}`,
-                nextSchedule: form.nextDate,
-                counselorComment: form.opinion,
+            console.log('✅ GPT 요청 성공');
+
+            // 분석 성공 시 상담 일지 페이지로 이동
+            router.push({
+                name: 'CounselingReport',
+                params: { counselId: String(counselId) },
+                query: {
+                    reportTitle: `${counseleeName} 상담일지`,
+                    reportDate: today,
+                    duration: `${paddedHour}시간 ${paddedMinute}분`,
+                    weather: form.weather,
+                    nextSchedule: form.nextDate,
+                    counselorComment: form.opinion,
+                }
+            });
+
+        } catch (err) {
+            console.warn('❌ GPT 요청 실패:', err);
+            if (err.code === 'ECONNABORTED') {
+                alert('GPT 분석 요청이 시간 초과되었습니다. 다시 시도해주세요.');
+            } else if (err.code === 'INVALID_COUNSEL_CONTENT') {
+                alert(err.message);
+            } else if (err.code === 'INVALID_JSON_FORMAT') {
+                alert(err.message);
             }
-        });
+            else {
+                alert('GPT 분석에 실패했습니다. 나중에 다시 시도해주세요.');
+            }
+        }
+        // }, 5000); // 1초 기다림
     } catch (error) {
         console.error('등록 실패:', error);
         alert('상담 일지 등록에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+        isLoading.value = false;
     }
 };
-
-
 
 const cancelForm = () => {
     if (confirm('정말 입력한 내용을 초기화하시겠습니까?')) {

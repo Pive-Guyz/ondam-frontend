@@ -13,11 +13,6 @@ import MemberList from '../views/MemberList.vue'
 import ReportPage from '@/views/ReportPage.vue'
 
 
-// 상담 페이지
-import CounselingReport from '@/views/counsel/CounselingReport.vue';
-
-
-
 import MyReplyListPage from '../views/MyReplyListPage.vue'
 
 
@@ -42,15 +37,6 @@ const routes = [
 
   { path: '/MyPage', component: MyPage },
 
-  {
-    // 상담 일지 페이지
-    path: '/counsel/:counselId',
-    name: 'CounselingReport',
-    component: () => import('@/views/counsel/CounselingReport.vue'),
-    props: true
-  },
-
-
   { path: '/report', component: ReportPage },
   {
     path: '/counselees/:id/counsel-log',
@@ -58,6 +44,15 @@ const routes = [
     component: () => import('../views/CounslingLogFormPage.vue'),
     props: true
   },
+
+  {
+    // 상담 일지 페이지
+    path: '/counsel/:counselId',
+    name: 'CounselingReport',
+    component: () => import('../views/CounselingReport.vue'),
+    props: true
+  },
+
   {
     path: '/counselees/:id/logs',
     name: 'CounseleeCounselPage',
