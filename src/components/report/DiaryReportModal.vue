@@ -36,6 +36,7 @@
 import { ref, watch, onMounted } from 'vue'
 import api from '@/api/config/axios'
 import { useAuthStore } from '@/stores/auth'
+import { reportDiary } from '@/api/report/reportCommand'
 
 const props = defineProps({
     diaryId: Number,
@@ -57,7 +58,7 @@ const reasonOptions = ref([])
 
 const fetchReportCategories = async () => {
     try {
-        const res = await api.get('/report/report-category')
+        const res = await api.get('/api/v1/report/report-category')
         reasonOptions.value = res.data.map(cat => ({
             label: cat.name,
             value: cat.id
@@ -89,7 +90,7 @@ const submitReport = async () => {
     }
 
     try {
-        await api.post('/report/diary', {
+        await reportDiary({
             memberId: authStore.memberId,
             reportedMemberId: props.reportedMemberId,
             diaryId: props.diaryId,

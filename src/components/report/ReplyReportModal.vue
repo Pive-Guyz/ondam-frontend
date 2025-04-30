@@ -36,6 +36,7 @@
 import { ref, watch, onMounted } from 'vue'
 import api from '@/api/config/axios'
 import { useAuthStore } from '@/stores/auth'
+import { reportReply } from '@/api/report/reportCommand'
 
 const props = defineProps({
     replyId: Number,
@@ -58,7 +59,7 @@ const reasonOptions = ref([])
 
 const fetchReportCategories = async () => {
     try {
-        const res = await api.get('/report/report-category')
+        const res = await api.get('/api/v1/report/report-category')
         reasonOptions.value = res.data.map(cat => ({
             label: cat.name,
             value: cat.id
@@ -92,19 +93,11 @@ const submitReport = async () => {
         return
     }
 
-    console.log('[신고 요청]', {
-        memberId: authStore.memberId,
-        reportedMemberId: props.reportedMemberId,
-        replyId: props.replyId,
-        reportCategoryId: reason.value,
-        reason: content.value
-    })
-
     try {
-        await api.post('/report/reply', {
+        await reportReply({
             memberId: authStore.memberId,
             reportedMemberId: props.reportedMemberId,
-            replyId: props.replyId,
+            diaryId: props.diaryId,
             reportCategoryId: reason.value,
             reason: content.value
         })
@@ -112,7 +105,7 @@ const submitReport = async () => {
         alert('신고가 완료되었습니다.')
         close()
     } catch (err) {
-        console.error(err)
+        console.error('신고 실패:', err)
         alert('신고 중 오류가 발생했습니다.')
     }
 }
