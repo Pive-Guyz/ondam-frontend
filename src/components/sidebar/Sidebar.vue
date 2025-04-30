@@ -10,15 +10,19 @@
                 </div>
 
                 <v-list class="menu-list">
-                    <v-btn class="menu-item active" variant="text" to="/report">
-                        <v-icon class="menu-icon mr-2">mdi-bell-alert</v-icon>
-                        <span class="menu-title">신고 관리</span>
+                    <v-btn class="menu-item active" variant="text" to="/">
+                        <v-icon class="menu-icon mr-2">mdi-account</v-icon>
+                        <span class="menu-title">내담자 관리</span>
                     </v-btn>
-                    <v-btn class="menu-item" variant="text" to="/member-list">
-                        <v-icon class="menu-icon mr-2">mdi-account-outline</v-icon>
-                        <span class="menu-title">회원 관리</span>
+                    <v-btn class="menu-item" variant="text" to="/counsel">
+                        <v-icon class="menu-icon mr-2">mdi-clipboard-text</v-icon>
+                        <span class="menu-title">상담 일지</span>
                     </v-btn>
-                    <v-btn class="menu-item" variant="text" to="/admin-profile">
+                    <v-btn class="menu-item" variant="text" to="/diary">
+                        <v-icon class="menu-icon mr-2">mdi-book-open-variant</v-icon>
+                        <span class="menu-title">다이어리</span>
+                    </v-btn>
+                    <v-btn class="menu-item" variant="text" to="/member-profile">
                         <v-icon class="menu-icon mr-2">mdi-cog-outline</v-icon>
                         <span class="menu-title">프로필</span>
                     </v-btn>
@@ -32,7 +36,7 @@
                 </v-avatar>
                 <div class="profile-info">
                     <div class="name">Evano</div>
-                    <div class="role">Admin</div>
+                    <div class="role">General</div>
                 </div>
                 <v-icon>mdi-chevron-down</v-icon>
             </div>
