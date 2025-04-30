@@ -7,11 +7,10 @@
                     <div class="logo-text">ON:DAM</div>
                     <div class="modal-title">허위 신고 시 이용이 제한될 수 있습니다.</div>
                 </div>
-                <v-btn icon variant="text" size="small" class="close-btn" @click="$emit('update:isOpen', false)">
+                <v-btn icon variant="text" size="small" class="close-btn" @click="close">
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
             </div>
-
 
             <!-- 입력 필드 -->
             <v-text-field label="작성 시각" v-model="createdAt" readonly variant="outlined" density="comfortable"
@@ -33,8 +32,6 @@
     </v-dialog>
 </template>
 
-
-
 <script setup>
 import { ref, watch, onMounted } from 'vue'
 import api from '@/api/config/axios'
@@ -46,11 +43,12 @@ const props = defineProps({
     reportedMemberId: Number,
     modelValue: Boolean
 })
-const emit = defineEmits(['update:modelValue'])
+
+const emit = defineEmits(['update:modelValue']) // ✅ v-model 대응
 
 const isOpen = ref(props.modelValue)
 watch(() => props.modelValue, val => (isOpen.value = val))
-watch(isOpen, val => emit('update:modelValue', val))
+watch(isOpen, val => emit('update:modelValue', val)) // ✅ 연동
 
 const reason = ref('')
 const content = ref('')
@@ -70,15 +68,13 @@ const fetchReportCategories = async () => {
     }
 }
 
-onMounted(() => {
-    fetchReportCategories()
-})
+onMounted(fetchReportCategories)
 
 const close = () => {
     isOpen.value = false
 }
 
-const authStore = useAuthStore() // 🔸 Pinia 사용 시
+const authStore = useAuthStore()
 
 const submitReport = async () => {
     if (!reason.value) {
@@ -88,10 +84,8 @@ const submitReport = async () => {
 
     try {
         await api.post('/report/diary', {
-            // memberId: authStore.memberId, // 신고자
-            memberId: 1, // 🔥 임시 테스트용 ID (로그인 없이) 삭제 예정
-            // reportedMemberId: props.reportedMemberId, // 피신고자
-            reportedMemberId: 2,  // 🔥 임시 테스트용 ID (로그인 없이) 삭제 예정
+            memberId: authStore.memberId,
+            reportedMemberId: props.reportedMemberId,
             diaryId: props.diaryId,
             reportCategoryId: reason.value,
             reason: content.value
@@ -100,13 +94,13 @@ const submitReport = async () => {
         alert('신고가 완료되었습니다.')
         close()
     } catch (err) {
-        console.error(err)
+        console.error('신고 실패:', err)
         alert('신고 중 오류가 발생했습니다.')
     }
 }
 </script>
 
-<style>
+<style scoped>
 .logo-text {
     font-weight: 800;
     font-size: 20px;
