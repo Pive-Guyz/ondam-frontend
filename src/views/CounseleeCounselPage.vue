@@ -3,14 +3,21 @@
     <v-container class="py-10 px-5">
         <v-card>
             <!-- 상단: 뒤로가기 + 제목 -->
-            <v-row align="center" class="ml-4 mt-5">
-                <v-icon icon="mdi-arrow-left" size="32" style="cursor: pointer;" @click="goBack" />
+            <v-col>
+                <v-row class="ml-4 mt-5 align-center justify-space-between">
+                    <div class="d-flex align-center">
+                        <v-icon icon="mdi-arrow-left" size="32" style="cursor: pointer;" @click="goBack" />
+                        <h2 class="text-h5 font-weight-bold ml-2">
+                            {{ counseleeName }}님의 상담 기록
+                        </h2>
+                    </div>
 
-                <h2 class="text-h5 font-weight-bold ml-2">
-                    {{ counseleeName }}님의 상담 기록
-                </h2>
-            </v-row>
-
+                    <!-- 오른쪽 끝에 버튼 추가 -->
+                    <v-btn class="mr-4" color="primary" @click="goToCounselLogForm">
+                        상담서 작성
+                    </v-btn>
+                </v-row>
+            </v-col>
             <v-table class="mt-4">
                 <thead>
                     <tr>
@@ -24,7 +31,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(counsel, idx) in counsels" :key="counsel.id" style="cursor: pointer;">
+                    <tr v-for="(counsel, idx) in paginatedCounsels" :key="counsel.id" style="cursor: pointer;"
+                        @click="goToCounselingReport(counsel)">
                         <td>{{ (currentPage - 1) * itemsPerPage + idx + 1 }}</td>
                         <td>{{ formatDate(counsel.createdAt) }}</td>
                         <td>{{ counsel.counselType || '-' }}</td>
@@ -75,6 +83,7 @@ const router = useRouter();
 const counseleeName = ref(route.query.name || ''); // 쿼리에서 받아오기
 const counseleeId = route.params.id;
 const counsels = ref([]);
+const memberId = 1;
 
 const currentPage = ref(1);
 const itemsPerPage = 10;
@@ -110,6 +119,42 @@ const formatDate = (str) => {
 const shorten = (text, length = 10) => {
     if (!text) return '-';
     return text.length > length ? text.slice(0, length) + '...' : text;
+};
+
+const goToCounselLogForm = () => {
+    router.push({
+        name: 'CounselingLogFormPage',
+        params: { id: counseleeId },
+        query: {
+            counseleeName: String(counseleeName.value),  // ← 반드시 String으로 강제 변환
+            memberId: String(memberId),             // ← 이것도 마찬가지
+        },
+    });
+};
+
+const goToCounselingReport = (counsel) => {
+    if (!counsel) {
+        console.error('선택한 상담 데이터가 없습니다.');
+        return;
+    }
+
+    console.log(counseleeName.value);
+    console.log(formatDate(counsel.createdAt));
+    console.log(counsel.time);
+    console.log(formatDate(counsel.nextCreatedAt));
+    console.log(formatDate(counsel.opinion));
+
+    router.push({
+        name: 'CounselingReport',
+        params: { counselId: counsel.id }, // params로 넘기고
+        query: {
+            reportTitle: counseleeName.value,
+            reportDate: formatDate(counsel.createdAt),
+            duration: counsel.time,
+            nextSchedule: formatDate(counsel.nextCreatedAt),
+            counselorComment: counsel.opinion,
+        }
+    });
 };
 </script>
 
