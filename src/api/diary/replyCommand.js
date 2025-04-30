@@ -32,7 +32,7 @@ export const fetchReplyBySenderId = (senderId) => {
  * @param {Object} data - 답장 데이터 (title, content, diaryRecordId 포함)
  */
 export const writeReply = (data) => {
-    return axios.post('/reply/writeReply', data);
+    return axios.post('/api/v1/reply/writeReply', data);
   };
 
 /*
@@ -40,7 +40,7 @@ export const writeReply = (data) => {
 POST /api/v1/reply/deleteReply
  */
 export const deleteReply = (replyId) => {
-    return axios.delete('/reply/deleteReply', {
+    return axios.delete('/api/v1/reply/deleteReply', {
         params: { replyId },
     });
 }

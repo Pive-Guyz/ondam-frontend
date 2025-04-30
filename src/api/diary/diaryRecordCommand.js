@@ -5,7 +5,7 @@ import axios from '../config/axios';
  * GET /diaryRecord/findAllDiaryRecord
  */
 export const fetchAllDiaryRecords = () => {
-  return axios.get('/diaryRecord/findAllDiaryRecord');
+  return axios.get('/api/v1/diaryRecord/findAllDiaryRecord');
 };
 
 /**
@@ -14,7 +14,7 @@ export const fetchAllDiaryRecords = () => {
  * @param {number} id
  */
 export const fetchDiaryRecordById = (id) => {
-  return axios.get('/diaryRecord/findDiaryRecordById', {
+  return axios.get('/api/v1/diaryRecord/findDiaryRecordById', {
     params: { id }
   });
 };
@@ -25,7 +25,7 @@ export const fetchDiaryRecordById = (id) => {
  * @param {number} diaryId
  */
 export const fetchDiaryRecordsByDiaryId = (diaryId) => {
-  return axios.get('/diaryRecord/findDiaryRecordByDiaryId', {
+  return axios.get('/api/v1/diaryRecord/findDiaryRecordByDiaryId', {
     params: { diaryId }
   });
 };
@@ -36,7 +36,7 @@ export const fetchDiaryRecordsByDiaryId = (diaryId) => {
  * @param {number} receiverId
  */
 export const fetchDiaryRecordsByReceiverId = (receiverId) => {
-  return axios.get('/diaryRecord/findDiaryRecordByReceiverId', {
+  return axios.get('/api/v1/diaryRecord/findDiaryRecordByReceiverId', {
     params: { receiverId }
   });
 };
@@ -48,7 +48,7 @@ export const fetchDiaryRecordsByReceiverId = (receiverId) => {
  * @param {number} receiverId
  */
 export const fetchDiaryRecordByDiaryIdAndReceiverId = (diaryId, receiverId) => {
-  return axios.get('/diaryRecord/findDiaryRecordByDiaryIdAndReceiverId', {
+  return axios.get('/api/v1/diaryRecord/findDiaryRecordByDiaryIdAndReceiverId', {
     params: { diaryId, receiverId }
   });
 };
@@ -59,7 +59,7 @@ export const fetchDiaryRecordByDiaryIdAndReceiverId = (diaryId, receiverId) => {
  * @param {number} diaryId
  */
 export const sendDiary = (diaryId) => {
-  return axios.post('/diaryRecord/sendDiary', null, {
+  return axios.post('/api/v1/diaryRecord/sendDiary', null, {
     params: { diaryId }
   });
 };

@@ -89,7 +89,7 @@ const formatDate = (dateString) => {
 import { fetchDiariesByMemberId as fetchDiariesByMemberIdAPI } from '../api/diary/diaryCommand'
 const fetchDiaries = async () => {
   try {
-    const response = await axios.fetchDiariesByMemberIdAPI(authStore.memberId);
+    const response = await fetchDiariesByMemberIdAPI(authStore.memberId);
     diaryList.value = response.data
   } catch (error) {
     console.error('다이어리 조회 실패:', error)
