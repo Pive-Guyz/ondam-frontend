@@ -12,7 +12,7 @@ export const fetchReportDetail = (reportId) => {
 
 // 신고된 콘텐츠 조회 (일기 or 답장 본문)
 export const fetchReportContent = (reportId) => {
-    return api.get(`/api/v1/report/content/${reportId}`)
+    return axios.get(`/api/v1/report/content/${reportId}`)
 }
 
 // 신고 카테고리 목록

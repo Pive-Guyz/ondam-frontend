@@ -15,7 +15,7 @@
             <!-- 신고 정보 -->
             <v-text-field label="신고 당한 회원" :model-value="reportData?.reportedMemberName" readonly />
             <v-text-field label="신고 사유" :model-value="reportData?.reportCategoryName" readonly />
-            <v-textarea label="상세 내용" :model-value="reason" readonly />
+            <v-textarea label="상세 내용" :model-value="reportData?.reason" readonly />
 
             <!-- 버튼 -->
             <div class="d-flex justify-center" style="gap: 30px;">
@@ -31,9 +31,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
 import { approveReport } from '@/api/report/reportCommand'
-import { fetchReportContent } from '@/api/report/reportQuery'
 
 const props = defineProps({
     isOpen: Boolean,
@@ -42,21 +40,6 @@ const props = defineProps({
 
 const emit = defineEmits(['update:isOpen', 'view', 'refresh'])
 
-const reason = ref('')
-
-// 모달 열릴 때마다 신고 내용 조회
-watch(() => props.isOpen, async (opened) => {
-    if (opened && props.reportData?.id) {
-        try {
-            const res = await fetchReportContent(props.reportData.id)
-            reason.value = res.data.reason
-        } catch (e) {
-            console.error('신고 상세 내용 조회 실패', e)
-        }
-    }
-})
-
-// 블라인드 처리
 const handleApprove = async () => {
     try {
         await approveReport(props.reportData.id)
