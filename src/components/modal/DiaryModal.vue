@@ -70,6 +70,13 @@
             <button class="close-btn" @click="selectedReply = null">닫기</button>
           </div>
         </div>
+        <ReplyReportModal
+  v-if="selectedReply"
+  v-model="isReportModalOpen"
+  :reply-id="selectedReply.id"
+  :created-at="selectedReply.createdAt"
+  :reported-member-id="selectedReply.senderId"
+/>
       </div>
   </div>
   </div>
@@ -78,13 +85,13 @@
   <script setup>
     import { defineEmits, defineProps, ref, onMounted } from 'vue'
     import axios from 'axios'
+    import ReplyReportModal from '@/components/report/ReplyReportModal.vue'
+
+    const isReportModalOpen = ref(false) 
   
     const onReportReply = () => {
-      const confirmed = confirm('이 답장을 신고하시겠습니까?')
-      if (confirmed) {
-        alert('신고가 접수되었습니다. 검토 후 조치하겠습니다.')
-        // TODO: 이후 서버 신고 API 연동
-      }
+      console.log('[선택된 답장]', selectedReply.value)
+      isReportModalOpen.value = true
     }
 
   const props = defineProps({
