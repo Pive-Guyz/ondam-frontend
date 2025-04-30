@@ -39,20 +39,19 @@ import { useAuthStore } from '@/stores/auth'
 
 const props = defineProps({
     diaryId: Number,
-    createdAt: String,
     reportedMemberId: Number,
     modelValue: Boolean
 })
 
-const emit = defineEmits(['update:modelValue']) // ✅ v-model 대응
+const emit = defineEmits(['update:modelValue'])
 
 const isOpen = ref(props.modelValue)
 watch(() => props.modelValue, val => (isOpen.value = val))
-watch(isOpen, val => emit('update:modelValue', val)) // ✅ 연동
+watch(isOpen, val => emit('update:modelValue', val))
 
 const reason = ref('')
 const content = ref('')
-const createdAt = ref(props.createdAt)
+const createdAt = ref('')
 
 const reasonOptions = ref([])
 
@@ -68,11 +67,18 @@ const fetchReportCategories = async () => {
     }
 }
 
-onMounted(fetchReportCategories)
-
-const close = () => {
-    isOpen.value = false
+const getTodayFormatted = () => {
+    const today = new Date()
+    const year = today.getFullYear()
+    const month = today.getMonth() + 1
+    const day = today.getDate()
+    return `${year}. ${month}. ${day}`
 }
+
+onMounted(() => {
+    fetchReportCategories()
+    createdAt.value = getTodayFormatted()
+})
 
 const authStore = useAuthStore()
 
@@ -98,7 +104,12 @@ const submitReport = async () => {
         alert('신고 중 오류가 발생했습니다.')
     }
 }
+
+const close = () => {
+    isOpen.value = false
+}
 </script>
+
 
 <style scoped>
 .logo-text {

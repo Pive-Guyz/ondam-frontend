@@ -7,11 +7,10 @@
                     <div class="logo-text">ON:DAM</div>
                     <div class="modal-title">허위 신고 시 이용이 제한될 수 있습니다.</div>
                 </div>
-                <v-btn icon variant="text" size="small" class="close-btn" @click="$emit('update:isOpen', false)">
+                <v-btn icon variant="text" size="small" class="close-btn" @click="close">
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
             </div>
-
 
             <!-- 입력 필드 -->
             <v-text-field label="작성 시각" v-model="createdAt" readonly variant="outlined" density="comfortable"
@@ -33,8 +32,6 @@
     </v-dialog>
 </template>
 
-
-
 <script setup>
 import { ref, watch, onMounted } from 'vue'
 import api from '@/api/config/axios'
@@ -46,15 +43,16 @@ const props = defineProps({
     reportedMemberId: Number,
     modelValue: Boolean
 })
+
 const emit = defineEmits(['update:modelValue'])
 
 const isOpen = ref(props.modelValue)
 watch(() => props.modelValue, val => (isOpen.value = val))
-watch(isOpen, val => emit('update:modelValue', val))
+watch(isOpen, val => emit('update:modelValue', val)) // ✅ modelValue로 맞춰야 함
 
 const reason = ref('')
 const content = ref('')
-const createdAt = ref(props.createdAt)
+const createdAt = ref('')
 
 const reasonOptions = ref([])
 
@@ -70,15 +68,23 @@ const fetchReportCategories = async () => {
     }
 }
 
+const formatDate = (dateObj) => {
+    const year = dateObj.getFullYear()
+    const month = dateObj.getMonth() + 1
+    const day = dateObj.getDate()
+    return `${year}. ${month}. ${day}`
+}
+
 onMounted(() => {
     fetchReportCategories()
+    createdAt.value = formatDate(new Date())
 })
 
 const close = () => {
-    isOpen.value = false
+    isOpen.value = false // ✅ 이게 바뀌면 위 watch가 emit을 발생시킴
 }
 
-const authStore = useAuthStore() // 🔸 Pinia 사용 시
+const authStore = useAuthStore()
 
 const submitReport = async () => {
     if (!reason.value) {
@@ -86,12 +92,18 @@ const submitReport = async () => {
         return
     }
 
+    console.log('[신고 요청]', {
+        memberId: authStore.memberId,
+        reportedMemberId: props.reportedMemberId,
+        replyId: props.replyId,
+        reportCategoryId: reason.value,
+        reason: content.value
+    })
+
     try {
         await api.post('/report/reply', {
-            // memberId: authStore.memberId, // 신고자
-            memberId: 1, // 🔥 임시 테스트용 ID (로그인 없이) 삭제 예정
-            // reportedMemberId: props.reportedMemberId, // 피신고자
-            reportedMemberId: 2,  // 🔥 임시 테스트용 ID (로그인 없이) 삭제 예정
+            memberId: authStore.memberId,
+            reportedMemberId: props.reportedMemberId,
             replyId: props.replyId,
             reportCategoryId: reason.value,
             reason: content.value
@@ -106,7 +118,7 @@ const submitReport = async () => {
 }
 </script>
 
-<style>
+<style scoped>
 .logo-text {
     font-weight: 800;
     font-size: 20px;
