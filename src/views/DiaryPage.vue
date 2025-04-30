@@ -66,11 +66,11 @@ const onDiaryWritten = () => {
 }
 
 // 일기 삭제
+import { deleteDiary as deleteDiaryAPI } from '../api/diary/diaryCommand'
+
 const deleteDiary = async (diaryId) => {
   try {
-    await axios.delete('http://localhost:8080/api/v1/diary/deleteDiary', {
-      params: { id: diaryId }
-    })
+    await axios.deleteDiaryAPI(diaryId);
     diaryList.value = diaryList.value.filter(diary => diary.id !== diaryId)
     alert('일기가 삭제되었습니다😊')
     closeDiaryModal()
@@ -86,13 +86,10 @@ const formatDate = (dateString) => {
 }
 
 // 일기 조회
+import { fetchDiariesByMemberId as fetchDiariesByMemberIdAPI } from '../api/diary/diaryCommand'
 const fetchDiaries = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/api/v1/diary/findDiaryByMemberId', {
-      params: {
-        memberId: authStore.memberId,
-      },
-    })
+    const response = await axios.fetchDiariesByMemberIdAPI(authStore.memberId);
     diaryList.value = response.data
   } catch (error) {
     console.error('다이어리 조회 실패:', error)
