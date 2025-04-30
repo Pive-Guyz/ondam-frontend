@@ -59,6 +59,7 @@ const isProcessOpen = ref(false)
 const selectedReport = ref(null)
 const reports = ref([])
 onMounted(fetchReports)
+const emit = defineEmits(['update:isOpen', 'view', 'process'])
 
 const headers = ['신고한 회원', '신고당한 회원', '신고 사유', '작성 시각', '신고 유형', '처리 상태']
 const sortOptions = ['최근순', '오래된순']
@@ -98,7 +99,7 @@ const paginatedReports = computed(() => {
 })
 
 function openModal(row) {
-    selectedReport.value = row.raw
+    selectedReport.value = row.raw  // ✅ 반드시 .value로
     isDetailOpen.value = true
 }
 
