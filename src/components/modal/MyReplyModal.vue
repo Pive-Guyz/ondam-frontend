@@ -46,11 +46,11 @@
     return props.reply.createdAt ? new Date(props.reply.createdAt).toLocaleString() : ''
   })
   
+  // 답장 삭제
+  import { deleteReply as deleteReplyAPI } from '../../api/diary/replyCommand'
   const deleteReply = async () => {
     try {
-      await axios.delete('http://localhost:8080/api/v1/reply/deleteReply', {
-        params: { replyId: props.reply.id }
-      })
+      await deleteReplyAPI(props.reply.id);
       alert('답장이 삭제되었습니다.')
       emit('deleted', props.reply.id)
     } catch (error) {
