@@ -47,7 +47,7 @@
                         <td>{{ formatDate(item.createdAt) }}</td>
                         <td>{{ item.endDate ? formatDate(item.endDate) : 'N/A' }}</td>
                         <td>
-                            <v-btn size="small" @click.stop="writeCounsel(item.id)">
+                            <v-btn size="small" @click.stop="writeCounsel(item.id, item.name)">
                                 상담서 작성
                             </v-btn>
                         </td>
@@ -132,12 +132,20 @@ const resetSearch = async () => {
 };
 
 const handleRegister = () => {
-    alert('내담자 등록 페이지 이동 예정');
+    router.push({ name: 'CounseleeRegisterPage' });
 };
 
-const writeCounsel = (counseleeId) => {
-    alert(`상담서 작성 - 내담자 ID: ${counseleeId}`);
+const writeCounsel = (counseleeId, counseleeName) => {
+    router.push({
+        name: 'CounselingLogFormPage',
+        params: { id: counseleeId }, // path variable
+        query: {
+            counseleeName: String(counseleeName),
+            memberId: String(memberId),
+        },
+    });
 };
+
 
 const formatDate = (dateStr) => {
     return dateStr?.split('T')[0];
