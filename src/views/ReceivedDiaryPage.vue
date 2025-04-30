@@ -42,21 +42,18 @@ const receivedDiaryList = ref([])
 const selectedDiary = ref(null)
 
 // 받은 다이어리 목록 조회
+import { fetchDiaryRecordsByReceiverId } from '../api/diary/diaryRecordCommand'
+import { fetchDiaryById } from '../api/diary/diaryCommand'
 const fetchReceivedDiaries = async () => {
   try {
-    const response = await axios.get('http://localhost:8080/api/v1/diaryRecord/findDiaryRecordByReceiverId', {
-      params: { receiverId: authStore.memberId },
-    })
-
+    const response = await fetchDiaryRecordsByReceiverId(authStore.memberId);
+  
     const diaryRecords = response.data
 
     const diariesWithTitle = await Promise.all(
       diaryRecords.map(async (diaryRecord) => {
         try {
-          const diaryResponse = await axios.get(`http://localhost:8080/api/v1/diary/findDiaryById`, {
-            params: { id: diaryRecord.diaryId },
-          })
-
+          const diaryResponse = await fetchDiaryById(diaryRecord.diaryId);
           const diaryData = diaryResponse.data
 
           // 조건에 맞지 않으면 null 반환

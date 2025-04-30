@@ -28,20 +28,21 @@
   import MyReplyModal from '@/components/modal/MyReplyModal.vue'
   
   const authStore = useAuthStore()
-const replyList = ref([])
-const selectedReply = ref(null)
-const router = useRouter()
+  const replyList = ref([])
+  const selectedReply = ref(null)
+  const router = useRouter()
 
-const fetchReplies = async () => {
-  try {
-    const response = await axios.get('http://localhost:8080/api/v1/reply/findReplyBySenderId', {
-      params: { senderId: authStore.memberId }
-    })
-    replyList.value = response.data.filter(reply => !reply.deletedAt && reply.isBlinded !== 'Y')
-  } catch (error) {
-    console.error('답장 목록 불러오기 실패:', error)
+  
+  import { fetchReplyBySenderId } from '../api/diary/replyCommand'
+  const fetchReplies = async () => {
+    try {
+      const response = await fetchReplyBySenderId(authStore.memberId);
+
+      replyList.value = response.data.filter(reply => !reply.deletedAt && reply.isBlinded !== 'Y')
+    } catch (error) {
+      console.error('답장 목록 불러오기 실패:', error)
+    }
   }
-}
 
 const formatDate = (dateStr) => {
   return new Date(dateStr).toLocaleDateString()

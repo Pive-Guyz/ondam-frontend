@@ -104,11 +104,10 @@
   const selectedReply = ref(null) // 선택된 답장
 
     // diaryId를 사용하여 해당 일기의 답장 가져오기
+    import { fetchReplyByDiaryId } from '../../api/diary/replyCommand'
     const fetchReplies = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/v1/reply/findReplyByDiaryId`, {
-            params: { diaryId: props.diary.id } // diaryId를 쿼리 파라미터로 전송
-            })
+            const response = await fetchReplyByDiaryId(props.diary.id);
             replies.value = response.data // 답장 데이터 저장
         } catch (error) {
             console.error('답장 데이터를 불러오는 데 실패했습니다.', error)
