@@ -13,9 +13,9 @@
             </div>
 
             <!-- 신고 정보 -->
-            <v-text-field label="신고 당한 회원" :model-value="detailData.reportedMemberName" readonly />
-            <v-text-field label="신고 사유" :model-value="detailData.reportCategoryName" readonly />
-            <v-textarea label="상세 내용" :model-value="detailData.reason" readonly />
+            <v-text-field label="신고 당한 회원" :model-value="reportData?.reportedMemberName" readonly />
+            <v-text-field label="신고 사유" :model-value="reportData?.reportCategoryName" readonly />
+            <v-textarea label="상세 내용" :model-value="reason" readonly />
 
             <!-- 버튼 -->
             <div class="d-flex justify-center" style="gap: 30px;">
@@ -31,50 +31,38 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
-import { fetchReportDetail } from '@/api/report/reportQuery'
+import { ref, watch } from 'vue'
 import { approveReport } from '@/api/report/reportCommand'
+import { fetchReportContent } from '@/api/report/reportQuery'
 
 const props = defineProps({
     isOpen: Boolean,
     reportData: Object
 })
 
-const detail = ref(null)
-// ✅ 템플릿에서 쓸 때 computed로 감싸기
-const detailData = computed(() => detail.value || {})
+const emit = defineEmits(['update:isOpen', 'view', 'refresh'])
 
-watch(() => props.reportData, (val) => {
-    console.log('[🧩 reportData 변화]', val)
-})
+const reason = ref('')
 
-// 모달 처음 열릴 때
+// 모달 열릴 때마다 신고 내용 조회
 watch(() => props.isOpen, async (opened) => {
-    if (opened && props.reportData?.reportId) {
-        console.log('[📌 상세조회 시도]', props.reportData.reportId)
-        const res = await fetchReportDetail(props.reportData.reportId)
-        console.log('[📌 상세 조회 응답]', res.data)
-        detail.value = res.data
+    if (opened && props.reportData?.id) {
+        try {
+            const res = await fetchReportContent(props.reportData.id)
+            reason.value = res.data.reason
+        } catch (e) {
+            console.error('신고 상세 내용 조회 실패', e)
+        }
     }
 })
 
-// 모달 열려있는 상태에서 다른 신고 클릭한 경우
-watch(() => props.reportData, async (newData) => {
-    console.log('[🟡 reportData 변화]', newData)
-    if (props.isOpen && newData?.reportId) {
-        const res = await fetchReportDetail(newData.reportId)
-        console.log('[🟢 상세 조회 응답]', res.data)
-        detail.value = res.data
-    }
-})
-
-// ✅ 블라인드 처리 함수
+// 블라인드 처리
 const handleApprove = async () => {
     try {
-        await approveReport(props.reportData.reportId)
+        await approveReport(props.reportData.id)
         alert('신고가 승인되어 블라인드 처리되었습니다.')
         emit('update:isOpen', false)
-        emit('refresh') // 리스트 갱신 트리거
+        emit('refresh')
     } catch (err) {
         console.error('신고 승인 실패', err)
         alert('처리 중 오류가 발생했습니다.')
@@ -83,7 +71,6 @@ const handleApprove = async () => {
 </script>
 
 <style scoped>
-/* 네가 올린 스타일 그대로 사용 */
 .modal-card {
     border-radius: 16px;
 }

@@ -17,15 +17,13 @@
         </v-row>
 
         <!-- 리스트 테이블 -->
-        <List :headers="headers" :items="paginatedReports.map(({ raw, ...visible }) => ({ ...visible, raw }))"
-            @row-click="openModal">
-            <template #status="{ value }">
-                <v-chip :class="statusClass(value)" class="status-chip" variant="tonal" size="small">
+        <List :headers="headers" :items="paginatedReports" @row-click="openModal">
+            <template #처리 상태="{ value }">
+                <v-chip :class="['status-chip', statusClass(value)]" variant="tonal" size="small">
                     {{ value }}
                 </v-chip>
             </template>
         </List>
-
 
         <!-- 상세 모달 -->
         <ReportDetailModal v-model:isOpen="isDetailOpen" :reportData="selectedReport" @view="handleView"
@@ -75,14 +73,13 @@ async function fetchReports() {
         const res = await fetchReportList({ status: statusCode, order })
         console.log('신고목록 res:', res.data)
         reports.value = res.data.map(r => ({
-            id: r.id, // ✅ 반드시 포함해줘야 함
-            reporter: r.reporterName,
-            reported: r.reportedMemberName,
-            reason: r.reportCategoryName,
-            date: r.createdAt.slice(0, 16).replace('T', ' '),
-            type: r.diaryId != null ? `일기 #${r.diaryId}` : `답장 #${r.replyId}`,
-            status: statusToText(r.status),
-            raw: { ...r, id: r.id } // 나중에 상세조회용으로 사용
+            '신고한 회원': r.reporterName,
+            '신고당한 회원': r.reportedMemberName,
+            '신고 사유': r.reportCategoryName,
+            '작성 시각': r.createdAt.slice(0, 16).replace('T', ' '),
+            '신고 유형': r.diaryId != null ? `일기 #${r.diaryId}` : `답장 #${r.replyId}`,
+            '처리 상태': statusToText(r.status),
+            raw: r
         }))
     } catch (e) {
         console.error('신고 목록 조회 실패', e)
@@ -152,10 +149,10 @@ function handleView() {
 
 function statusClass(status) {
     switch (status) {
-        case 'Pending': return 'status-chip pending'
-        case 'Approved': return 'status-chip approved'
-        case 'Rejected': return 'status-chip rejected'
-        default: return 'status-chip'
+        case 'Pending': return 'pending';
+        case 'Approved': return 'approved';
+        case 'Rejected': return 'rejected';
+        default: return '';
     }
 }
 </script>
@@ -167,7 +164,7 @@ function statusClass(status) {
     margin-bottom: 24px;
 }
 
-.status-chip {
+::v-deep .status-chip {
     border-width: 2px;
     font-weight: 500;
     width: 90px;
@@ -175,21 +172,18 @@ function statusClass(status) {
     border-radius: 999px;
 }
 
-.status-chip.pending {
-    color: #6366F1;
-    background-color: #E0E7FF;
-    border: 1px solid #6366F1;
+::v-deep .status-chip.pending {
+    color: #6366F1 !important;
+    background-color: #E0E7FF !important;
 }
 
-.status-chip.approved {
-    color: #FF5252;
-    background-color: #FFE5E5;
-    border: 1px solid #FF5252;
+::v-deep .status-chip.approved {
+    color: #FF5252 !important;
+    background-color: #FFE5E5 !important;
 }
 
-.status-chip.rejected {
-    color: #757575;
-    background-color: #EEEEEE;
-    border: 1px solid #BDBDBD;
+::v-deep .status-chip.rejected {
+    color: #757575 !important;
+    background-color: #EEEEEE !important;
 }
 </style>

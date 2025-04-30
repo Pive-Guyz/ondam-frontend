@@ -1,16 +1,24 @@
-import api from '@/api/config/axios'
+import axios from '../config/axios'
 
-const API_BASE = '/api/v1/report'
+// 일기 신고 등록
+export const reportDiary = (data) => {
+    return axios.post('/api/v1/report/diary', data)
+}
 
-// 신고 상태 변경
+// 답장 신고 등록
+export const reportReply = (data) => {
+    return axios.post('/api/v1/report/reply', data)
+}
+
+// 신고 상태 수정
 export const updateReportStatus = (reportId, status) => {
-    return api.put(`${API_BASE}/status`, {
+    return axios.put('/api/v1/report/status', {
         reportId,
         status
     })
 }
 
-// 블라인드 처리 API
+// 블라인드 처리 (승인 시)
 export const approveReport = (reportId) => {
-    return api.put(`${API_BASE}/approve/${reportId}`)
+    return axios.put(`/api/v1/report/approve/${reportId}`)
 }
