@@ -79,7 +79,7 @@ import { ref, computed, onMounted, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 
-import SideBar from '@/components/common/SideBar.vue';
+import SideBar from '@/components/common/Sidebar.vue';
 import TroubleSummary from '@/components/analysis/TroubleSummary.vue';
 import EmotionAnalysis from '@/components/analysis/EmotionAnalysis.vue';
 import EffectiveStatement from '@/components/analysis/EffectiveStatement.vue';
