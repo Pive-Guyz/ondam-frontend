@@ -77,7 +77,9 @@
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
-import axios from 'axios';
+
+import { fetchCounselById } from '@/api/counsel/counselQuery';
+import { getAnalysisResult } from '@/api/analysis/analysisQuery'
 
 import SideBar from '@/components/common/SideBar.vue';
 import TroubleSummary from '@/components/analysis/TroubleSummary.vue';
@@ -123,7 +125,7 @@ const toggleExpand = () => {
 
 const fetchAnalysisData = async () => {
     try {
-        const response = await axios.get(`http://localhost:8080/api/v1/analysis/${counselId}/analysis`);
+        const response = await getAnalysisResult(counselId);
         data.value = response.data;
     } catch (error) {
         console.error('Failed to fetch analysis data', error);
@@ -132,7 +134,7 @@ const fetchAnalysisData = async () => {
 
 const fetchCounselContent = async () => {
     try {
-        const response = await axios.get(`http://localhost:8080/api/v1/counsels/${counselId}`);
+        const response = await fetchCounselById(counselId);
         counselContent.value = response.data.content;
     } catch (error) {
         console.error('Failed to fetch counsel content', error);
