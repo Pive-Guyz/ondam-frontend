@@ -10,19 +10,19 @@
                 </div>
 
                 <v-list class="menu-list">
-                    <v-btn class="menu-item active" variant="text" to="/">
+                    <v-btn class="menu-item" :class="{ active: route.path.startsWith('/counselees') }" variant="text"
+                        to="/counselees">
                         <v-icon class="menu-icon mr-2">mdi-account</v-icon>
                         <span class="menu-title">내담자 관리</span>
                     </v-btn>
-                    <v-btn class="menu-item" variant="text" to="/counsel">
-                        <v-icon class="menu-icon mr-2">mdi-clipboard-text</v-icon>
-                        <span class="menu-title">상담 일지</span>
-                    </v-btn>
-                    <v-btn class="menu-item" variant="text" to="/diary">
+
+                    <v-btn class="menu-item" :class="{ active: route.path.startsWith('/diary') }" variant="text"
+                        to="/diary">
                         <v-icon class="menu-icon mr-2">mdi-book-open-variant</v-icon>
                         <span class="menu-title">다이어리</span>
                     </v-btn>
-                    <v-btn class="menu-item" variant="text" to="/member-profile">
+
+                    <v-btn class="menu-item" :class="{ active: route.path === '/mypage' }" variant="text" to="/mypage">
                         <v-icon class="menu-icon mr-2">mdi-cog-outline</v-icon>
                         <span class="menu-title">프로필</span>
                     </v-btn>
@@ -46,6 +46,9 @@
 </template>
 
 <script setup>
+    import {useRoute} from 'vue-router'
+
+    const route = useRoute()
 </script>
 
 <style scoped>
