@@ -194,14 +194,18 @@ const submitForm = async () => {
 
         } catch (err) {
             console.warn('❌ GPT 요청 실패:', err);
-            if (err.code === 'ECONNABORTED') {
+
+            const errorCode = err.response?.data?.code;
+
+            if (errorCode === 'ECONNABORTED') {
                 alert('GPT 분석 요청이 시간 초과되었습니다. 다시 시도해주세요.');
-            } else if (err.code === 'INVALID_COUNSEL_CONTENT') {
-                alert(err.message);
-            } else if (err.code === 'INVALID_JSON_FORMAT') {
-                alert(err.message);
-            }
-            else {
+            } else if (!err.response) {
+                alert('서버에 연결할 수 없습니다. 서버가 실행 중인지 확인해주세요.');
+            } else if (errorCode === 'INVALID_COUNSEL_CONTENT') {
+                alert(err.response.data.message);
+            } else if (errorCode === 'INVALID_JSON_FORMAT') {
+                alert(err.response.data.message);
+            } else {
                 alert('GPT 분석에 실패했습니다. 나중에 다시 시도해주세요.');
             }
         }
@@ -266,12 +270,26 @@ const cancelForm = () => {
 }
 
 .form-group input,
-.form-group select,
+
 .form-group textarea {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid #ccc;
     border-radius: 8px;
+}
+
+.form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    appearance: none;
+    /* 크롬, 사파리 */
+    -webkit-appearance: none;
+    /* 사파리 */
+    -moz-appearance: none;
+    /* 파이어폭스 */
+    background: url('data:image/svg+xml;utf8,<svg fill="black" height="20" width="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 10px center;
 }
 
 .time-select {
