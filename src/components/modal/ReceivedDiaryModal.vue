@@ -1,28 +1,49 @@
 <template>
   <v-dialog v-model="isModalOpen" max-width="600px" scrollable>
     <v-card class="modal-card">
-      <v-card-title class="modal-header">
-        <span class="modal-title">{{ diary.title }}</span>
+      <div class="modal-header">
+        <h2 class="modal-title">Today’s Diary</h2>
         <v-spacer></v-spacer>
         <v-btn class="report-btn" @click="onReport">🚩 신고하기</v-btn>
-      </v-card-title>
+      </div>
 
-      <div class="divider"></div>
+      <div class="modal-inputs">
+        <v-text-field
+          label="오늘의 제목~"
+          :model-value="diary.title"
+          readonly
+          hide-details
+          class="input-title"
+        />
+        <v-text-field
+          label="날짜"
+          :model-value="formattedCreatedAt"
+          readonly
+          hide-details
+          class="input-date"
+        />
+      </div>
 
       <v-card-text class="modal-content">
-        <p class="diary-content">{{ diary.content }}</p>
-        <p class="created-at">🕒 작성일: {{ formattedCreatedAt }}</p>
+        <v-textarea
+          class="diary-textarea"
+          auto-grow
+          :model-value="diary.content"
+          readonly
+          hide-details
+        />
       </v-card-text>
 
       <v-card-actions class="modal-actions">
         <v-btn @click="() => openReplyModal(props.diary)" color="primary" class="action-btn">답장하기</v-btn>
-        <v-btn @click="closeModal" color="grey" class="action-btn">닫기</v-btn>
+        <v-btn @click="closeModal" color="black" class="action-btn">닫기</v-btn>
       </v-card-actions>
     </v-card>
 
     <ReplyModal v-model="showReplyModal" :diaryRecord="selectedDiaryRecord" />
   </v-dialog>
 </template>
+
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
@@ -88,71 +109,75 @@ onMounted(() => {
 </script>
 
 <style scoped>
+
 .modal-card {
-  background-color: #f9fafc;
+  background-color: #ffffff;
   font-family: 'Roboto', sans-serif;
+  padding: 20px;
+  border-radius: 12px;
 }
 
 .modal-header {
-  background-color: #0277bd;
-  color: white;
-  font-weight: bold;
-  padding: 20px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  padding-bottom: 10px;
 }
 
 .modal-title {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #1f1f1f;
 }
 
 .report-btn {
   background-color: #ffe5e5;
   color: #d33;
-  border: none;
-  padding: 6px 12px;
   border-radius: 6px;
   font-size: 14px;
   font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
   text-transform: none;
+  padding: 6px 12px;
 }
 
 .report-btn:hover {
   background-color: #ffd6d6;
 }
 
-.divider {
-  width: 40%;
-  height: 2px;
-  background-color: #dbe0e6;
-  margin: 10px auto;
+.modal-inputs {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.input-title,
+.input-date {
+  flex: 1;
 }
 
 .modal-content {
-  padding: 24px;
+  padding: 0;
 }
 
-.diary-content {
+.diary-textarea {
+  width: 100%;
+  min-height: 200px;
   font-size: 16px;
-  margin-bottom: 20px;
   white-space: pre-wrap;
-}
-
-.created-at {
-  font-size: 14px;
-  color: #888;
+  background-color: #f9f9f9;
 }
 
 .modal-actions {
   display: flex;
-  justify-content: flex-end;
-  padding: 16px;
+  justify-content: center;
+  gap: 16px;
+  padding-top: 20px;
 }
 
 .action-btn {
-  margin-left: 10px;
   text-transform: none;
+  min-width: 120px;
+  background-color: #33e6b2;
 }
 </style>
