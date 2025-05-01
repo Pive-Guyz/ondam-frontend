@@ -1,11 +1,16 @@
 <template>
+  <div class="admin-page-container">
+    <!-- ✅ 왼쪽 사이드바 -->
+    <AdminSidebar />
+
+    <!-- ✅ 오른쪽 본문 -->
     <div class="page-container">
       <div class="mypage-container">
         <!-- 프로필 이미지 -->
         <div class="profile-image-section">
           <img class="profile-image" :src="profileImageUrl" alt="프로필 이미지" />
         </div>
-  
+
         <!-- 정보 수정 폼 -->
         <div class="profile-info-section">
           <div class="form-rows">
@@ -19,7 +24,7 @@
                 <input v-model="form.password" type="password" />
               </div>
             </div>
-  
+
             <div class="form-row">
               <div class="form-group">
                 <label>이메일</label>
@@ -30,7 +35,7 @@
                 <input v-model="form.birthday" type="text" />
               </div>
             </div>
-  
+
             <div class="form-row">
               <div class="form-group">
                 <label>전화번호</label>
@@ -41,7 +46,7 @@
                 <input v-model="form.address" type="text" />
               </div>
             </div>
-  
+
             <div class="form-row">
               <div class="form-group">
                 <label>가입일</label>
@@ -53,7 +58,7 @@
               </div>
             </div>
           </div>
-  
+
           <!-- 저장 버튼 -->
           <div class="save-btn-wrapper">
             <button class="save-btn" @click="save">저장</button>
@@ -61,117 +66,125 @@
         </div>
       </div>
     </div>
-  </template>
-  
-  <script setup>
-  import { ref } from 'vue'
-  
-  const profileImageUrl = ref('https://via.placeholder.com/150')
-  
-  const form = ref({
-    name: '서정훈',
-    password: '********',
-    email: 'charlenereed@gmail.com',
-    phone: '01026437581',
-    birthday: '19971216',
-    address: '연희동',
-    authority: '관리자',
-    createdAt: '2025-04-24'
-  })
-  
-  const save = () => {
-    console.log('저장된 데이터:', form.value)
-  }
-  </script>
-  
-  <style scoped>
-  .page-container {
-    background-color: #f7f9fc;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    padding-top: 200px;
-    padding-bottom: 480px;
-  }
-  
-  .mypage-container {
-    display: flex;
-    background: white;
-    padding: 30px 30px 20px;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-    width: fit-content;
-    max-width: 1100px;
-    gap: 32px;
-    align-items: flex-start;
-  }
-  
-  .profile-image-section {
-    flex-shrink: 0;
-    display: flex;
-    align-items: flex-start;
-  }
-  
-  .profile-image {
-    width: 140px;
-    height: 170px;
-    object-fit: cover;
-    border-radius: 10px;
-    border: 2px solid #3c8df3;
-  }
-  
-  .profile-info-section {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .form-rows {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-  }
-  
-  .form-row {
-    display: flex;
-    gap: 60px;
-  }
-  
-  .form-group {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .form-group label {
-    margin-bottom: 6px;
-    font-weight: bold;
-    color: #2c3e50;
-  }
-  
-  .form-group input {
-    padding: 10px;
-    border: 2px solid #3c8df3;
-    border-radius: 8px;
-    font-size: 14px;
-  }
-  
-  .save-btn-wrapper {
-    text-align: right;
-    margin-top: 16px;
-  }
-  
-  .save-btn {
-    background-color: #3c8df3;
-    color: white;
-    padding: 10px 24px;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    cursor: pointer;
-  }
-  
-  .save-btn:hover {
-    background-color: #2f76ce;
-  }
-  </style>
-  
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import AdminSidebar from '@/components/sidebar/AdminSidebar.vue' // 사이드푸터 컴포넌트
+
+const profileImageUrl = ref('https://via.placeholder.com/150')
+
+const form = ref({
+  name: '서정훈',
+  password: '********',
+  email: 'charlenereed@gmail.com',
+  phone: '01026437581',
+  birthday: '19971216',
+  address: '연희동',
+  authority: '관리자',
+  createdAt: '2025-04-24'
+})
+
+const save = () => {
+  console.log('저장된 데이터:', form.value)
+}
+</script>
+
+<style scoped>
+/* ✅ 전체 레이아웃 */
+.admin-page-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ✅ 오른쪽 본문 영역 */
+.page-container {
+  flex: 1;
+  background-color: #f7f9fc;
+  display: flex;
+  justify-content: center;
+  padding-top: 200px;
+  padding-bottom: 480px;
+}
+
+.mypage-container {
+  display: flex;
+  background: white;
+  padding: 30px 30px 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  width: fit-content;
+  max-width: 1100px;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.profile-image-section {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+}
+
+.profile-image {
+  width: 140px;
+  height: 170px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid #3c8df3;
+}
+
+.profile-info-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.form-row {
+  display: flex;
+  gap: 60px;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 6px;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.form-group input {
+  padding: 10px;
+  border: 2px solid #3c8df3;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.save-btn-wrapper {
+  text-align: right;
+  margin-top: 16px;
+}
+
+.save-btn {
+  background-color: #3c8df3;
+  color: white;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background-color: #2f76ce;
+}
+</style>
