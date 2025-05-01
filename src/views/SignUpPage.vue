@@ -1,51 +1,60 @@
 <template>
-  <div class="page-container">
-    <div class="signup-box">
-      <h2 class="title">회원가입</h2>
+  <div>
+    <Header />
 
-      <div class="form-group">
-        <label>이름</label>
-        <input v-model="form.name" type="text" />
+    <div class="page-container">
+      <div class="signup-box">
+        <h2 class="title">회원가입</h2>
+
+        <div class="form-group">
+          <label>이름</label>
+          <input v-model="form.name" type="text" />
+        </div>
+
+        <div class="form-group">
+          <label>이메일</label>
+          <input v-model="form.email" type="email" />
+        </div>
+
+        <div class="form-group">
+          <label>비밀번호</label>
+          <input v-model="form.password" type="password" />
+        </div>
+
+        <div class="form-group">
+          <label>비밀번호 확인</label>
+          <input v-model="form.passwordConfirm" type="password" />
+        </div>
+
+        <div class="form-group">
+          <label>생년월일</label>
+          <input v-model="form.birthday" type="date" />
+        </div>
+
+        <div class="form-group">
+          <label>전화번호</label>
+          <input v-model="form.phone" type="tel" />
+        </div>
+
+        <button class="signup-btn" @click="signup">가입하기</button>
       </div>
 
-      <div class="form-group">
-        <label>이메일</label>
-        <input v-model="form.email" type="email" />
-      </div>
-
-      <div class="form-group">
-        <label>비밀번호</label>
-        <input v-model="form.password" type="password" />
-      </div>
-
-      <div class="form-group">
-        <label>비밀번호 확인</label>
-        <input v-model="form.passwordConfirm" type="password" />
-      </div>
-
-      <div class="form-group">
-        <label>생년월일</label>
-        <input v-model="form.birthday" type="date" />
-      </div>
-
-      <div class="form-group">
-        <label>전화번호</label>
-        <input v-model="form.phone" type="tel" />
-      </div>
-
-      <button class="signup-btn" @click="signup">가입하기</button>
+      <!-- 회원가입 완료 모달 -->
+      <CompleteModal v-if="showModal" @close="closeModalAndRedirect" />
     </div>
 
-    <!-- ✅ 회원가입 완료 모달 -->
-    <CompleteModal v-if="showModal" @close="closeModalAndRedirect" />
+    <Footer />
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import CompleteModal from '@/components/member/SignupModal.vue' // 🛑 경로 확인!
-import { registerMember } from '@/api/member/memberCommand'
+import CompleteModal from '@/components/member/SignupModal.vue'
+
+// 헤더/푸터
+import Header from '../components/Header.vue'
+import Footer from '../components/Footer.vue'
 
 const router = useRouter()
 const showModal = ref(false)
@@ -59,47 +68,27 @@ const form = ref({
   phone: '',
 })
 
-const signup = async () => {
+const signup = () => {
   if (form.value.password !== form.value.passwordConfirm) {
     alert('비밀번호가 일치하지 않습니다.')
     return
   }
 
-  try {
-    // API 요청 데이터 구성
-    const memberData = {
-      name: form.value.name,
-      email: form.value.email,
-      password: form.value.password,
-      birthday: form.value.birthday,
-      phone: form.value.phone
-    }
-
-    // 회원가입 요청
-    const res = await registerMember(memberData)
-
-    console.log('회원가입 성공:', res.data)
-    showModal.value = true  // 모달 열기
-  } catch (error) {
-    console.error('회원가입 실패:', error)
-    if (error.response?.status === 409) {
-      alert('이미 가입된 이메일입니다.')
-    } else {
-      alert('회원가입 중 오류가 발생했습니다.')
-    }
-  }
+  // 실제로는 axios.post 등으로 백엔드 연동
+  console.log('회원가입 정보:', form.value)
+  showModal.value = true
 }
 
 const closeModalAndRedirect = () => {
   showModal.value = false
-  router.push('/') // ✅ 로그인/시작 페이지로 이동
+  router.push('/')
 }
 </script>
 
 <style scoped>
 .page-container {
   background-color: #f7f9fc;
-  height: 100vh;
+  min-height: 80vh;
   display: flex;
   justify-content: center;
   align-items: center;
