@@ -1,5 +1,8 @@
 <template>
   <v-app class="main-background">
+
+    <MemberSidebar /> <!-- 사이드바 추가 -->
+
     <v-container class="fill-height d-flex justify-center align-center">
       <v-card class="pa-6 rounded-xl" max-width="1000" height="90vh" elevation="3">
         <!-- 제목 영역 -->
@@ -48,7 +51,7 @@
         </v-row>
 
         <!-- 모달 -->
-        <DiaryModal v-if="selectedDiary" :diary="selectedDiary" @close="closeDiaryModal" />
+        <DiaryModal v-if="selectedDiary" :diary="selectedDiary" @close="closeDiaryModal" @delete="deleteDiary" />
         <WriteDiaryModal v-if="showWriteDiaryModal" @close="closeWriteDiaryModal" @writeDiary="fetchDiaries" />
       </v-card>
     </v-container>
@@ -63,6 +66,7 @@ import DiaryModal from '@/components/modal/DiaryModal.vue'
 import WriteDiaryModal from '@/components/modal/WriteDiaryModal.vue'
 import { fetchDiariesByMemberId as fetchDiariesByMemberIdAPI, deleteDiary as deleteDiaryAPI } from '@/api/diary/diaryCommand'
 import pencilMan from '@/assets/img/pencilMan.jpeg'
+import MemberSidebar from '@/components/sidebar/MemberSidebar.vue'
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -92,9 +96,9 @@ const fetchDiaries = async () => {
 
 const deleteDiary = async (diaryId) => {
   try {
-    await deleteDiaryAPI(diaryId)
-    diaryList.value = diaryList.value.filter(d => d.id !== diaryId)
-    closeDiaryModal()
+      await deleteDiaryAPI(diaryId)
+      diaryList.value = diaryList.value.filter(d => d.id !== diaryId)
+      closeDiaryModal()
   } catch (e) {
     console.error('삭제 실패:', e)
   }

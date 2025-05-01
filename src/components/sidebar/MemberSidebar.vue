@@ -5,8 +5,7 @@
             <!-- 위쪽 (로고 + 메뉴) -->
             <div class="top-area">
                 <div class="logo-box">
-                    <!-- <img src="@/assets/img/logo/logo.png" alt="ON:DAM 로고" class="logo-image" /> -->
-                    <!-- <span class="logo-text">ON:DAM</span> -->
+                    <span class="logo-text">ON:DAM</span>
                 </div>
 
                 <v-list class="menu-list">
@@ -32,11 +31,11 @@
             <!-- 아래쪽 (프로필) -->
             <!-- <div class="profile-card">
                 <v-avatar size="40">
-                    <!-- <img src="@/assets/img/profile/counselorProfile.png" alt="프로필" /> -->
-                <!-- </v-avatar>
+                    <img :src="profileImage" alt="프로필" />
+                </v-avatar>
                 <div class="profile-info">
-                    <div class="name">Evano</div>
-                    <div class="role">General</div>
+                    <div class="name">{{ auth.name }} 님</div>
+                    <div class="role">{{ auth.authority }}</div>
                 </div>
                 <v-icon>mdi-chevron-down</v-icon>
             </div> -->
@@ -46,9 +45,31 @@
 </template>
 
 <script setup>
-    import {useRoute} from 'vue-router'
+import { useRoute } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import { fetchMemberById } from '@/api/member/memberQuery'
+import { onMounted } from 'vue'
 
-    const route = useRoute()
+const route = useRoute()
+
+// ✅ 로그인 정보 가져오기
+const auth = useAuthStore()
+
+// 프로필 이미지 (임시로 지정 or 나중에 auth에 추가해도 됨)
+const profileImage = '/src/assets/img/profile/counselorProfile.png'
+
+onMounted(async () => {
+    if (auth.isLogin && !auth.name) {
+        try {
+            const res = await fetchMemberById(auth.memberId)
+            const member = res.data
+            auth.name = member.name
+            auth.authority = member.authority
+        } catch (err) {
+            console.error('사이드바 사용자 정보 불러오기 실패', err)
+        }
+    }
+})
 </script>
 
 <style scoped>
@@ -74,10 +95,6 @@
     margin-top: 20px;
     margin-bottom: 32px;
     padding-left: 20px;
-}
-
-.logo-image {
-    width: 44px;
 }
 
 .logo-text {

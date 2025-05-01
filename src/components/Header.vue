@@ -1,60 +1,80 @@
 <template>
     <v-app-bar app flat color="white">
         <v-container class="d-flex align-center justify-space-between">
+
             <!-- 왼쪽 로고 + 메뉴 -->
             <div class="d-flex align-center">
                 <img src="@/assets/img/logo/logo.png" alt="ON:DAM 로고" class="logo" />
                 <span class="ml-2 font-weight-bold logo-text">ON:DAM</span>
 
-                <!-- 메뉴 박스 (온:담이란, 기능소개) -->
                 <div class="d-flex align-center ml-10">
                     <v-btn text color="#2d2d5a" class="menu-btn">온:담이란?</v-btn>
                     <v-btn text color="#2d2d5a" class="menu-btn" @click="onScrollToFeature">기능 소개</v-btn>
                 </div>
             </div>
 
-            <!-- 오른쪽 SignIn / SignUp -->
+            <!-- 오른쪽 로그인 사용자 영역 -->
             <div class="d-flex align-center">
-                <template v-if="isLoggedIn">
-                    <v-avatar size="32" class="mr-2">
-                        <img :src="profileImage" alt="프로필" />
-                    </v-avatar>
-                    <div class="text-start mr-4">
-                        <div class="text-body-2 font-weight-bold">{{ name }}</div>
-                        <div class="text-caption grey--text">{{ role }}</div>
-                    </div>
-                    <v-btn class="signup-btn" @click="logout">Sign Out</v-btn>
+                <template v-if="auth.isLogin">
+                    <v-menu offset-y scroll-strategy="close">
+                        <template #activator="{ props }">
+                            <div v-bind="props" class="d-flex align-center user-info">
+                                <div class="text-start mr-3">
+                                    <div class="text-body-1 font-weight-bold">{{ auth.name }} 님</div>
+                                    <div class="text-caption">{{ auth.authority }}</div>
+                                </div>
+                                <v-icon>mdi-chevron-down</v-icon>
+                            </div>
+                        </template>
+
+                        <v-list>
+                            <template v-if="auth.authority === 'ADMIN'">
+                                <v-list-item to="/report">신고 관리</v-list-item>
+                                <v-list-item to="/MemberList">회원 관리</v-list-item>
+                                <v-list-item to="/admin-profile">프로필</v-list-item>
+                            </template>
+
+                            <template v-else>
+                                <v-list-item to="/counselees">내담자 관리</v-list-item>
+                                <v-list-item to="/diary">다이어리</v-list-item>
+                                <v-list-item to="/mypage">프로필</v-list-item>
+                            </template>
+                        </v-list>
+                    </v-menu>
+
+                    <v-btn class="signout-btn ml-4" @click="auth.logout">Log Out</v-btn>
                 </template>
                 <template v-else>
-                    <!-- Sign In -->
                     <router-link to="/" class="signin-link">Sign In</router-link>
-
-                    <!-- Sign Up -->
                     <router-link to="/signup">
                         <v-btn class="signup-btn ml-6">Sign Up</v-btn>
                     </router-link>
                 </template>
             </div>
+
         </v-container>
     </v-app-bar>
 </template>
 
 <script setup>
-import { ref, defineProps } from 'vue';
+import { useAuthStore } from '@/stores/auth'
+import { fetchMemberById } from '@/api/member/memberQuery'
+import { onMounted } from 'vue'
 
 const props = defineProps({
     onScrollToFeature: Function
 })
 
-const isLoggedIn = ref(false); // 로그인 여부
-const name = ref('김수민'); // 이름
-const role = ref('Counselor'); // 권한
-const profileImage = ref('@/assets/img/profile/counselorProfile.png'); // 프로필 이미지
+const auth = useAuthStore()
 
-function logout() {
-    isLoggedIn.value = false;
-    alert('로그아웃 완료!');
-}
+onMounted(async () => {
+    if (auth.isLogin && !auth.name) {
+        const res = await fetchMemberById(auth.memberId)
+        const member = res.data
+        auth.name = member.name
+        auth.authority = member.authority
+    }
+})
 </script>
 
 <style scoped>
@@ -81,12 +101,17 @@ function logout() {
     text-decoration: none;
 }
 
-.signup-btn {
+.signup-btn,
+.signout-btn {
     background-color: #344FA3;
     color: white;
     font-weight: 600;
     padding: 8px 16px;
     border-radius: 8px;
     text-transform: none;
+}
+
+.user-info {
+    cursor: pointer;
 }
 </style>

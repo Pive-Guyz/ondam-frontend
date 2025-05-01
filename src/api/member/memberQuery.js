@@ -44,7 +44,8 @@ export const findEmailByNameAndPhone = (name, phone) => {
  * @param {string} email
  */
 export const findPasswordByNameAndEmail = (name, email) => {
-  return axios.get(`/api/v1/member/find-password`, {
-    params: { name, email }
+  return axios.get('/api/v1/member/findPasswordByNameAndEmail', {
+    params: { name, email },
   });
 };
+

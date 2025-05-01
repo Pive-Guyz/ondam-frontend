@@ -1,37 +1,44 @@
 <template>
-  <div class="reply-page-wrapper">
-    <div class="reply-box">
-      <div class="box-header">
-        <h2>📬 내가 보낸 답장 목록</h2>
-        <v-btn class="back-btn" @click="goBack" color="primary" variant="outlined">← 뒤로가기</v-btn>
-      </div>
+  <v-app class="main-background">
+    <MemberSidebar />
 
-      <div v-if="replyList.length === 0" class="empty-message">
-        보낸 답장이 없습니다.
-      </div>
+    <v-main>
+      <v-container class="reply-page-container" fluid>
+        <div class="reply-content">
+          <div class="reply-box">
+            <h2 class="reply-title-header">📬 내가 보낸 답장 목록</h2>
 
-      <v-list v-else class="reply-list" lines="two">
-        <v-list-item
-          v-for="reply in replyList"
-          :key="reply.id"
-          @click="openReplyModal(reply)"
-          class="reply-card"
-        >
-          
-            <v-list-item-title class="reply-title">{{ reply.title }}</v-list-item-title>
-            <v-list-item-subtitle class="reply-date">{{ formatDate(reply.createdAt) }}</v-list-item-subtitle>
-          
-        </v-list-item>
-      </v-list>
-    </div>
+            <div v-if="replyList.length === 0" class="empty-message">
+              보낸 답장이 없습니다.
+            </div>
 
-    <MyReplyModal
-      v-if="selectedReply"
-      :reply="selectedReply"
-      @close="closeModal"
-      @deleted="onReplyDeleted"
-    />
-  </div>
+            <v-list v-else class="reply-list" lines="two">
+              <v-list-item
+                v-for="reply in replyList"
+                :key="reply.id"
+                @click="openReplyModal(reply)"
+                class="reply-card"
+              >
+                <v-list-item-title class="reply-title">{{ reply.title }}</v-list-item-title>
+                <v-list-item-subtitle class="reply-date">{{ formatDate(reply.createdAt) }}</v-list-item-subtitle>
+              </v-list-item>
+            </v-list>
+
+            <div class="footer-btn-wrapper">
+              <v-btn class="back-btn" @click="goBack" color="primary" variant="outlined">← 뒤로가기</v-btn>
+            </div>
+          </div>
+        </div>
+
+        <MyReplyModal
+          v-if="selectedReply"
+          :reply="selectedReply"
+          @close="closeModal"
+          @deleted="onReplyDeleted"
+        />
+      </v-container>
+    </v-main>
+  </v-app>
 </template>
 
   
@@ -41,6 +48,8 @@
   import axios from 'axios'
   import { useAuthStore } from '@/stores/auth'
   import MyReplyModal from '@/components/modal/MyReplyModal.vue'
+  import MemberSidebar from '@/components/sidebar/MemberSidebar.vue'
+
   
   const authStore = useAuthStore()
   const replyList = ref([])
@@ -89,42 +98,37 @@ onMounted(() => {
 </script>
 
 <style scoped>
-  
-  .reply-page-wrapper {
+.main-background {
   background-color: #eef3f7;
   min-height: 100vh;
-  padding: 60px 20px;
+}
+
+.reply-page-container {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  padding-top: 60px;
+  padding-bottom: 60px;
+  box-sizing: border-box;
+}
+
+.reply-content {
+  max-width: 800px;
+  width: 100%;
 }
 
 .reply-box {
   background-color: #fff;
-  width: 100%;
-  max-width: 800px;
   border-radius: 16px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
   padding: 40px;
   box-sizing: border-box;
 }
 
-.box-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-h2 {
+.reply-title-header {
   font-size: 24px;
   font-weight: bold;
   color: #1f1f1f;
-}
-
-.back-btn {
-  text-transform: none;
-  font-weight: 600;
+  margin-bottom: 24px;
 }
 
 .empty-message {
@@ -163,4 +167,14 @@ h2 {
   color: #888;
 }
 
+.footer-btn-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 30px;
+}
+
+.back-btn {
+  text-transform: none;
+  font-weight: 600;
+}
 </style>
