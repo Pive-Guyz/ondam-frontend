@@ -92,8 +92,12 @@ const login = async () => {
     )
 
     if (matchedMember) {
-      // Pinia store에 로그인 정보 저장
-      authStore.login(matchedMember.id, matchedMember.point)
+      authStore.login(
+        matchedMember.id,
+        matchedMember.point,
+        matchedMember.name,         // ✅ name 전달
+        matchedMember.authority     // ✅ authority 전달
+      )
       alert('로그인 성공!')
       router.push('/main')
     } else {
