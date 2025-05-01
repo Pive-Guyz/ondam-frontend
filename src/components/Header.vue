@@ -42,7 +42,7 @@
                         </v-list>
                     </v-menu>
 
-                    <v-btn class="signout-btn ml-4" @click="auth.logout">Log Out</v-btn>
+                    <v-btn class="signout-btn ml-4" @click="handleLogout">Log Out</v-btn>
                 </template>
                 <template v-else>
                     <router-link to="/" class="signin-link">Sign In</router-link>
@@ -66,6 +66,12 @@ const props = defineProps({
 })
 
 const auth = useAuthStore()
+
+const handleLogout = () => {
+  if (confirm('로그아웃하시겠습니까?')) {
+    auth.logout()
+  }
+}
 
 onMounted(async () => {
     if (auth.isLogin && !auth.name) {

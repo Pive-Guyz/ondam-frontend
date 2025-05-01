@@ -76,6 +76,7 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 // 로그인
+import { fetchAllMembers } from '@/api/member/memberQuery'
 const login = async () => {
   if (!email.value.trim() || !password.value.trim()) {
     alert('이메일과 비밀번호를 모두 입력해주세요.')
@@ -83,18 +84,28 @@ const login = async () => {
   }
 
   try {
-    const res = await loginMember({ email: email.value, password: password.value })
-    const { id, point } = res.data
-    authStore.login(id, point)
-    alert('로그인 성공!')
-    router.push('/main')
-  } catch (error) {
-    if (error.response?.status === 401) {
-      alert('로그인 실패: 이메일 또는 비밀번호 오류')
+    const response = await fetchAllMembers()
+    const members = response.data
+
+    const matchedMember = members.find(
+      member => member.email === email.value && member.password === password.value
+    )
+
+    if (matchedMember) {
+      authStore.login(
+        matchedMember.id,
+        matchedMember.point,
+        matchedMember.name,         // ✅ name 전달
+        matchedMember.authority     // ✅ authority 전달
+      )
+      alert('로그인 성공!')
+      router.push('/main')
     } else {
-      alert('서버 오류 발생')
+      alert('이메일 또는 비밀번호가 틀렸습니다.')
     }
-    console.error(error)
+  } catch (error) {
+    console.error('로그인 중 오류 발생:', error)
+    alert('서버 오류가 발생했습니다.')
   }
 }
 
