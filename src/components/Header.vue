@@ -28,9 +28,17 @@
                         </template>
 
                         <v-list>
-                            <v-list-item to="/counselees">내담자 관리</v-list-item>
-                            <v-list-item to="/diary">다이어리</v-list-item>
-                            <v-list-item to="/MyPage">프로필</v-list-item>
+                            <template v-if="auth.authority === 'ADMIN'">
+                                <v-list-item to="/report">신고 관리</v-list-item>
+                                <v-list-item to="/MemberList">회원 관리</v-list-item>
+                                <v-list-item to="/admin-profile">프로필</v-list-item>
+                            </template>
+
+                            <template v-else>
+                                <v-list-item to="/counselees">내담자 관리</v-list-item>
+                                <v-list-item to="/diary">다이어리</v-list-item>
+                                <v-list-item to="/mypage">프로필</v-list-item>
+                            </template>
                         </v-list>
                     </v-menu>
 
