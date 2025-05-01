@@ -16,7 +16,7 @@
             <!-- 오른쪽 로그인 사용자 영역 -->
             <div class="d-flex align-center">
                 <template v-if="auth.isLogin">
-                    <v-menu offset-y>
+                    <v-menu offset-y scroll-strategy="close">
                         <template #activator="{ props }">
                             <div v-bind="props" class="d-flex align-center user-info">
                                 <div class="text-start mr-3">
