@@ -4,8 +4,10 @@
 
             <!-- 왼쪽 로고 + 메뉴 -->
             <div class="d-flex align-center">
-                <img src="@/assets/img/logo/logo.png" alt="ON:DAM 로고" class="logo" />
-                <span class="ml-2 font-weight-bold logo-text">ON:DAM</span>
+                <router-link to="/" class="d-flex align-center" style="text-decoration: none;">
+                    <img src="@/assets/img/logo/logo.png" alt="ON:DAM 로고" class="logo" />
+                    <span class="ml-2 font-weight-bold logo-text">ON:DAM</span>
+                </router-link>
 
                 <div class="d-flex align-center ml-10">
                     <v-btn text color="#2d2d5a" class="menu-btn">온:담이란?</v-btn>
@@ -68,9 +70,9 @@ const props = defineProps({
 const auth = useAuthStore()
 
 const handleLogout = () => {
-  if (confirm('로그아웃하시겠습니까?')) {
-    auth.logout()
-  }
+    if (confirm('로그아웃하시겠습니까?')) {
+        auth.logout()
+    }
 }
 
 onMounted(async () => {
