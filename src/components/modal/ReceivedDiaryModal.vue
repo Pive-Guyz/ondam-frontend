@@ -93,8 +93,7 @@ const closeModal = () => {
 const onReport = () => {
   const confirmed = confirm('이 다이어리를 신고하시겠습니까?')
   if (confirmed) {
-    alert('신고가 접수되었습니다. 검토 후 조치하겠습니다.')
-    // TODO: 신고 API 연동 예정
+    isReportModalOpen.value = true
   }
 }
 
