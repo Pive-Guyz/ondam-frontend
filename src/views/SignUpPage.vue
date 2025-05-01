@@ -45,6 +45,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import CompleteModal from '@/components/member/SignupModal.vue' // 🛑 경로 확인!
+import { registerMember } from '@/api/member/memberCommand'
 
 const router = useRouter()
 const showModal = ref(false)
@@ -58,15 +59,35 @@ const form = ref({
   phone: '',
 })
 
-const signup = () => {
+const signup = async () => {
   if (form.value.password !== form.value.passwordConfirm) {
     alert('비밀번호가 일치하지 않습니다.')
     return
   }
 
-  // 실제로는 여기서 axios.post 등 사용 가능
-  console.log('회원가입 정보:', form.value)
-  showModal.value = true // ✅ 모달 띄우기
+  try {
+    // API 요청 데이터 구성
+    const memberData = {
+      name: form.value.name,
+      email: form.value.email,
+      password: form.value.password,
+      birthday: form.value.birthday,
+      phone: form.value.phone
+    }
+
+    // 회원가입 요청
+    const res = await registerMember(memberData)
+
+    console.log('회원가입 성공:', res.data)
+    showModal.value = true  // 모달 열기
+  } catch (error) {
+    console.error('회원가입 실패:', error)
+    if (error.response?.status === 409) {
+      alert('이미 가입된 이메일입니다.')
+    } else {
+      alert('회원가입 중 오류가 발생했습니다.')
+    }
+  }
 }
 
 const closeModalAndRedirect = () => {

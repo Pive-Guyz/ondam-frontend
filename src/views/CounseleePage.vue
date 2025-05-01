@@ -1,64 +1,70 @@
 <template>
-    <v-container class="mt-14">
-        <v-card>
-            <h2 class="page-title mt-3 ml-3">내담자 리스트</h2>
-            <!-- 상단 컨트롤 영역 -->
-            <v-row class="pa-4" align="center" justify="space-between">
-                <v-col cols="12" md="6" class="d-flex gap-2">
-                    <v-select v-model="searchType" :items="['이름']" density="compact" style="max-width: 100px"
-                        variant="outlined" />
-                    <v-text-field v-model="searchQuery" placeholder="검색어를 입력하세요" density="compact" hide-details
-                        variant="outlined" append-inner-icon="mdi-magnify" @keyup.enter="handleSearch"
-                        style="height: 36px; font-size: 14px; margin-left: 5px;" @click:append-inner="handleSearch" />
-                    <v-btn class="ml-3" style="margin-top: 1px;" v-if="isSearching" variant="outlined"
-                        @click="resetSearch">
-                        전체
-                    </v-btn>
-                </v-col>
-                <v-col cols="12" md="3" class="text-right">
-                    <v-btn color="primary" @click="handleRegister">
-                        내담자 등록
-                    </v-btn>
-                </v-col>
-            </v-row>
-
-            <!-- 내담자 리스트 테이블 -->
-            <v-table>
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>내담자</th>
-                        <th>성별</th>
-                        <th>생년월일</th>
-                        <th>심각도</th>
-                        <th>등록일</th>
-                        <th>상담 종료일</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(item, idx) in paginatedItems" :key="item.id"
-                        @click="goToCounselLogs(item.id, item.name)" style="cursor: pointer;">
-                        <td>{{ startIndex + idx + 1 }}</td>
-                        <td>{{ item.name }}</td>
-                        <td>{{ item.gender === 'M' ? '남' : item.gender === 'F' ? '여' : '-' }}</td>
-                        <td>{{ item.birthday }}</td>
-                        <td>{{ item.severityLevel ?? '-' }}</td>
-                        <td>{{ formatDate(item.createdAt) }}</td>
-                        <td>{{ item.endDate ? formatDate(item.endDate) : 'N/A' }}</td>
-                        <td>
-                            <v-btn size="small" @click.stop="writeCounsel(item.id, item.name)">
-                                상담서 작성
+    <v-app style="background-color: #F5F7FA;">
+        <SideBar />
+        <v-main>
+            <v-container class="py-15 ">
+                <v-card class="pl-10 pt-10">
+                    <h2 class="page-title mt-3 ml-3">내담자 리스트</h2>
+                    <!-- 상단 컨트롤 영역 -->
+                    <v-row class="mt-3" align="center" justify="space-between">
+                        <v-col cols="12" md="6" class="d-flex gap-2">
+                            <v-select v-model="searchType" :items="['이름']" density="compact" style="max-width: 100px"
+                                variant="outlined" />
+                            <v-text-field v-model="searchQuery" placeholder="검색어를 입력하세요" density="compact" hide-details
+                                variant="outlined" append-inner-icon="mdi-magnify" @keyup.enter="handleSearch"
+                                style="height: 36px; font-size: 14px; margin-left: 5px;"
+                                @click:append-inner="handleSearch" />
+                            <v-btn class="ml-3" style="margin-top: 1px;" v-if="isSearching" variant="outlined"
+                                @click="resetSearch">
+                                전체
                             </v-btn>
-                        </td>
-                    </tr>
-                </tbody>
-            </v-table>
+                        </v-col>
+                        <v-col cols="12" md="3" class="text-right">
+                            <v-btn color="primary" @click="handleRegister" class="mr=10">
+                                내담자 등록
+                            </v-btn>
+                        </v-col>
+                    </v-row>
 
-            <!-- 페이지네이션 -->
-            <v-pagination v-model="currentPage" :length="pageCount" :total-visible="7" class="pa-4" />
-        </v-card>
-    </v-container>
+                    <!-- 내담자 리스트 테이블 -->
+                    <v-table>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>내담자</th>
+                                <th>성별</th>
+                                <th>생년월일</th>
+                                <th>심각도</th>
+                                <th>등록일</th>
+                                <th>상담 종료일</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(item, idx) in paginatedItems" :key="item.id"
+                                @click="goToCounselLogs(item.id, item.name)" style="cursor: pointer;">
+                                <td>{{ startIndex + idx + 1 }}</td>
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.gender === 'M' ? '남' : item.gender === 'F' ? '여' : '-' }}</td>
+                                <td>{{ item.birthday }}</td>
+                                <td>{{ item.severityLevel ?? '-' }}</td>
+                                <td>{{ formatDate(item.createdAt) }}</td>
+                                <td>{{ item.endDate ? formatDate(item.endDate) : 'N/A' }}</td>
+                                <td>
+                                    <v-btn size="small" @click.stop="writeCounsel(item.id, item.name)">
+                                        상담서 작성
+                                    </v-btn>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </v-table>
+
+                    <!-- 페이지네이션 -->
+                    <v-pagination v-model="currentPage" :length="pageCount" :total-visible="7" class="pa-4" />
+                </v-card>
+            </v-container>
+        </v-main>
+    </v-app>
 </template>
 
 <script setup>
@@ -67,6 +73,8 @@ import { fetchCounselees, searchCounseleesByName } from '@/api/counselee/counsel
 import Counselee from '@/models/Counselee';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+
+import SideBar from '@/components/sidebar/MemberSideBar.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -155,11 +163,23 @@ onMounted(loadCounselees);
 </script>
 
 <style scoped>
+.content-area {
+    position: relative;
+    padding: 0;
+    overflow: hidden;
+}
+
 th {
     font-weight: 600;
 }
 
 td {
     vertical-align: middle;
+}
+
+.v-btn {
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    margin-right: 20px;
 }
 </style>
