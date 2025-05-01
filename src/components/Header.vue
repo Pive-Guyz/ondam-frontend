@@ -62,16 +62,19 @@
 import { useAuthStore } from '@/stores/auth'
 import { fetchMemberById } from '@/api/member/memberQuery'
 import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
 const props = defineProps({
     onScrollToFeature: Function
 })
 
 const auth = useAuthStore()
+const router = useRouter()
 
 const handleLogout = () => {
     if (confirm('로그아웃하시겠습니까?')) {
         auth.logout()
+        router.push('/')
     }
 }
 
