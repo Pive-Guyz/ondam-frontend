@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const instance = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL,
+    // baseURL: import.meta.env.VITE_API_BASE_URL,
+    baseURL: '', // baseUrl 삭제, 또는 /api를 모두 지워야 함.
     headers: {
         "Content-Type": "application/json"
     },
