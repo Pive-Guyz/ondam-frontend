@@ -1,4 +1,5 @@
 <template>
+    <Header />
     <div class="error-container">
         <v-card class="pa-6 ma-auto text-center" width="400">
             <v-icon size="48" color="error">mdi-alert-circle</v-icon>
@@ -8,6 +9,10 @@
         </v-card>
     </div>
 </template>
+
+<script setup>
+import Header from '@/components/Header.vue';
+</script>
 
 <style scoped>
 .error-container {
