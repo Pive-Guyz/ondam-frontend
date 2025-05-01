@@ -77,7 +77,7 @@
 import { ref, computed } from 'vue'
 import Header from '@/components/Header.vue'
 import AdminSidebar from '@/components/sidebar/AdminSidebar.vue'
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth.js'
 
 const auth = useAuthStore()
 

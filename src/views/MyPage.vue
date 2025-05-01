@@ -1,7 +1,7 @@
 <template>
   <v-app style="background-color: #F5F7FA;">
     <Header />
-    <SideBar />
+    <MemberSidebar />
 
     <v-main>
       <v-container class="py-15 d-flex justify-center">
@@ -110,11 +110,11 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import SideBar from '@/components/sidebar/MemberSideBar.vue'
+import MemberSidebar from '@/components/sidebar/MemberSidebar.vue'
 import ChangePasswordModal from '@/components/member/ChangePasswordModal.vue'
 import ConfirmWithdrawalModal from '@/components/member/ConfirmWithdrawalModal.vue'
-import { useAuthStore } from '@/stores/auth'
-import { deleteMember } from '@/api/member/memberCommand'
+import { useAuthStore } from '@/stores/auth.js'
+import { deleteMember } from '@/api/member/memberCommand.js'
 import Header from '@/components/Header.vue'
 
 const auth = useAuthStore()

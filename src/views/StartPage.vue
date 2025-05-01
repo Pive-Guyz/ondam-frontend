@@ -55,8 +55,8 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
-import { fetchAllMembers } from '@/api/member/memberQuery'
+import { useAuthStore } from '@/stores/auth.js'
+import { fetchAllMembers } from '@/api/member/memberQuery.js'
 
 // 레이아웃
 import Header from '../components/Header.vue'
