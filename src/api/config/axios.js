@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+// 자동 배포 테스트 1 
 const instance = axios.create({
     // baseURL: import.meta.env.VITE_API_BASE_URL,
     baseURL: '', // baseUrl 삭제, 또는 /api를 모두 지워야 함. (ingress 적용)
