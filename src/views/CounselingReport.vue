@@ -1,5 +1,6 @@
 <template>
     <v-app style="background-color: #F5F7FA;">
+        <Header/>
         <!-- <SideBar /> -->
         <v-main>
             <v-container class="py-15" v-if="data">
@@ -96,6 +97,8 @@ import TroubleSummary from '@/components/analysis/TroubleSummary.vue';
 import EmotionAnalysis from '@/components/analysis/EmotionAnalysis.vue';
 import EffectiveStatement from '@/components/analysis/EffectiveStatement.vue';
 import CounselSummary from '@/components/analysis/CounselSummary.vue';
+
+import Header from '@/components/Header.vue';
 
 const route = useRoute();
 const router = useRouter();

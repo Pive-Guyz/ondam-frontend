@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 // 메인페이지
-import StartPage from '../views/StartPage.vue'
 import MainPage from '../views/MainPage.vue'
 import DiaryPage from '../views/DiaryPage.vue'
 import ReceivedDiaryPage from '../views/ReceivedDiaryPage.vue'
@@ -19,8 +18,7 @@ import MyReplyListPage from '../views/MyReplyListPage.vue'
 
 const routes = [
 
-  { path: '/', component: StartPage },
-  { path: '/main', component: MainPage },
+  { path: '/', component: MainPage },
   { path: '/diary', component: DiaryPage },
   { path: '/diary/received', component: ReceivedDiaryPage },
   { path: '/diary/reply', component: MyReplyListPage },
