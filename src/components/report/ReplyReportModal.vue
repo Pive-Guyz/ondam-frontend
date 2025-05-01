@@ -97,7 +97,7 @@ const submitReport = async () => {
         await reportReply({
             memberId: authStore.memberId,
             reportedMemberId: props.reportedMemberId,
-            diaryId: props.diaryId,
+            replyId: props.replyId,
             reportCategoryId: reason.value,
             reason: content.value
         })
