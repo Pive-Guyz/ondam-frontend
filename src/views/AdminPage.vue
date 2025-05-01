@@ -24,7 +24,7 @@
                 </div>
                 <div class="form-group">
                   <label>비밀번호</label>
-                  <input v-model="form.password" type="password" />
+                  <input v-model="form.password" type="password" readonly />
                 </div>
               </div>
 
