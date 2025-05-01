@@ -1,51 +1,54 @@
 <template>
-  <div class="page-container">
-    <div class="login-box">
-      <h2 class="title">로그인</h2>
+  <div>
+    <Header />
 
-      <div class="form-group">
-        <label>이메일</label>
-        <input v-model="email" type="text" placeholder="이메일 입력" />
+    <div class="page-container">
+      <div class="login-box">
+        <h2 class="title">로그인</h2>
+
+        <div class="form-group">
+          <label>이메일</label>
+          <input v-model="email" type="text" placeholder="이메일 입력" />
+        </div>
+
+        <div class="form-group">
+          <label>비밀번호</label>
+          <input v-model="password" type="password" placeholder="비밀번호 입력" />
+        </div>
+
+        <div class="button-group">
+          <button class="sub-btn" @click="showEmailModal = true">이메일 찾기</button>
+          <button class="sub-btn" @click="showPasswordModal = true">비밀번호 찾기</button>
+          <button class="sub-btn" @click="goToSignUp">회원가입</button>
+        </div>
+
+        <button class="login-btn" @click="login">로그인</button>
       </div>
 
-      <div class="form-group">
-        <label>비밀번호</label>
-        <input v-model="password" type="password" placeholder="비밀번호 입력" />
-      </div>
-
-      <div class="button-group">
-        <button class="sub-btn" @click="showEmailModal = true">이메일 찾기</button>
-        <button class="sub-btn" @click="showPasswordModal = true">비밀번호 찾기</button>
-        <button class="sub-btn" @click="goToSignUp">회원가입</button>
-      </div>
-
-      <button class="login-btn" @click="login">로그인</button>
+      <!-- 모달 연결 -->
+      <FindEmailModal
+          v-if="showEmailModal"
+          @close="showEmailModal = false"
+          @found="handleEmailFound"
+      />
+      <EmailFoundModal
+          v-if="showEmailFoundModal"
+          :email="foundEmail"
+          @confirm="goToStartPage"
+      />
+      <FindPasswordModal
+          v-if="showPasswordModal"
+          @close="showPasswordModal = false"
+          @found="handlePasswordFound"
+      />
+      <PasswordFoundModal
+          v-if="showPasswordFoundModal"
+          :password="foundPassword"
+          @confirm="goToStartPage"
+      />
     </div>
 
-    <!-- 모달 연결 -->
-    <FindEmailModal
-      v-if="showEmailModal"
-      @close="showEmailModal = false"
-      @found="handleEmailFound"
-    />
-
-    <EmailFoundModal
-      v-if="showEmailFoundModal"
-      :email="foundEmail"
-      @confirm="goToStartPage"
-    />
-
-    <FindPasswordModal
-      v-if="showPasswordModal"
-      @close="showPasswordModal = false"
-      @found="handlePasswordFound"
-    />
-
-    <PasswordFoundModal
-      v-if="showPasswordFoundModal"
-      :password="foundPassword"
-      @confirm="goToStartPage"
-    />
+    <Footer />
   </div>
 </template>
 
@@ -61,7 +64,10 @@ import EmailFoundModal from '@/components/member/EmailFoundModal.vue'
 import FindPasswordModal from '@/components/member/FindPasswordModal.vue'
 import PasswordFoundModal from '@/components/member/PasswordFoundModal.vue'
 
-// 상태
+// 헤더/푸터 컴포넌트
+import Header from '../components/Header.vue'
+import Footer from '../components/Footer.vue'
+
 const email = ref('')
 const password = ref('')
 const foundEmail = ref('')
@@ -75,7 +81,6 @@ const showPasswordFoundModal = ref(false)
 const router = useRouter()
 const authStore = useAuthStore()
 
-// 로그인
 const login = async () => {
   if (!email.value.trim() || !password.value.trim()) {
     alert('이메일과 비밀번호를 모두 입력해주세요.')
@@ -98,7 +103,6 @@ const login = async () => {
   }
 }
 
-// 이메일/비밀번호 찾기 완료 처리
 const handleEmailFound = (email) => {
   foundEmail.value = email
   showEmailModal.value = false
@@ -111,7 +115,6 @@ const handlePasswordFound = (password) => {
   showPasswordFoundModal.value = true
 }
 
-// 모달 확인 시 홈 이동
 const goToStartPage = () => {
   showEmailFoundModal.value = false
   showPasswordFoundModal.value = false
@@ -124,11 +127,10 @@ const goToSignUp = () => router.push('/SignUp')
 <style scoped>
 .page-container {
   background-color: #f7f9fc;
-  height: 100vh;
+  min-height: 80vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
 }
 
 .login-box {
