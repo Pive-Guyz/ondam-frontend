@@ -42,12 +42,12 @@
                         </v-list>
                     </v-menu>
 
-                    <v-btn class="signout-btn ml-4" @click="handleLogout">Log Out</v-btn>
+                    <v-btn class="signout-btn ml-4" @click="handleLogout">로그아웃</v-btn>
                 </template>
                 <template v-else>
-                    <router-link to="/" class="signin-link">Sign In</router-link>
+                    <router-link to="/login" class="signin-link">로그인</router-link>
                     <router-link to="/signup">
-                        <v-btn class="signup-btn ml-6">Sign Up</v-btn>
+                        <v-btn class="signup-btn ml-6">회원가입</v-btn>
                     </router-link>
                 </template>
             </div>

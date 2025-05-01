@@ -104,7 +104,7 @@ const login = async () => {
         matchedMember.authority
       )
       alert('로그인 성공!')
-      router.push('/main')
+      router.push('/')
     } else {
       alert('이메일 또는 비밀번호가 틀렸습니다.')
     }
