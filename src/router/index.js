@@ -61,6 +61,14 @@ const routes = [
     name: 'CounseleeRegisterPage',
     component: () => import('@/views/CounseleeRegisterPage.vue'),
   },
+
+  // // 에러 페이지
+  // {
+  //   path: '/:pathMatch(.*)*',
+  //   name: 'NotFound',
+  //   component: () => import('@/views/common/ErrorPage.vue'),
+  //   props: { message: '페이지를 찾을 수 없습니다.' }
+  // }
 ]
 
 const router = createRouter({
