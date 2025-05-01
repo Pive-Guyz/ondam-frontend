@@ -94,7 +94,13 @@ const login = async () => {
       member.id,
       member.point,
       member.name,
-      member.authority
+      member.authority,
+      member.email,
+      member.phone,
+      member.birthday,
+      member.address,
+      member.createdAt,
+      member.profile_image_url
     )
 
     alert('로그인 성공!')
@@ -108,7 +114,7 @@ const login = async () => {
     }
   }
 }
-
+console.log(authStore.$state)
 const handleEmailFound = (email) => {
   foundEmail.value = email
   showEmailModal.value = false
