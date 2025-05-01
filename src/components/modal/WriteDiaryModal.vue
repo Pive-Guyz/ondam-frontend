@@ -35,6 +35,12 @@ const submitDiary = async () => {
     alert('제목과 내용을 모두 입력해주세요.')
     return
   }
+  let point = authStore.point
+  if (point < 10) {
+    alert(`포인트가 부족합니다. 현재 포인트는 ${point}입니다.`)
+    return
+  }
+  
   const payload = {
     title: title.value,
     content: content.value,
@@ -48,9 +54,13 @@ const submitDiary = async () => {
                 isBlinded: 'N',
                 memberId: authStore.memberId,
                 })
-    await writeDiary(payload)
+    await writeDiary(payload);
+    point = point - 10
+    authStore.point = point // ✅ Pinia 상태 업데이트
+    localStorage.setItem('memberPoint', point) // ✅ 로컬에도 반영
+
     emit('writeDiary')
-    alert('일기가 작성되었습니다😊✏️')
+    alert(`일기가 작성되었습니다✏️ 남은 포인트는 ${point}입니다.`)
     close()
   } catch (err) {
     console.error('다이어리 작성 실패:', err)

@@ -1,23 +1,48 @@
 <template>
   <div class="diary-container">
-    <div class="header">
-      <h2 class="title">📨 오늘 받은 다이어리</h2>
-      <button class="back-btn" @click="goBack">뒤로가기</button>
+    <div class="card-box">
+      <div class="text-zone">
+        <h2 class="main-title">Today’s Diary</h2>
+        <p class="sub-text">오늘의 일기를 읽고 답장을 보내보세요!</p>
+      </div>
+      <div class="pencil-wrapper">
+        <v-img
+          :src="pencilMan"
+          alt="연필맨"
+          width="80"
+          height="80"
+          cover
+        ></v-img>
+      </div>
     </div>
-
-    <div class="divider"></div>
 
     <div v-if="receivedDiaryList.length === 0" class="empty-message">
       아직 받은 다이어리가 없습니다. 📨
     </div>
 
-    <ul v-else class="diary-list">
-      <li v-for="diary in receivedDiaryList" :key="diary.id" @click="openDiaryDetail(diary)">
-        <div class="diary-item">
-          <span class="diary-title">{{ diary.title }}</span>
+    <div v-else class="card-list">
+      <div
+        class="diary-card"
+        v-for="diary in receivedDiaryList"
+        :key="diary.id"
+        @click="openDiaryDetail(diary)"
+      >
+        <div class="card-header">
+          <img
+            class="profile"
+            :src="diary.profileImage || basicImage"
+            alt="profile"
+          />
+          <span class="card-title">{{ truncateTitle(diary.title) }}</span>
         </div>
-      </li>
-    </ul>
+        <p class="card-preview">
+          {{ truncateContent(diary.content || '일기 내용 미리보기입니다.') }}
+        </p>
+        <button class="read-button">상세 보기</button>
+      </div>
+    </div>
+
+    <button class="back-btn" @click="goBack">돌아가기</button>
 
     <ReceivedDiaryModal
       v-if="selectedDiary"
@@ -29,17 +54,24 @@
   </div>
 </template>
 
+
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import ReceivedDiaryModal from '../components/modal/ReceivedDiaryModal.vue'
+import pencilMan from '@/assets/img/pencilMan.jpeg'
+import basicImage from '@/assets/img/profile/counselorProfile.png'
 
 const router = useRouter()
 const authStore = useAuthStore()  // ✅ Pinia store 가져오기
 const receivedDiaryList = ref([])
 const selectedDiary = ref(null)
+
+const truncateTitle = (title) => title.length > 10 ? title.slice(0, 10) + '...' : title
+const truncateContent = (content) => content.length > 80 ? content.slice(0, 80) + '...' : content
+
 
 // 받은 다이어리 목록 조회
 import { fetchDiaryRecordsByReceiverId } from '../api/diary/diaryRecordCommand'
@@ -110,38 +142,129 @@ onMounted(() => {
 })
 </script>
 
+
+
 <style scoped>
 .diary-container {
-  padding: 40px 20px;
-  max-width: 800px;
-  margin: 0 auto;
-  background-color: #f9fafc;
+  background-color: #f5f7fa;
+  padding: 60px 20px;
   min-height: 100vh;
   font-family: 'Roboto', sans-serif;
-}
-
-.header {
   text-align: center;
-  margin-bottom: 10px;
-  position: relative;
 }
 
-.title {
-  font-size: 28px;
-  color: #333;
+.card-box {
+  background: white;
+  max-width: 1000px;
+  margin: 0 auto 40px;
+  border-radius: 20px;
+  padding: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+}
+
+.text-zone {
+  text-align: left;
+}
+
+.main-title {
+  font-size: 32px;
+  color: #1a1a1a;
+  font-weight: 700;
   margin-bottom: 10px;
+}
+
+.sub-text {
+  font-size: 16px;
+  color: #555;
+}
+
+.pencil-image {
+  width: 80px;
+  height: 80px;
+}
+
+.empty-message {
+  margin-top: 60px;
+  font-size: 18px;
+  color: #999;
+}
+
+.card-list {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  max-width: 1000px;
+  margin: 0 auto 60px;
+}
+
+.diary-card {
+  background-color: #2f1c82;
+  color: white;
+  border-radius: 16px;
+  width: 280px;
+  padding: 20px;
+  text-align: left;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.diary-card:hover {
+  transform: translateY(-4px);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.profile {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-preview {
+  font-size: 14px;
+  margin: 10px 0 20px;
+  height: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.read-button {
+  background-color: #33e6b2;
+  color: black;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
 }
 
 .back-btn {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 10px 16px;
+  margin-top: 20px;
   background-color: #0277bd;
   color: white;
   border: none;
   border-radius: 8px;
+  padding: 12px 24px;
   font-size: 14px;
   font-weight: bold;
   cursor: pointer;
@@ -152,56 +275,10 @@ onMounted(() => {
   background-color: #01579b;
 }
 
-.divider {
-  width: 40%;
-  height: 2px;
-  background-color: #dbe0e6;
-  margin: 0 auto 30px auto;
-}
-
-.empty-message {
-  text-align: center;
-  color: #999;
-  margin-top: 80px;
-  font-size: 18px;
-}
-
-.diary-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.diary-list li {
-  background: white;
-  margin: 12px 0;
-  padding: 20px;
-  border-radius: 10px;
-  border: 1px solid #dbe0e6;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  transition: transform 0.2s, box-shadow 0.2s;
-  cursor: pointer;
-}
-
-.diary-list li:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-.diary-item {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.diary-title {
-  font-weight: 600;
-  font-size: 18px;
-  margin-bottom: 8px;
-}
-
-.diary-date {
-  font-size: 14px;
-  color: #888;
+.pencil-wrapper {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
 }
 </style>
