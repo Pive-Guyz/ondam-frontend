@@ -1,6 +1,5 @@
 <template>
-  \<div class="wrapper">
-
+  <div class="wrapper">
     <Header />
 
     <div class="page-container">
@@ -56,7 +55,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.js'
-import { fetchAllMembers } from '@/api/member/memberQuery.js'
+import { loginMember } from '@/api/member/memberQuery.js'
 
 // 레이아웃
 import Header from '../components/Header.vue'
@@ -73,7 +72,6 @@ const email = ref('')
 const password = ref('')
 const foundEmail = ref('')
 const foundPassword = ref('')
-
 const showEmailModal = ref(false)
 const showPasswordModal = ref(false)
 const showEmailFoundModal = ref(false)
@@ -89,28 +87,25 @@ const login = async () => {
   }
 
   try {
-    const response = await fetchAllMembers()
-    const members = response.data
+    const response = await loginMember(email.value, password.value)
+    const member = response.data
 
-    const matchedMember = members.find(
-      member => member.email === email.value && member.password === password.value
+    authStore.login(
+      member.id,
+      member.point,
+      member.name,
+      member.authority
     )
 
-    if (matchedMember) {
-      authStore.login(
-        matchedMember.id,
-        matchedMember.point,
-        matchedMember.name,
-        matchedMember.authority
-      )
-      alert('로그인 성공!')
-      router.push('/')
-    } else {
-      alert('이메일 또는 비밀번호가 틀렸습니다.')
-    }
+    alert('로그인 성공!')
+    router.push('/')
   } catch (error) {
-    console.error('로그인 오류:', error)
-    alert('서버 오류가 발생했습니다.')
+    if (error.response?.status === 401) {
+      alert('이메일, 비밀번호가 틀리거나 탈퇴한 회원입니다.')
+    } else {
+      console.error('로그인 오류:', error)
+      alert('서버 오류가 발생했습니다.')
+    }
   }
 }
 
