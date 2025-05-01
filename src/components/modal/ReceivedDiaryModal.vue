@@ -114,6 +114,19 @@ onMounted(() => {
 
 <style scoped>
 
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 3000; /* 헤더와 사이드바보다 높은 z-index */
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* 어두운 배경 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .modal-card {
   background-color: #ffffff;
   font-family: 'Roboto', sans-serif;

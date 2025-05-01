@@ -75,7 +75,7 @@ import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 
 import Header from '@/components/Header.vue';
-import MemberSideBar from '@/components/sidebar/MemberSideBar.vue';
+import MemberSideBar from '@/components/sidebar/MemberSidebar.vue';
 import Counselee from '@/models/Counselee';
 
 const router = useRouter();

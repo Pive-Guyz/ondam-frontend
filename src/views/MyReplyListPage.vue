@@ -1,9 +1,14 @@
 <template>
   <v-app class="main-background">
+    <Header />
     <MemberSidebar />
 
     <v-main>
-      <v-container class="reply-page-container" fluid>
+      <v-container
+        class="reply-page-container"
+        :class="{ 'blur-background': selectedReply }"
+        fluid
+      >
         <div class="reply-content">
           <div class="reply-box">
             <h2 class="reply-title-header">📬 내가 보낸 답장 목록</h2>
@@ -29,14 +34,14 @@
             </div>
           </div>
         </div>
-
-        <MyReplyModal
-          v-if="selectedReply"
-          :reply="selectedReply"
-          @close="closeModal"
-          @deleted="onReplyDeleted"
-        />
       </v-container>
+
+      <MyReplyModal
+        v-if="selectedReply"
+        :reply="selectedReply"
+        @close="closeModal"
+        @deleted="onReplyDeleted"
+      />
     </v-main>
   </v-app>
 </template>
@@ -45,10 +50,10 @@
   <script setup>
   import { ref, onMounted } from 'vue'
   import { useRouter } from 'vue-router'
-  import axios from 'axios'
   import { useAuthStore } from '@/stores/auth'
   import MyReplyModal from '@/components/modal/MyReplyModal.vue'
   import MemberSidebar from '@/components/sidebar/MemberSidebar.vue'
+  import Header from '../components/Header.vue'
 
   
   const authStore = useAuthStore()
@@ -106,9 +111,16 @@ onMounted(() => {
 .reply-page-container {
   display: flex;
   justify-content: center;
-  padding-top: 60px;
+  padding-top: 120px; /* 헤더 높이만큼 여백 */
   padding-bottom: 60px;
   box-sizing: border-box;
+  transition: filter 0.3s ease;
+}
+
+/* 모달이 열릴 때 흐림 효과 */
+.blur-background {
+  filter: blur(4px);
+  pointer-events: none;
 }
 
 .reply-content {
@@ -122,6 +134,8 @@ onMounted(() => {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
   padding: 40px;
   box-sizing: border-box;
+  z-index: 1;
+  position: relative;
 }
 
 .reply-title-header {
