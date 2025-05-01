@@ -22,7 +22,7 @@
       <button class="login-btn" @click="login">로그인</button>
     </div>
 
-    <!-- ✅ 모달 연결 -->
+    <!-- 모달 연결 -->
     <FindEmailModal
       v-if="showEmailModal"
       @close="showEmailModal = false"
@@ -30,7 +30,8 @@
     />
     <EmailFoundModal
       v-if="showEmailFoundModal"
-      @close="showEmailFoundModal = false"
+      :email="foundEmail"
+      @confirm="goToStartPage"
     />
     <FindPasswordModal
       v-if="showPasswordModal"
@@ -39,83 +40,92 @@
     />
     <PasswordFoundModal
       v-if="showPasswordFoundModal"
-      @close="showPasswordFoundModal = false"
+      :password="foundPassword"
+      @confirm="goToStartPage"
     />
   </div>
 </template>
-
 
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-const authStore = useAuthStore();
+import { loginMember } from '@/api/member/memberQuery'
 
 import FindEmailModal from '@/components/member/FindEmailModal.vue'
 import EmailFoundModal from '@/components/member/EmailFoundModal.vue'
 import FindPasswordModal from '@/components/member/FindPasswordModal.vue'
 import PasswordFoundModal from '@/components/member/PasswordFoundModal.vue'
 
-// ✅ Query API만 가져와야 함
-import { loginMember } from '@/api/member/memberQuery'
-import { fetchAllMembers } from '@/api/member/memberQuery';
-import axios from 'axios'                     // ✅ API 요청에 필요
+const router = useRouter()
+const authStore = useAuthStore()
+
+// 로그인 관련 상태
 const email = ref('')
 const password = ref('')
 
+// 모달 상태
 const showEmailModal = ref(false)
 const showPasswordModal = ref(false)
 const showEmailFoundModal = ref(false)
 const showPasswordFoundModal = ref(false)
 
-const router = useRouter()
+// 찾은 결과 상태
+const foundEmail = ref('')
+const foundPassword = ref('')
 
-// ✅ 회원가입 기능 (최종)
-
-
-// ✅ 로그인 기능 (최종)
+// 로그인 처리
 const login = async () => {
-  try {
-    const res = await fetchAllMembers();
-    const members = res.data;
-
-    const matched = members.find(
-      (member) => member.email === email.value && member.password === password.value
-    );
-
-    if (!matched) {
-
-      alert('이메일 또는 비밀번호가 일치하지 않습니다.');
-      return;
-    }
-
-    // 로그인 처리
-    authStore.login(matched.id, matched.point);
-    alert('로그인 성공!');
-    router.push('/main');
-
-  } catch (error) {
-    console.error('로그인 실패:', error);
-    alert('서버 오류가 발생했습니다.');
+  if (!email.value.trim() || !password.value.trim()) {
+    alert('이메일과 비밀번호를 모두 입력해주세요.')
+    return
   }
-};
 
-const goToSignUp = () => {
-  router.push('/SignUp');
-};
+  try {
+    const res = await loginMember({
+      email: email.value,
+      password: password.value,
+    })
 
-const handleEmailFound = () => {
-  showEmailModal.value = false;
-  showEmailFoundModal.value = true;
-};
+    const { id, point } = res.data
+    authStore.login(id, point)
 
-const handlePasswordFound = () => {
-  showPasswordModal.value = false;
-  showPasswordFoundModal.value = true;
-};
+    alert('로그인 성공!')
+    router.push('/main')
+  } catch (error) {
+    if (error.response?.status === 401) {
+      alert('로그인 실패: 이메일 또는 비밀번호 오류')
+    } else {
+      alert('서버 오류 발생')
+    }
+    console.error(error)
+  }
+}
 
+// 이메일 찾기 성공 처리
+const handleEmailFound = (email) => {
+  foundEmail.value = email
+  showEmailModal.value = false
+  showEmailFoundModal.value = true
+}
+
+// 비밀번호 찾기 성공 처리
+const handlePasswordFound = (password) => {
+  foundPassword.value = password
+  showPasswordModal.value = false
+  showPasswordFoundModal.value = true
+}
+
+// 확인 버튼 눌렀을 때 이동
+const goToStartPage = () => {
+  showEmailFoundModal.value = false
+  showPasswordFoundModal.value = false
+  router.push('/')
+}
+
+// 회원가입 페이지 이동
+const goToSignUp = () => router.push('/SignUp')
 </script>
-
 
 <style scoped>
 .page-container {
