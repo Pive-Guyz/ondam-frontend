@@ -48,6 +48,10 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
+
+import Header from '@/components/Header.vue';
+import Footer from '@/components/Footer.vue'
 import LandingSection from '@/components/main/LandingSection.vue'
 
 // 이미지 import
@@ -56,10 +60,6 @@ import emotion_analysis from '@/resources/main/emotion_analysis.png'
 import counsel from '@/resources/main/counsel.png'
 import counsel_counselees from '@/resources/main/counsel_counselees.png'
 import diary from '@/resources/main/diary.png'
-
-import Header from '@/components/Header.vue';
-import Footer from '@/components/Footer.vue'
-import { ref } from 'vue'
 
 const featureSection = ref(null)
 

@@ -5,7 +5,8 @@
             <!-- 위쪽 (로고 + 메뉴) -->
             <div class="top-area">
                 <div class="logo-box">
-                    <span class="logo-text">ON:DAM</span>
+                    <!-- <img src="@/assets/img/logo/logo.png" alt="ON:DAM 로고" class="logo-image" />
+                    <span class="logo-text">ON:DAM</span> -->
                 </div>
 
                 <v-list class="menu-list">
@@ -56,7 +57,7 @@ const route = useRoute()
 const auth = useAuthStore()
 
 // 프로필 이미지 (임시로 지정 or 나중에 auth에 추가해도 됨)
-const profileImage = '/src/assets/img/profile/counselorProfile.png'
+// const profileImage = '/src/assets/img/profile/counselorProfile.png'
 
 onMounted(async () => {
     if (auth.isLogin && !auth.name) {
@@ -96,6 +97,11 @@ onMounted(async () => {
     margin-bottom: 32px;
     padding-left: 20px;
 }
+
+.logo-image {
+    width: 44px;
+}
+
 
 .logo-text {
     font-size: 22px;

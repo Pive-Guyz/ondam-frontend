@@ -1,11 +1,14 @@
 <template>
     <v-app style="background-color: #F5F7FA;">
-        <Header/>
+        <Header />
         <!-- <SideBar /> -->
         <v-main>
             <v-container class="py-15" v-if="data">
                 <div class="d-flex justify-end mb-6">
-                    <v-btn color="deep-purple" class="list-btn" large @click="goToLog">
+                    <v-btn color="deep-purple" class="list-btn" large @click="goToList">
+                        목록으로
+                    </v-btn>
+                    <v-btn color="primary" class="list-btn ml-3" large @click="goToLog">
                         상담서 작성
                     </v-btn>
                 </div>

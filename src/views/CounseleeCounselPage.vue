@@ -1,7 +1,10 @@
 <!-- src/views/CounseleeCounselPage.vue -->
 <template>
-    <v-container class="py-10 px-5">
-        <v-card>
+    <v-app style="background-color: #F5F7FA;">
+    <Header />
+    <v-main>
+    <v-container class="py-15">
+        <v-card class="">
             <!-- 상단: 뒤로가기 + 제목 -->
             <v-col>
                 <v-row class="ml-4 mt-5 align-center justify-space-between">
@@ -18,7 +21,7 @@
                     </v-btn>
                 </v-row>
             </v-col>
-            <v-table class="mt-4">
+            <v-table class="mt-4 pa-10">
                 <thead>
                     <tr>
                         <th>No</th>
@@ -68,15 +71,17 @@
             </v-table>
             <v-pagination v-model="currentPage" :length="pageCount" :total-visible="7" class="mt-4" />
         </v-card>
-
-
     </v-container>
+</v-main>
+</v-app>
 </template>
 
 <script setup>
 import { onMounted, ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { fetchCounselsByCounseleeId } from '@/api/counsel/counselQuery';
+
+import Header from '@/components/Header.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -98,7 +103,10 @@ const paginatedCounsels = computed(() => {
 });
 
 const goBack = () => {
-    router.back();
+    router.push({
+        name: 'CounseleePage',
+    });
+    // router.back();
 };
 
 onMounted(async () => {
@@ -148,11 +156,14 @@ const goToCounselingReport = (counsel) => {
         name: 'CounselingReport',
         params: { counselId: counsel.id }, // params로 넘기고
         query: {
+            counseleeId: counseleeId,
             reportTitle: counseleeName.value,
             reportDate: formatDate(counsel.createdAt),
             duration: counsel.time,
+            weather: counsel.weather,
             nextSchedule: formatDate(counsel.nextCreatedAt),
             counselorComment: counsel.opinion,
+            memberId: counsel.memberId,
         }
     });
 };

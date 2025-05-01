@@ -1,4 +1,10 @@
 <template>
+    <v-app style="background-color: #F5F7FA;">
+    <Header />
+    <!-- <MemberSidebar />  -->
+    <v-main>
+        <v-container class="py-10">
+
     <v-dialog v-model="isLoading" persistent max-width="300">
         <v-card class="pa-5" style="text-align: center;">
             <v-progress-circular indeterminate color="primary" size="40" class="mb-3" />
@@ -7,10 +13,14 @@
     </v-dialog>
 
     <div class="counseling-log-form container">
-        <h2 class="page-title">상담 일지 입력 페이지</h2>
-
+        <!-- <h2 class="page-title">상담 일지 입력 페이지</h2> -->
+        <div class="d-flex justify-end mb-6">
+        <v-btn color="deep-purple" class="list-btn" large @click="goToList">
+                        목록으로
+                    </v-btn>
+</div>
         <div class="form-card">
-            <h3 class="counselee-name">{{ counseleeName }} 상담일지</h3>
+            <div class="text-h6 font-weight-bold mb-1" style="color: #344FA3;">{{ counseleeName }} 상담일지</div>
             <p class="today-date">{{ today }}</p>
 
             <form @submit.prevent="submitForm">
@@ -73,15 +83,21 @@
             </form>
         </div>
     </div>
-
+</v-container>
+</v-main>
+</v-app>
 </template>
 
 <script setup>
 import { ref, reactive } from 'vue';
 import { createCounsel } from '@/api/counsel/counselCommand';
-import Counsel from '@/models/Counsel';
 import { useRouter, useRoute } from 'vue-router';
 import { requestGptPrompt } from '@/api/analysis/analysisCommand';
+
+import Header from '@/components/Header.vue';
+// import MemberSidebar from '../components/sidebar/MemberSidebar.vue';
+import Counsel from '@/models/Counsel';
+
 
 const route = useRoute();
 const router = useRouter();
@@ -103,6 +119,16 @@ const form = reactive({
     minute: '',
     nextDate: today,
 });
+
+const goToList = () => {
+    router.push({
+        name: 'CounseleeCounselPage',
+        params: { id: counseleeId },
+        query: {
+            name: String(counseleeName),
+        }
+    });
+};
 
 const validateForm = () => {
     if (!form.type.trim()) {
@@ -187,7 +213,7 @@ const submitForm = async () => {
                     counseleeId: counseleeId,
                     reportTitle: `${counseleeName}`,
                     reportDate: today,
-                    duration: `${paddedHour}시간 ${paddedMinute}분`,
+                    duration: `${paddedHour}:${paddedMinute}`,
                     weather: form.weather,
                     nextSchedule: form.nextDate,
                     counselorComment: form.opinion,

@@ -1,6 +1,10 @@
 <template>
+        <v-app style="background-color: #F5F7FA;">
+        <Header />
+        <MemberSideBar />
+        <v-main>
     <v-container class="d-flex justify-center py-10">
-        <v-card width="480" class="pa-8" elevation="0" style="background-color: #F9FAFC;">
+        <v-card width="480" class="pa-8" elevation="0" style="background-color: #fff;">
             <h2 class="text-h6 font-weight-bold mb-6">신규 등록</h2>
 
             <v-form>
@@ -32,13 +36,17 @@
                 <FormLabel text="주소" required />
                 <v-text-field v-model="form.address" placeholder="주소 입력" density="comfortable" variant="outlined"
                     hide-details class="mb-6" />
-
+                    <v-btn block color="#868e96" size="large" class="text-white mt-4 mb-3" @click="goToList">
+                    취소하기
+                </v-btn>
                 <v-btn block color="#3F51B5" size="large" class="text-white" @click="handleSubmit">
-                    등록
+                    등록하기
                 </v-btn>
             </v-form>
         </v-card>
     </v-container>
+</v-main>
+    </v-app>
 </template>
 
 <script setup>
@@ -48,6 +56,9 @@ import { useAuthStore } from '@/stores/auth';
 import { createCounselee } from '@/api/counselee/counseleeCommand';
 import { formatPhoneNumber, formatBirthday } from '@/utils/formatter';
 import FormLabel from '@/components/form/FormLabel.vue';
+
+import MemberSideBar from '@/components/sidebar/MemberSideBar.vue';
+import Header from '@/components/Header.vue';
 
 const router = useRouter();
 const authStore = useAuthStore()
@@ -60,6 +71,12 @@ const form = reactive({
     emePhone: '',
     address: '',
 })
+
+const goToList = () => {
+    router.push({
+        name: 'CounseleePage',
+    });
+};
 
 const handleSubmit = async () => {
     if (!form.name.trim()) {
