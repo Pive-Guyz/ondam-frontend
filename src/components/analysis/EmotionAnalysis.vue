@@ -11,7 +11,7 @@
             </div>
             <div class="chart-box">
                 <h3 class="chart-title">감정별 출현 빈도</h3>
-                <ApexCharts type="bar" :options="barOptions" :series="barSeries" :height="barHeight" />
+                <vue3ApexCharts type="bar" :options="barOptions" :series="barSeries" :height="barHeight" />
             </div>
         </div>
 
@@ -47,7 +47,7 @@
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
-import ApexCharts from 'vue3-apexcharts';
+import vue3ApexCharts from 'vue3-apexcharts';
 
 const route = useRoute();
 const counselId = route.params.counselId;
