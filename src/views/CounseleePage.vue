@@ -21,7 +21,7 @@
                         </v-col>
                         <v-col cols="12" md="3" class="text-right">
                             <v-btn color="primary" @click="handleRegister" class="mr=10">
-                                내담자 등록
+                                내담자 등록123123
                             </v-btn>
                         </v-col>
                     </v-row>
