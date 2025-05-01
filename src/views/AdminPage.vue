@@ -1,89 +1,102 @@
 <template>
-  <div class="admin-page-container">
-    <!-- ✅ 왼쪽 사이드바 -->
-    <AdminSidebar />
+  <v-app>
+    <Header />
 
-    <!-- ✅ 오른쪽 본문 -->
-    <div class="page-container">
-      <div class="mypage-container">
-        <!-- 프로필 이미지 -->
-        <div class="profile-image-section">
-          <img class="profile-image" :src="profileImageUrl" alt="프로필 이미지" />
-        </div>
+    <div class="admin-page-container">
+      <!-- ✅ 왼쪽 사이드바 -->
+      <AdminSidebar />
 
-        <!-- 정보 수정 폼 -->
-        <div class="profile-info-section">
-          <div class="form-rows">
-            <div class="form-row">
-              <div class="form-group">
-                <label>이름</label>
-                <input v-model="form.name" type="text" />
-              </div>
-              <div class="form-group">
-                <label>비밀번호</label>
-                <input v-model="form.password" type="password" />
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label>이메일</label>
-                <input v-model="form.email" type="email" />
-              </div>
-              <div class="form-group">
-                <label>생년월일</label>
-                <input v-model="form.birthday" type="text" />
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label>전화번호</label>
-                <input v-model="form.phone" type="tel" />
-              </div>
-              <div class="form-group">
-                <label>주소</label>
-                <input v-model="form.address" type="text" />
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label>가입일</label>
-                <input v-model="form.createdAt" readonly />
-              </div>
-              <div class="form-group">
-                <label>권한</label>
-                <input v-model="form.authority" disabled />
-              </div>
-            </div>
+      <!-- ✅ 오른쪽 본문 -->
+      <div class="page-container">
+        <div class="mypage-container">
+          <!-- ✅ 프로필 이미지 -->
+          <div class="profile-image-section">
+            <img class="profile-image" :src="profileImageUrl" alt="프로필 이미지" />
           </div>
 
-          <!-- 저장 버튼 -->
-          <div class="save-btn-wrapper">
-            <button class="save-btn" @click="save">저장</button>
+          <!-- 정보 수정 폼 -->
+          <div class="profile-info-section">
+            <div class="form-rows">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>이름</label>
+                  <input v-model="form.name" type="text"readonly />
+                </div>
+                <div class="form-group">
+                  <label>비밀번호</label>
+                  <input v-model="form.password" type="password" />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>이메일</label>
+                  <input v-model="form.email" type="email" readonly />
+                </div>
+                <div class="form-group">
+                  <label>생년월일</label>
+                  <input v-model="form.birthday" type="text" readonly/>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>전화번호</label>
+                  <input v-model="form.phone" type="tel" readonly />
+                </div>
+                <div class="form-group">
+                  <label>주소</label>
+                  <input v-model="form.address" type="text" />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>가입일</label>
+                  <input v-model="form.createdAt" readonly />
+                </div>
+                <div class="form-group">
+                  <label>권한</label>
+                  <input v-model="form.authority" disabled />
+                </div>
+              </div>
+            </div>
+
+            <!-- 저장 버튼 -->
+            <div class="save-btn-wrapper">
+              <button class="save-btn" @click="save">저장</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </v-app>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import AdminSidebar from '@/components/sidebar/AdminSidebar.vue' // 사이드푸터 컴포넌트
+import { ref, computed } from 'vue'
+import Header from '@/components/Header.vue'
+import AdminSidebar from '@/components/sidebar/AdminSidebar.vue'
+import { useAuthStore } from '@/stores/auth'
 
-const profileImageUrl = ref('https://via.placeholder.com/150')
+const auth = useAuthStore()
+
+// ✅ 프로필 이미지 URL 처리
+const profileImageUrl = computed(() =>
+  auth.profile_image_url && auth.profile_image_url.trim() !== ''
+    ? `/images/profile/${auth.profile_image_url}`
+    : new URL('@/assets/img/logo/logo.png', import.meta.url).href
+)
 
 const form = ref({
-  name: '서정훈',
-  password: '********',
-  email: 'charlenereed@gmail.com',
-  phone: '01026437581',
-  birthday: '19971216',
-  address: '연희동',
-  authority: '관리자',
-  createdAt: '2025-04-24'
+  name: auth.name,
+  password: '********', // 또는 auth.password (보안상 보통 비워두거나 마스킹 처리)
+  email: auth.email,
+  phone: auth.phone,
+  birthday: auth.birthday,
+  address: auth.address,
+  authority: auth.authority,
+  createdAt: auth.createdAt
 })
 
 const save = () => {
@@ -92,13 +105,11 @@ const save = () => {
 </script>
 
 <style scoped>
-/* ✅ 전체 레이아웃 */
 .admin-page-container {
   display: flex;
   min-height: 100vh;
 }
 
-/* ✅ 오른쪽 본문 영역 */
 .page-container {
   flex: 1;
   background-color: #f7f9fc;
