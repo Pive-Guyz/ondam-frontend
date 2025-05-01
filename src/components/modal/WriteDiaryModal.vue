@@ -1,19 +1,21 @@
 <template>
-  <div class="modal-overlay" @click.self="close">
-    <div class="modal">
-      <h2>📝 오늘의 일기 쓰기</h2>
+  <teleport to="body">
+    <div class="modal-overlay" @click.self="close">
+      <div class="modal">
+        <h2>📝 오늘의 일기 쓰기</h2>
 
-      <input v-model="title" type="text" placeholder="제목을 입력하세요" />
-      <textarea v-model="content" placeholder="내용을 입력하세요"></textarea>
+        <input v-model="title" type="text" placeholder="제목을 입력하세요" />
+        <textarea v-model="content" placeholder="내용을 입력하세요"></textarea>
 
-      <div class="btns">
-        <button class="submit" @click="submitDiary">작성하기</button>
-        <button class="cancel" @click="close">취소</button>
+        <div class="btns">
+          <button class="submit" @click="submitDiary">작성하기</button>
+          <button class="cancel" @click="close">취소</button>
+        </div>
       </div>
     </div>
-  </div>
+  </teleport>
 </template>
-기
+
 <script setup>
 import { ref } from 'vue'
 import axios from 'axios'
@@ -74,6 +76,7 @@ const submitDiary = async () => {
   position: fixed;
   top: 0;
   left: 0;
+  z-index: 3000; /* ✅ 헤더/사이드바보다 위로 */
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.4);
