@@ -1,82 +1,87 @@
 <!-- src/views/CounseleeCounselPage.vue -->
 <template>
-    <v-container class="py-10 px-5">
-        <v-card>
-            <!-- 상단: 뒤로가기 + 제목 -->
-            <v-col>
-                <v-row class="ml-4 mt-5 align-center justify-space-between">
-                    <div class="d-flex align-center">
-                        <v-icon icon="mdi-arrow-left" size="32" style="cursor: pointer;" @click="goBack" />
-                        <h2 class="text-h5 font-weight-bold ml-2">
-                            {{ counseleeName }}님의 상담 기록
-                        </h2>
-                    </div>
+    <v-app style="background-color: #F5F7FA;">
+        <Header />
+        <v-main>
+            <v-container class="py-15">
+                <v-card class="">
+                    <!-- 상단: 뒤로가기 + 제목 -->
+                    <v-col>
+                        <v-row class="ml-4 mt-5 align-center justify-space-between">
+                            <div class="d-flex align-center">
+                                <v-icon icon="mdi-arrow-left" size="32" style="cursor: pointer;" @click="goBack" />
+                                <h2 class="text-h5 font-weight-bold ml-2">
+                                    {{ counseleeName }}님의 상담 기록
+                                </h2>
+                            </div>
 
-                    <!-- 오른쪽 끝에 버튼 추가 -->
-                    <v-btn class="mr-4" color="primary" @click="goToCounselLogForm">
-                        상담서 작성
-                    </v-btn>
-                </v-row>
-            </v-col>
-            <v-table class="mt-4">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>상담일자</th>
-                        <th>상담유형</th>
-                        <th>상담내용 요약</th>
-                        <th>상담소견 요약</th>
-                        <th>다음상담일자</th>
-                        <th>소요시간</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(counsel, idx) in paginatedCounsels" :key="counsel.id" style="cursor: pointer;"
-                        @click="goToCounselingReport(counsel)">
-                        <td>{{ (currentPage - 1) * itemsPerPage + idx + 1 }}</td>
-                        <td>{{ formatDate(counsel.createdAt) }}</td>
-                        <td>{{ counsel.counselType || '-' }}</td>
+                            <!-- 오른쪽 끝에 버튼 추가 -->
+                            <v-btn class="mr-4" color="primary" @click="goToCounselLogForm">
+                                상담서 작성
+                            </v-btn>
+                        </v-row>
+                    </v-col>
+                    <v-table class="mt-4 pa-10">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>상담일자</th>
+                                <th>상담유형</th>
+                                <th>상담내용 요약</th>
+                                <th>상담소견 요약</th>
+                                <th>다음상담일자</th>
+                                <th>소요시간</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(counsel, idx) in paginatedCounsels" :key="counsel.id" style="cursor: pointer;"
+                                @click="goToCounselingReport(counsel)">
+                                <td>{{ (currentPage - 1) * itemsPerPage + idx + 1 }}</td>
+                                <td>{{ formatDate(counsel.createdAt) }}</td>
+                                <td>{{ counsel.counselType || '-' }}</td>
 
-                        <!-- 상담내용 요약 -->
-                        <td>
-                            <v-tooltip location="top">
-                                <template #activator="{ props }">
-                                    <span v-bind="props">{{ shorten(counsel.content) }}</span>
-                                </template>
-                                <template #default>
-                                    <div class="tooltip-text">{{ counsel.content }}</div>
-                                </template>
-                            </v-tooltip>
-                        </td>
+                                <!-- 상담내용 요약 -->
+                                <td>
+                                    <v-tooltip location="top">
+                                        <template #activator="{ props }">
+                                            <span v-bind="props">{{ shorten(counsel.content) }}</span>
+                                        </template>
+                                        <template #default>
+                                            <div class="tooltip-text">{{ counsel.content }}</div>
+                                        </template>
+                                    </v-tooltip>
+                                </td>
 
-                        <!-- 상담소견 요약 -->
-                        <td>
-                            <v-tooltip location="top">
-                                <template #activator="{ props }">
-                                    <span v-bind="props">{{ shorten(counsel.opinion) }}</span>
-                                </template>
-                                <template #default>
-                                    <div class="tooltip-text">{{ counsel.opinion }}</div>
-                                </template>
-                            </v-tooltip>
-                        </td>
+                                <!-- 상담소견 요약 -->
+                                <td>
+                                    <v-tooltip location="top">
+                                        <template #activator="{ props }">
+                                            <span v-bind="props">{{ shorten(counsel.opinion) }}</span>
+                                        </template>
+                                        <template #default>
+                                            <div class="tooltip-text">{{ counsel.opinion }}</div>
+                                        </template>
+                                    </v-tooltip>
+                                </td>
 
-                        <td>{{ formatDate(counsel.nextCreatedAt) }}</td>
-                        <td>{{ counsel.time || '-' }}</td>
-                    </tr>
-                </tbody>
-            </v-table>
-            <v-pagination v-model="currentPage" :length="pageCount" :total-visible="7" class="mt-4" />
-        </v-card>
-
-
-    </v-container>
+                                <td>{{ formatDate(counsel.nextCreatedAt) }}</td>
+                                <td>{{ counsel.time || '-' }}</td>
+                            </tr>
+                        </tbody>
+                    </v-table>
+                    <v-pagination v-model="currentPage" :length="pageCount" :total-visible="7" class="mt-4" />
+                </v-card>
+            </v-container>
+        </v-main>
+    </v-app>
 </template>
 
 <script setup>
 import { onMounted, ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { fetchCounselsByCounseleeId } from '@/api/counsel/counselQuery';
+
+import Header from '@/components/Header.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -98,7 +103,10 @@ const paginatedCounsels = computed(() => {
 });
 
 const goBack = () => {
-    router.back();
+    router.push({
+        name: 'CounseleePage',
+    });
+    // router.back();
 };
 
 onMounted(async () => {
@@ -148,11 +156,14 @@ const goToCounselingReport = (counsel) => {
         name: 'CounselingReport',
         params: { counselId: counsel.id }, // params로 넘기고
         query: {
+            counseleeId: counseleeId,
             reportTitle: counseleeName.value,
             reportDate: formatDate(counsel.createdAt),
             duration: counsel.time,
+            weather: counsel.weather,
             nextSchedule: formatDate(counsel.nextCreatedAt),
             counselorComment: counsel.opinion,
+            memberId: counsel.memberId,
         }
     });
 };
