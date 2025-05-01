@@ -57,7 +57,7 @@ import { createCounselee } from '@/api/counselee/counseleeCommand';
 import { formatPhoneNumber, formatBirthday } from '@/utils/formatter';
 import FormLabel from '@/components/form/FormLabel.vue';
 
-import MemberSideBar from '@/components/sidebar/MemberSideBar.vue';
+import MemberSideBar from '@/components/sidebar/MemberSidebar.vue';
 import Header from '@/components/Header.vue';
 
 const router = useRouter();
