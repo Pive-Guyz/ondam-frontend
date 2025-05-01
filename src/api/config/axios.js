@@ -1,12 +1,11 @@
 import axios from 'axios';
 
 const instance = axios.create({
-    // Ingress 환경에서는 '/api'로 백엔드 프록시 처리됨
-    baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
+    baseURL: import.meta.env.VITE_API_BASE_URL,
     headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json"
     },
-    timeout: 10000,
+    timeout: 10000
 });
 
 // 요청 인터셉터 (필요시)
