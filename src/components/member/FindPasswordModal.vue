@@ -1,90 +1,88 @@
 <template>
-    <div class="modal-overlay" @click.self="close">
-      <div class="modal-box">
-        <p class="title">비밀번호 찾기를 위해</p>
-        <p class="subtitle">이름과 이메일을 입력해주세요</p>
-  
-        <input class="input" v-model="name" placeholder="이름" />
-        <input class="input" v-model="email" placeholder="이메일" />
-  
-        <button class="confirm-btn" @click="confirm">확인</button>
-      </div>
+  <div class="modal-overlay">
+    <div class="modal-box">
+      <h2 class="title">비밀번호 찾기</h2>
+      <input v-model="name" class="input" type="text" placeholder="이름 입력" />
+      <input v-model="email" class="input" type="email" placeholder="이메일 입력" />
+
+      <button class="submit-btn" @click="findPassword">비밀번호 찾기</button>
+      <button class="close-btn" @click="$emit('close')">닫기</button>
+
+      <p v-if="passwordResult" class="result-text">
+        임시 비밀번호: <strong>{{ passwordResult }}</strong><br />
+        <br>이메일을 확인하시고</br>
+         <br>로그인 후 비밀번호를 꼭 변경해주세요.</br>
+      </p>
     </div>
-  </template>
-  
-  <script setup>
-  import { ref } from 'vue'
-  const emit = defineEmits(['close', 'found'])
-const confirm = () => {
-  emit('found') // 비번찾기 완료 모달 열기
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import { findPasswordByNameAndEmail } from '@/api/member/memberQuery'
+
+const name = ref('')
+const email = ref('')
+const passwordResult = ref('')
+
+const findPassword = async () => {
+  try {
+    const res = await findPasswordByNameAndEmail(name.value, email.value)
+    passwordResult.value = res.data
+  } catch (e) {
+    alert('입력한 정보와 일치하는 비밀번호가 없습니다.')
+  }
 }
-  
-  const name = ref('')
-  const email = ref('')
-  
-  const submit = () => {
-    // 여기에 API 연결 가능
-    emit('close')
-  }
-  
-  const close = () => emit('close')
-  </script>
-  
-  <style scoped>
-  .modal-overlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-  }
-  
-  .modal-box {
-    background: white;
-    border: 2px solid #3c8df3;
-    border-radius: 16px;
-    padding: 40px 30px;
-    width: 300px;
-    text-align: center;
-  }
-  
-  .title {
-    color: #c3c3c3;
-    font-size: 16px;
-    margin-bottom: 4px;
-  }
-  
-  .subtitle {
-    color: #c3c3c3;
-    font-size: 14px;
-    margin-bottom: 20px;
-  }
-  
-  .input {
-    width: 100%;
-    margin-bottom: 12px;
-    padding: 10px 14px;
-    border-radius: 999px;
-    border: 1px solid #c3c3c3;
-    color: #666;
-    font-size: 14px;
-    outline: none;
-  }
-  
-  .confirm-btn {
-    background: white;
-    border: 1px solid #c3c3c3;
-    color: #999;
-    border-radius: 9999px;
-    padding: 8px 20px;
-    font-size: 14px;
-    cursor: pointer;
-  }
-  .confirm-btn:hover {
-    background: #f6f6f6;
-  }
-  </style>
-  
+</script>
+
+<style scoped>
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal-box {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  width: 350px;
+  text-align: center;
+}
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+.input {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  font-size: 14px;
+}
+.submit-btn,
+.close-btn {
+  padding: 10px 20px;
+  margin: 8px 5px 0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.submit-btn {
+  background-color: #3c8df3;
+  color: white;
+}
+.close-btn {
+  background-color: #ddd;
+}
+.result-text {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #333;
+}
+</style>

@@ -1,90 +1,86 @@
 <template>
-    <div class="modal-overlay" @click.self="close">
-      <div class="modal-box">
-        <p class="title">이메일 찾기를 위해</p>
-        <p class="subtitle">이름과 전화번호를 입력해주세요</p>
-  
-        <input class="input" v-model="name" placeholder="이름" />
-        <input class="input" v-model="phone" placeholder="전화번호" />
-  
-        <button class="confirm-btn" @click="confirm">확인</button>
-      </div>
+  <div class="modal-overlay">
+    <div class="modal-box">
+      <h2 class="title">이메일 찾기</h2>
+      <input v-model="name" class="input" type="text" placeholder="이름 입력" />
+      <input v-model="phone" class="input" type="text" placeholder="전화번호 입력" />
+
+      <button class="submit-btn" @click="findEmail">이메일 찾기</button>
+      <button class="close-btn" @click="$emit('close')">닫기</button>
+
+      <p v-if="emailResult" class="result-text">
+        회원님의 이메일은 <strong>{{ emailResult }}</strong> 입니다.
+      </p>
     </div>
-  </template>
-  
-  <script setup>
-  import { ref } from 'vue'
-  const emit = defineEmits(['close', 'found'])
-const confirm = () => {
-  emit('found') // 부모에게 알려서 다음 모달 띄우게
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import { findEmailByNameAndPhone } from '@/api/member/memberQuery'
+
+const name = ref('')
+const phone = ref('')
+const emailResult = ref('')
+
+const findEmail = async () => {
+  try {
+    const res = await findEmailByNameAndPhone(name.value, phone.value)
+    emailResult.value = res.data
+  } catch (e) {
+    alert('일치하는 이메일이 없습니다.')
+  }
 }
-  
-  const name = ref('')
-  const phone = ref('')
-  
-  const submit = () => {
-    // 여기에 API 호출 가능
-    emit('close')
-  }
-  
-  const close = () => emit('close')
-  </script>
-  
-  <style scoped>
-  .modal-overlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-  }
-  
-  .modal-box {
-    background: white;
-    border: 2px solid #3c8df3;
-    border-radius: 16px;
-    padding: 40px 30px;
-    width: 300px;
-    text-align: center;
-  }
-  
-  .title {
-    color: #c3c3c3;
-    font-size: 16px;
-    margin-bottom: 4px;
-  }
-  
-  .subtitle {
-    color: #c3c3c3;
-    font-size: 14px;
-    margin-bottom: 20px;
-  }
-  
-  .input {
-    width: 100%;
-    margin-bottom: 12px;
-    padding: 10px 14px;
-    border-radius: 999px;
-    border: 1px solid #c3c3c3;
-    color: #666;
-    font-size: 14px;
-    outline: none;
-  }
-  
-  .confirm-btn {
-    background: white;
-    border: 1px solid #c3c3c3;
-    color: #999;
-    border-radius: 9999px;
-    padding: 8px 20px;
-    font-size: 14px;
-    cursor: pointer;
-  }
-  .confirm-btn:hover {
-    background: #f6f6f6;
-  }
-  </style>
-  
+</script>
+
+<style scoped>
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal-box {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  width: 350px;
+  text-align: center;
+}
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+.input {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  font-size: 14px;
+}
+.submit-btn,
+.close-btn {
+  padding: 10px 20px;
+  margin: 8px 5px 0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.submit-btn {
+  background-color: #3c8df3;
+  color: white;
+}
+.close-btn {
+  background-color: #ddd;
+}
+.result-text {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #333;
+}
+</style>
