@@ -1,12 +1,8 @@
 <template>
     <v-card class="pa-6">
         <!-- 제목 -->
-        <v-card-title class="text-h5 font-weight-bold">
-            신고
-        </v-card-title>
-        <v-card-subtitle class="subtitle-text">
-            신고 내역을 확인할 수 있습니다.
-        </v-card-subtitle>
+        <v-card-title class="text-h5 font-weight-bold">신고</v-card-title>
+        <v-card-subtitle class="subtitle-text">신고 내역을 확인할 수 있습니다.</v-card-subtitle>
 
         <!-- 필터 -->
         <v-row justify="end" class="mb-4">
@@ -21,9 +17,9 @@
         </v-row>
 
         <!-- 리스트 테이블 -->
-        <List :headers="headers" :items="paginatedReports.map(({ details, ...rest }) => rest)" @row-click="openModal">
-            <template #status="{ value }">
-                <v-chip :class="statusClass(value)" class="status-chip" variant="tonal" size="small">
+        <List :headers="headers" :items="paginatedReports" @row-click="openModal">
+            <template #처리 상태="{ value }">
+                <v-chip :class="['status-chip', statusClass(value)]" variant="tonal" size="small">
                     {{ value }}
                 </v-chip>
             </template>
@@ -31,7 +27,7 @@
 
         <!-- 상세 모달 -->
         <ReportDetailModal v-model:isOpen="isDetailOpen" :reportData="selectedReport" @view="handleView"
-            @process="openProcessModal" />
+            @process="openProcessModal" @refresh="fetchReports" />
 
         <!-- 처리 모달 -->
         <ReportProcessModal v-model:isOpen="isProcessOpen" @submit="handleStatusSubmit" />
@@ -45,12 +41,14 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import List from '@/components/report/List.vue'
 import Pagination from '@/components/Pagination.vue'
 import ReportDetailModal from '@/components/report/ReportDetailModal.vue'
 import ReportProcessModal from '@/components/report/ReportProcessModal.vue'
-import reportsData from '@/json/reports.json'
+import { fetchReportList, fetchReportDetail } from '@/api/report/reportQuery'
+import { updateReportStatus, approveReport } from '@/api/report/reportCommand'
+import { statusToText, textToStatus } from '@/utils/reportUtils'
 
 const selectedSort = ref('최근순')
 const selectedStatus = ref('전체')
@@ -59,93 +57,95 @@ const itemsPerPage = 10
 const isDetailOpen = ref(false)
 const isProcessOpen = ref(false)
 const selectedReport = ref(null)
+const reports = ref([])
 
-watch([selectedSort, selectedStatus], () => {
-    page.value = 1
-})
+onMounted(fetchReports)
 
-const headers = [
-    '신고한 회원',
-    '신고당한 회원',
-    '신고 사유',
-    '작성 시각',
-    '신고 유형',
-    '처리 상태'
-]
-
-const reports = reportsData
-
+const headers = ['신고한 회원', '신고당한 회원', '신고 사유', '작성 시각', '신고 유형', '처리 상태']
 const sortOptions = ['최근순', '오래된순']
 const statusOptions = ['전체', 'Pending', 'Approved', 'Rejected']
 
-const filteredReports = computed(() => {
-    let result = reports
-
-    if (selectedStatus.value !== '전체') {
-        result = result.filter(r => r.status === selectedStatus.value)
-    }
-
-    if (selectedSort.value === '오래된순') {
-        result = [...result].sort((a, b) => new Date(a.date) - new Date(b.date))
-    } else {
-        result = [...result].sort((a, b) => new Date(b.date) - new Date(a.date))
-    }
-
-    return result
-})
-
-const paginatedReports = computed(() => {
-    const start = (page.value - 1) * itemsPerPage
-    const end = start + itemsPerPage
-    return filteredReports.value.slice(start, end)
-})
-
-// 리스트에서 한 줄 클릭 → 상세 모달 열기
-function openModal(rowWithoutDetails) {
-    const found = paginatedReports.value.find(report =>
-        report.reporter === rowWithoutDetails.reporter &&
-        report.reported === rowWithoutDetails.reported &&
-        report.reason === rowWithoutDetails.reason &&
-        report.date === rowWithoutDetails.date &&
-        report.type === rowWithoutDetails.type &&
-        report.status === rowWithoutDetails.status
-    )
-
-    if (found) {
-        selectedReport.value = found // ✅ details까지 포함된 데이터
-        isDetailOpen.value = true
+// 목록 조회
+async function fetchReports() {
+    const statusCode = selectedStatus.value !== '전체' ? textToStatus(selectedStatus.value) : null
+    const order = selectedSort.value === '오래된순' ? 'asc' : 'desc'
+    try {
+        const res = await fetchReportList({ status: statusCode, order })
+        reports.value = res.data.map(r => ({
+            '신고한 회원': r.reporterName,
+            '신고당한 회원': r.reportedMemberName,
+            '신고 사유': r.reportCategoryName,
+            '작성 시각': r.createdAt.slice(0, 16).replace('T', ' '),
+            '신고 유형': r.diaryId != null ? `일기 #${r.diaryId}` : `답장 #${r.replyId}`,
+            '처리 상태': statusToText(r.status),
+            raw: r
+        }))
+    } catch (e) {
+        console.error('신고 목록 조회 실패', e)
     }
 }
 
-// 상세 모달 → 처리하기 버튼 클릭
+watch([selectedSort, selectedStatus], () => {
+    page.value = 1
+    fetchReports()
+}, { immediate: true })
+
+const filteredReports = computed(() => reports.value)
+
+const paginatedReports = computed(() => {
+    const start = (page.value - 1) * itemsPerPage
+    return filteredReports.value.slice(start, start + itemsPerPage)
+})
+
+// ✅ 상세 모달 열기 - fetchReportDetail로 다시 조회
+async function openModal(row) {
+    try {
+        const res = await fetchReportDetail(row.raw.id)
+        selectedReport.value = res.data
+        console.log(selectedReport.value)
+        isDetailOpen.value = true
+    } catch (e) {
+        console.error('신고 상세 조회 실패', e)
+        alert('신고 상세 정보를 불러오지 못했습니다.')
+    }
+}
+
 function openProcessModal() {
     isDetailOpen.value = false
     isProcessOpen.value = true
 }
 
-// 처리 모달 → 완료 버튼 클릭
-function handleStatusSubmit(newStatus) {
+
+async function handleStatusSubmit(newStatusText) {
     if (selectedReport.value) {
-        selectedReport.value.status = newStatus
+        const statusCode = textToStatus(newStatusText)
+        const reportId = selectedReport.value.reportId
+        console.log('reportId', reportId)
+        console.log('🧪 최종 reportId:', reportId)
+        try {
+            await updateReportStatus(reportId, statusCode)
+            if (statusCode === 1) {
+                await approveReport(reportId)
+            }
+            await fetchReports()
+        } catch (err) {
+            console.error('신고 상태 변경 실패', err)
+            alert('처리 중 오류가 발생했습니다.')
+        }
+        isProcessOpen.value = false
     }
-    isProcessOpen.value = false
 }
 
-// 상세 모달 → 컨텐츠 보기 클릭
 function handleView() {
     console.log('컨텐츠 보기 클릭')
 }
 
 function statusClass(status) {
     switch (status) {
-        case 'Pending':
-            return 'status-chip pending'
-        case 'Approved':
-            return 'status-chip approved'
-        case 'Rejected':
-            return 'status-chip rejected'
-        default:
-            return 'status-chip'
+        case 'Pending': return 'pending';
+        case 'Approved': return 'approved';
+        case 'Rejected': return 'rejected';
+        default: return '';
     }
 }
 </script>
@@ -157,7 +157,7 @@ function statusClass(status) {
     margin-bottom: 24px;
 }
 
-.status-chip {
+::v-deep .status-chip {
     border-width: 2px;
     font-weight: 500;
     width: 90px;
@@ -165,21 +165,18 @@ function statusClass(status) {
     border-radius: 999px;
 }
 
-.status-chip.pending {
-    color: #6366F1;
-    background-color: #E0E7FF;
-    border: 1px solid #6366F1;
+::v-deep .status-chip.pending {
+    color: #6366F1 !important;
+    background-color: #E0E7FF !important;
 }
 
-.status-chip.approved {
-    color: #FF5252;
-    background-color: #FFE5E5;
-    border: 1px solid #FF5252;
+::v-deep .status-chip.approved {
+    color: #FF5252 !important;
+    background-color: #FFE5E5 !important;
 }
 
-.status-chip.rejected {
-    color: #757575;
-    background-color: #EEEEEE;
-    border: 1px solid #BDBDBD;
+::v-deep .status-chip.rejected {
+    color: #757575 !important;
+    background-color: #EEEEEE !important;
 }
 </style>
