@@ -1,6 +1,7 @@
 <template>
     <v-app style="background-color: #F5F7FA;">
-        <SideBar />
+        <Header />
+        <MemberSideBar />
         <v-main>
             <v-container class="py-15 ">
                 <v-card class="pl-10 pt-10">
@@ -70,11 +71,12 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { fetchCounselees, searchCounseleesByName } from '@/api/counselee/counseleeQuery';
-import Counselee from '@/models/Counselee';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 
-import SideBar from '@/components/sidebar/MemberSidebar.vue';
+import Header from '@/components/Header.vue';
+import MemberSideBar from '@/components/sidebar/MemberSideBar.vue';
+import Counselee from '@/models/Counselee';
 
 const router = useRouter();
 const authStore = useAuthStore();

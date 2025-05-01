@@ -1,5 +1,6 @@
 <template>
     <v-app>
+        <Header/>
         <v-main class="main-background">
             <v-container fluid class="d-flex pa-0" style="height: 100vh;">
                 
@@ -18,6 +19,7 @@
 <script setup>
 import AdminSidebar from '@/components/sidebar/AdminSidebar.vue'
 import ReportCard from '@/components/report/ReportCard.vue'
+import Header from '@/components/Header.vue';
 </script>
 
 <style scoped>

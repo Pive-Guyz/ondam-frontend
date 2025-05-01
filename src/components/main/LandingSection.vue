@@ -38,13 +38,14 @@ defineProps({
 .text-block {
     flex: 1;
     min-width: 320px;
+    color: #344FA3;
 }
 
 .text-block h2 {
     font-size: 28px;
     font-weight: 700;
     margin-bottom: 16px;
-    color: #1e1e2f;
+
 }
 
 .text-block p {
@@ -65,7 +66,6 @@ defineProps({
     max-height: 420px;
     object-fit: contain;
     border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 }
 
 @media (max-width: 960px) {
