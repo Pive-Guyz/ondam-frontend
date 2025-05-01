@@ -74,7 +74,7 @@ import Counselee from '@/models/Counselee';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 
-import SideBar from '@/components/sidebar/MemberSideBar.vue';
+import SideBar from '@/components/sidebar/MemberSidebar.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();

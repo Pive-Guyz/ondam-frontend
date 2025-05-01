@@ -73,7 +73,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import SideBar from '@/components/sidebar/MemberSideBar.vue';
+import SideBar from '@/components/sidebar/MemberSidebar.vue';
 
 const profileImageUrl = ref('https://via.placeholder.com/150')
 
