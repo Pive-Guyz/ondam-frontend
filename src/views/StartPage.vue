@@ -49,7 +49,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-const authStore = useAuthStore(); // 이 줄이 빠졌거나 위치가 잘못됨
+const authStore = useAuthStore();
 
 import FindEmailModal from '@/components/member/FindEmailModal.vue'
 import EmailFoundModal from '@/components/member/EmailFoundModal.vue'
@@ -59,6 +59,7 @@ import PasswordFoundModal from '@/components/member/PasswordFoundModal.vue'
 // ✅ Query API만 가져와야 함
 import { loginMember } from '@/api/member/memberQuery'
 import { fetchAllMembers } from '@/api/member/memberQuery';
+import axios from 'axios'                     // ✅ API 요청에 필요
 const email = ref('')
 const password = ref('')
 
@@ -83,6 +84,7 @@ const login = async () => {
     );
 
     if (!matched) {
+
       alert('이메일 또는 비밀번호가 일치하지 않습니다.');
       return;
     }
