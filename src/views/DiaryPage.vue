@@ -123,7 +123,7 @@ const deleteDiary = async (diaryId) => {
   }
 }
 
-const goHome = () => router.push('/main')
+const goHome = () => router.push('/')
 const goToReceivedDiary = () => router.push('/diary/received')
 const goToMyReplies = () => router.push('/diary/reply')
 
