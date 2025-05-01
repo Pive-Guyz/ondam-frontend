@@ -1,7 +1,10 @@
 <template>
   <v-app class="main-background">
+    <!-- 헤더 추가 -->
+    <Header />
 
-    <MemberSidebar /> <!-- 사이드바 -->
+    <!-- 사이드바 -->
+    <MemberSidebar /> 
 
     <v-main>
       <v-container class="diary-container" fluid>
@@ -53,8 +56,7 @@
           <button class="back-btn" @click="goBack">돌아가기</button>
         </div>
 
-        
-
+        <!-- ReceivedDiaryModal을 사용하여 모달 띄우기 -->
         <ReceivedDiaryModal
           v-if="selectedDiary"
           :diary="selectedDiary"
@@ -75,6 +77,7 @@ import ReceivedDiaryModal from '../components/modal/ReceivedDiaryModal.vue'
 import pencilMan from '@/assets/img/pencilMan.jpeg'
 import basicImage from '@/assets/img/profile/counselorProfile.png'
 import MemberSidebar from '@/components/sidebar/MemberSidebar.vue'
+import Header from '../components/Header.vue'
 
 
 const router = useRouter()
@@ -154,23 +157,32 @@ onMounted(() => {
 </script>
 
 
-
 <style scoped>
+
+/* 헤더 스타일 */
+.v-app-bar {
+  position: fixed; /* 고정 위치 */
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2000; /* 헤더가 콘텐츠 위에 표시되도록 */
+}
+
+/* 사이드바와 콘텐츠가 헤더 아래에 배치되도록 margin-top 추가 */
 .diary-container {
-  background-color: #f5f7fa;
-  padding: 60px 20px;
-  min-height: 100vh;
-  font-family: 'Roboto', sans-serif;
   display: flex;
-  justify-content: center; /* ✅ 중앙 정렬 */
+  justify-content: center;
+  padding-top: 100px; /* Header 고려 */
+  padding-bottom: 60px;
   box-sizing: border-box;
 }
 
 .diary-content {
-  max-width: 1000px;
+  max-width: 800px;
   width: 100%;
 }
 
+/* 카드 박스 스타일 */
 .card-box {
   background: white;
   max-width: 1000px;
@@ -182,6 +194,7 @@ onMounted(() => {
   align-items: center;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
 }
+
 
 .text-zone {
   text-align: left;
@@ -199,11 +212,6 @@ onMounted(() => {
   color: #555;
 }
 
-.pencil-image {
-  width: 80px;
-  height: 80px;
-}
-
 .empty-message {
   margin-top: 60px;
   font-size: 18px;
@@ -212,9 +220,9 @@ onMounted(() => {
 
 .card-list {
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 20px;
+  flex-wrap: nowrap; /* 줄 바꿈 안 되게 */
+  justify-content: space-between;
+  gap: 16px;
   max-width: 1000px;
   margin: 0 auto 60px;
 }
@@ -223,11 +231,11 @@ onMounted(() => {
   background-color: #2f1c82;
   color: white;
   border-radius: 16px;
-  width: 280px;
+  width: 312px; /* 3개가 정확히 들어가는 너비 */
   padding: 20px;
   text-align: left;
   position: relative;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s;
   cursor: pointer;
 }
