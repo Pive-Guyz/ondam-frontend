@@ -1,57 +1,67 @@
 <template>
-  <div class="diary-container">
-    <div class="card-box">
-      <div class="text-zone">
-        <h2 class="main-title">Today’s Diary</h2>
-        <p class="sub-text">오늘의 일기를 읽고 답장을 보내보세요!</p>
-      </div>
-      <div class="pencil-wrapper">
-        <v-img
-          :src="pencilMan"
-          alt="연필맨"
-          width="80"
-          height="80"
-          cover
-        ></v-img>
-      </div>
-    </div>
+  <v-app class="main-background">
 
-    <div v-if="receivedDiaryList.length === 0" class="empty-message">
-      아직 받은 다이어리가 없습니다. 📨
-    </div>
+    <MemberSidebar /> <!-- 사이드바 -->
 
-    <div v-else class="card-list">
-      <div
-        class="diary-card"
-        v-for="diary in receivedDiaryList"
-        :key="diary.id"
-        @click="openDiaryDetail(diary)"
-      >
-        <div class="card-header">
-          <img
-            class="profile"
-            :src="diary.profileImage || basicImage"
-            alt="profile"
-          />
-          <span class="card-title">{{ truncateTitle(diary.title) }}</span>
+    <v-main>
+      <v-container class="diary-container" fluid>
+        <div class="diary-content">
+          <div class="card-box">
+            <div class="text-zone">
+              <h2 class="main-title">Today’s Diary</h2>
+              <p class="sub-text">오늘의 일기를 읽고 답장을 보내보세요!</p>
+            </div>
+            <div class="pencil-wrapper">
+              <v-img
+                :src="pencilMan"
+                alt="연필맨"
+                width="80"
+                height="80"
+                cover
+              ></v-img>
+            </div>
+          </div>
+
+          <div v-if="receivedDiaryList.length === 0" class="empty-message">
+            아직 받은 다이어리가 없습니다. 📨
+          </div>
+
+          <div v-else class="card-list">
+            <div
+              class="diary-card"
+              v-for="diary in receivedDiaryList"
+              :key="diary.id"
+              @click="openDiaryDetail(diary)"
+            >
+              <div class="card-header">
+                <img
+                  class="profile"
+                  :src="diary.profileImage || basicImage"
+                  alt="profile"
+                />
+                <span class="card-title">{{ truncateTitle(diary.title) }}</span>
+              </div>
+              <p class="card-preview">
+                {{ truncateContent(diary.content || '일기 내용 미리보기입니다.') }}
+              </p>
+              <button class="read-button">상세 보기</button>
+            </div>
+          </div>
+          <button class="back-btn" @click="goBack">돌아가기</button>
         </div>
-        <p class="card-preview">
-          {{ truncateContent(diary.content || '일기 내용 미리보기입니다.') }}
-        </p>
-        <button class="read-button">상세 보기</button>
-      </div>
-    </div>
 
-    <button class="back-btn" @click="goBack">돌아가기</button>
+        
 
-    <ReceivedDiaryModal
-      v-if="selectedDiary"
-      :diary="selectedDiary"
-      :diaryId="selectedDiary.diaryId"
-      @close="closeDiaryModal"
-      @openReplyModal="openReplyModal"
-    />
-  </div>
+        <ReceivedDiaryModal
+          v-if="selectedDiary"
+          :diary="selectedDiary"
+          :diaryId="selectedDiary.diaryId"
+          @close="closeDiaryModal"
+          @openReplyModal="openReplyModal"
+        />
+      </v-container>
+    </v-main>
+  </v-app>
 </template>
 
 
@@ -63,6 +73,8 @@ import { useAuthStore } from '@/stores/auth'
 import ReceivedDiaryModal from '../components/modal/ReceivedDiaryModal.vue'
 import pencilMan from '@/assets/img/pencilMan.jpeg'
 import basicImage from '@/assets/img/profile/counselorProfile.png'
+import MemberSidebar from '@/components/sidebar/MemberSidebar.vue'
+
 
 const router = useRouter()
 const authStore = useAuthStore()  // ✅ Pinia store 가져오기
@@ -150,7 +162,14 @@ onMounted(() => {
   padding: 60px 20px;
   min-height: 100vh;
   font-family: 'Roboto', sans-serif;
-  text-align: center;
+  display: flex;
+  justify-content: center; /* ✅ 중앙 정렬 */
+  box-sizing: border-box;
+}
+
+.diary-content {
+  max-width: 1000px;
+  width: 100%;
 }
 
 .card-box {

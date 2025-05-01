@@ -1,5 +1,8 @@
 <template>
   <v-app class="main-background">
+
+    <MemberSidebar /> <!-- 사이드바 추가 -->
+
     <v-container class="fill-height d-flex justify-center align-center">
       <v-card class="pa-6 rounded-xl" max-width="1000" height="90vh" elevation="3">
         <!-- 제목 영역 -->
@@ -63,6 +66,7 @@ import DiaryModal from '@/components/modal/DiaryModal.vue'
 import WriteDiaryModal from '@/components/modal/WriteDiaryModal.vue'
 import { fetchDiariesByMemberId as fetchDiariesByMemberIdAPI, deleteDiary as deleteDiaryAPI } from '@/api/diary/diaryCommand'
 import pencilMan from '@/assets/img/pencilMan.jpeg'
+import MemberSidebar from '@/components/sidebar/MemberSidebar.vue'
 
 const authStore = useAuthStore()
 const router = useRouter()
