@@ -1,62 +1,80 @@
+DiaryPage.vue
+
 <template>
   <v-app class="main-background">
 
-    <MemberSidebar /> <!-- 사이드바 추가 -->
+    <Header />
+    <MemberSidebar />
 
-    <v-container class="fill-height d-flex justify-center align-center">
-      <v-card class="pa-6 rounded-xl" max-width="1000" height="90vh" elevation="3">
-        <!-- 제목 영역 -->
-        <v-row align="center" class="mb-6">
-          <v-col cols="auto">
-            <v-img :src="pencilMan" alt="연필맨" width="80" height="80" cover />
-          </v-col>
-          <v-col>
-            <h2 class="text-h4 font-weight-bold">My Diary List</h2>
-            <p class="text-subtitle-1 text-grey">내가 작성한 일기 목록</p>
-          </v-col>
-          <v-col cols="auto">
-            <v-btn color="teal" @click="openWriteDiaryModal">오늘의 일기 작성하기</v-btn>
-          </v-col>
-        </v-row>
-
-        <!-- 일기 목록 영역 -->
-        <v-sheet
-          class="pa-4"
-          elevation="1"
-          rounded
-          style="height: 60vh; overflow-y: auto;"
+    <v-container
+      fluid
+      class="d-flex justify-center"
+      style="padding-top: 80px; padding-left: 280px; padding-right: 24px; padding-bottom: 32px; min-height: 100vh;"
+    >
+      <div
+        class="d-flex flex-column align-center"
+        style="width: 100%; max-width: 1000px;"
+      >
+        <v-card
+          class="pa-6 rounded-xl"
+          elevation="3"
+          style="width: 100%; max-height: calc(100vh - 160px); overflow-y: auto;"
         >
-          <div v-if="diaryList.length === 0" class="text-center text-grey mt-10">
-            아직 작성한 일기가 없습니다 ✍️
-          </div>
+          <!-- 제목 -->
+          <v-row align="center" class="mb-6">
+            <v-col cols="auto">
+              <v-img :src="pencilMan" alt="연필맨" width="80" height="80" cover />
+            </v-col>
+            <v-col>
+              <h2 class="text-h4 font-weight-bold">My Diary List</h2>
+              <p class="text-subtitle-1 text-grey">내가 작성한 일기 목록</p>
+            </v-col>
+            <v-col cols="auto">
+              <v-btn color="teal" @click="openWriteDiaryModal">오늘의 일기 작성하기</v-btn>
+            </v-col>
+          </v-row>
 
-          <v-list v-else>
-            <v-list-item
-              v-for="diary in diaryList"
-              :key="diary.id"
-              @click="openDiaryModal(diary)"
-              class="mb-2"
-            >
-              <v-list-item-title>{{ diary.title }}</v-list-item-title>
-              <v-list-item-subtitle>{{ formatDate(diary.createdAt) }}</v-list-item-subtitle>
-            </v-list-item>
-          </v-list>
-        </v-sheet>
+          <!-- 일기 목록 -->
+          <v-sheet
+            class="pa-4"
+            elevation="1"
+            rounded
+            style="height: 50vh; overflow-y: auto;"
+          >
+            <div v-if="diaryList.length === 0" class="text-center text-grey mt-10">
+              아직 작성한 일기가 없습니다 ✍️
+            </div>
 
-        <!-- 하단 버튼 -->
-        <v-row justify="center" class="mt-6">
-          <v-btn outlined color="primary" class="mx-2" @click="goToReceivedDiary">오늘 받은 다이어리</v-btn>
-          <v-btn outlined color="primary" class="mx-2" @click="goToMyReplies">내가 보낸 답장 보기</v-btn>
-          <v-btn text color="grey" class="mx-2" @click="goHome">홈으로 돌아가기</v-btn>
-        </v-row>
+            <v-list v-else>
+              <v-list-item
+                v-for="diary in diaryList"
+                :key="diary.id"
+                @click="openDiaryModal(diary)"
+                class="mb-2"
+              >
+                <v-list-item-title>{{ diary.title }}</v-list-item-title>
+                <v-list-item-subtitle>{{ formatDate(diary.createdAt) }}</v-list-item-subtitle>
+              </v-list-item>
+            </v-list>
+          </v-sheet>
 
-        <!-- 모달 -->
-        <DiaryModal v-if="selectedDiary" :diary="selectedDiary" @close="closeDiaryModal" @delete="deleteDiary" />
-        <WriteDiaryModal v-if="showWriteDiaryModal" @close="closeWriteDiaryModal" @writeDiary="fetchDiaries" />
-      </v-card>
+          <!-- 하단 버튼 -->
+          <v-row justify="center" class="mt-6">
+            <v-btn outlined color="primary" class="mx-2" @click="goToReceivedDiary">오늘 받은 다이어리</v-btn>
+            <v-btn outlined color="primary" class="mx-2" @click="goToMyReplies">내가 보낸 답장 보기</v-btn>
+            <v-btn text color="grey" class="mx-2" @click="goHome">홈으로 돌아가기</v-btn>
+          </v-row>
+
+          <!-- 모달 -->
+          <DiaryModal v-if="selectedDiary" :diary="selectedDiary" @close="closeDiaryModal" @delete="deleteDiary" />
+          <WriteDiaryModal v-if="showWriteDiaryModal" @close="closeWriteDiaryModal" @writeDiary="fetchDiaries" />
+        </v-card>
+      </div>
     </v-container>
   </v-app>
 </template>
+
+
 
 <script setup>
 import { ref, onMounted } from 'vue'
@@ -67,6 +85,7 @@ import WriteDiaryModal from '@/components/modal/WriteDiaryModal.vue'
 import { fetchDiariesByMemberId as fetchDiariesByMemberIdAPI, deleteDiary as deleteDiaryAPI } from '@/api/diary/diaryCommand'
 import pencilMan from '@/assets/img/pencilMan.jpeg'
 import MemberSidebar from '@/components/sidebar/MemberSidebar.vue'
+import Header from '../components/Header.vue'
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -120,5 +139,17 @@ onMounted(() => {
 .main-background {
   background-color: #F5F7FA;
   min-height: 100vh;
+}
+
+.main-container {
+  padding-top: 80px; /* ✅ 헤더 공간 확보 */
+}
+
+.v-application .v-app-bar {
+  z-index: 100 !important;
+}
+
+.v-navigation-drawer {
+  z-index: 100 !important;
 }
 </style>
