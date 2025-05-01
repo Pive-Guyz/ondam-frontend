@@ -4,7 +4,7 @@
       <v-card-title class="modal-header">
         <span class="modal-title">{{ diary.title }}</span>
         <v-spacer></v-spacer>
-        <v-btn class="report-btn" @click="onReport">🚩 신고하기</v-btn>
+        <v-btn class="report-btn" @click="isReportModalOpen = true">🚩 신고하기</v-btn>
       </v-card-title>
 
       <div class="divider"></div>
@@ -22,12 +22,17 @@
 
     <ReplyModal v-model="showReplyModal" :diaryRecord="selectedDiaryRecord" />
   </v-dialog>
+  <DiaryReportModal v-if="diary.memberId" v-model="isReportModalOpen" :diaryId="props.diaryId"
+    :createdAt="formattedCreatedAt" :reportedMemberId="diary.memberId" />
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import ReplyModal from '@/components/modal/ReplyModal.vue'
+import DiaryReportModal from '@/components/report/DiaryReportModal.vue'
+
+const isReportModalOpen = ref(false)
 
 const props = defineProps({
   diary: Object,

@@ -1,14 +1,19 @@
 <template>
     <v-app style="background-color: #F5F7FA;">
-        <SideBar />
+        <!-- <SideBar /> -->
         <v-main>
             <v-container class="py-15" v-if="data">
+                <div class="d-flex justify-end mb-6">
+                    <v-btn color="deep-purple" class="list-btn" large @click="goToLog">
+                        상담서 작성
+                    </v-btn>
+                </div>
                 <!-- 상담 일지 제목 및 날짜 -->
                 <v-card class="mb-8 pa-10 elevation-2">
                     <v-row align="center" justify="space-between" no-gutters>
                         <div>
                             <div class="text-h6 font-weight-bold mb-1" style="color: #344FA3;">
-                                {{ reportTitle }}
+                                {{ counseleeName }} 상담일지
                             </div>
                             <div class="text-body-2" style="color: #8c8c8c;">
                                 {{ reportDate }}
@@ -63,6 +68,11 @@
                         </v-card>
                     </v-col>
                 </v-row>
+                <div class="d-flex justify-end mt-6">
+                    <v-btn color="deep-purple" class="list-btn" large @click="goToList">
+                        목록으로
+                    </v-btn>
+                </div>
             </v-container>
 
             <v-container v-else class="py-8">
@@ -71,15 +81,16 @@
                 </v-card>
             </v-container>
         </v-main>
+
     </v-app>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import { fetchCounselById } from '@/api/counsel/counselQuery';
-import { getAnalysisResult } from '@/api/analysis/analysisQuery'
+import { getAnalysisResult } from '@/api/analysis/analysisQuery';
 
 import SideBar from '@/components/common/Sidebar.vue';
 import TroubleSummary from '@/components/analysis/TroubleSummary.vue';
@@ -87,100 +98,115 @@ import EmotionAnalysis from '@/components/analysis/EmotionAnalysis.vue';
 import EffectiveStatement from '@/components/analysis/EffectiveStatement.vue';
 import CounselSummary from '@/components/analysis/CounselSummary.vue';
 
-// 입력 페이지에서 넘겨줘야 할 것들
-defineProps({
-    counselId: String,
-    reportTitle: String,
-    reportDate: String,
-    weather: String,
-    duration: String,
-    nextSchedule: String,
-    counselorComment: String
-});
-
 const route = useRoute();
+const router = useRouter();
+
+// ✅ query에서 모든 값 가져오기
+const memberId = Number(route.query.memberId);
+const counseleeId = Number(route.query.counseleeId);
 const counselId = route.params.counselId;
-const reportTitle = route.query.reportTitle;
-const reportDate = route.query.reportDate;
-const duration = route.query.duration;
-const nextSchedule = route.query.nextSchedule;
-const counselorComment = route.query.counselorComment;
+const counseleeName = route.query.reportTitle || '';
+const reportDate = route.query.reportDate || '';
+const duration = route.query.duration || '';
+const nextSchedule = route.query.nextSchedule || '';
+const counselorComment = route.query.counselorComment || '';
+const weather = route.query.weather || '';
+
 
 // 상태 변수
 const data = ref(null);
-const weatherIcon = ref('');
-const weatherColor = ref('');
 const counselContent = ref('');
 const isExpanded = ref(false);
 const isContentOverflow = ref(false);
 const contentBox = ref(null);
+const weatherIcon = ref('');
+const weatherColor = ref('');
 
-const formattedCounselContent = computed(() => {
-    return counselContent.value.replace(/\\n/g, '<br>').replace(/\r\n|\r|\n/g, '<br>');
-});
+// 상담 내용 줄바꿈 처리
+const formattedCounselContent = computed(() =>
+    counselContent.value.replace(/\\n/g, '<br>').replace(/\r\n|\r|\n/g, '<br>')
+);
 
 const toggleExpand = () => {
     isExpanded.value = !isExpanded.value;
 };
 
-const fetchAnalysisData = async () => {
-    try {
-        const response = await getAnalysisResult(counselId);
-        data.value = response.data;
-    } catch (error) {
-        console.error('Failed to fetch analysis data', error);
-    }
-};
-
-const fetchCounselContent = async () => {
-    try {
-        const response = await fetchCounselById(counselId);
-        counselContent.value = response.data.content;
-    } catch (error) {
-        console.error('Failed to fetch counsel content', error);
-    }
-};
-
 const checkWeather = () => {
-    const weather = (route.query.weather || '').toString().trim();
-
-    if (weather === '맑음') {
-        weatherIcon.value = 'mdi-white-balance-sunny';
-        weatherColor.value = '#FFC107'; // amber (노랑)
-    } else if (weather === '흐림') {
-        weatherIcon.value = 'mdi-weather-cloudy';
-        weatherColor.value = '#607D8B'; // blue-grey
-    } else if (weather === '비') {
-        weatherIcon.value = 'mdi-weather-pouring';
-        weatherColor.value = '#3F51B5'; // indigo
-    } else if (weather === '눈') {
-        weatherIcon.value = 'mdi-snowflake';
-        weatherColor.value = '#81D4FA'; // light-blue
-    } else {
-        weatherIcon.value = 'mdi-help-circle';
-        weatherColor.value = '#9E9E9E'; // grey
+    switch (weather) {
+        case '맑음':
+            weatherIcon.value = 'mdi-white-balance-sunny';
+            weatherColor.value = '#FFC107';
+            break;
+        case '흐림':
+            weatherIcon.value = 'mdi-weather-cloudy';
+            weatherColor.value = '#607D8B';
+            break;
+        case '비':
+            weatherIcon.value = 'mdi-weather-pouring';
+            weatherColor.value = '#3F51B5';
+            break;
+        case '눈':
+            weatherIcon.value = 'mdi-snowflake';
+            weatherColor.value = '#81D4FA';
+            break;
+        default:
+            weatherIcon.value = 'mdi-help-circle';
+            weatherColor.value = '#9E9E9E';
     }
-
 };
 
 const checkContentOverflow = async () => {
     await nextTick();
     if (contentBox.value) {
-        isContentOverflow.value = contentBox.value.scrollHeight > contentBox.value.clientHeight;
+        isContentOverflow.value =
+            contentBox.value.scrollHeight > contentBox.value.clientHeight;
     }
 };
 
-const fetchData = async () => {
-    await Promise.all([fetchAnalysisData(), fetchCounselContent()]);
-    await nextTick();
-    checkContentOverflow();
+const fetchAnalysisData = async () => {
+    try {
+        const res = await getAnalysisResult(counselId);
+        data.value = res.data;
+    } catch (err) {
+        console.error('GPT 분석 로딩 실패', err);
+    }
+};
+
+const fetchCounselContent = async () => {
+    try {
+        const res = await fetchCounselById(counselId);
+        counselContent.value = res.data.content;
+    } catch (err) {
+        console.error('상담 내용 로딩 실패', err);
+    }
+};
+
+const goToLog = () => {
+    router.push({
+        name: 'CounselingLogFormPage',
+        params: { id: counseleeId },
+        query: {
+            counseleeName: String(counseleeName),
+            memberId: String(memberId),
+        },
+    });
+};
+
+const goToList = () => {
+    router.push({
+        name: 'CounseleeCounselPage',
+        params: { id: counseleeId },
+        query: {
+            name: String(counseleeName),
+        }
+    });
 };
 
 onMounted(async () => {
-    await fetchData();
+    await Promise.all([fetchAnalysisData(), fetchCounselContent()]);
+    await checkContentOverflow();
     checkWeather();
 });
-
 </script>
 
 <style scoped>
@@ -227,5 +253,10 @@ onMounted(async () => {
 .v-btn {
     font-weight: bold;
     letter-spacing: 0.5px;
+}
+
+.list-btn {
+    font-weight: bold;
+    padding: 0.5rem 1.2rem;
 }
 </style>

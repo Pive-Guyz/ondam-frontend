@@ -59,7 +59,7 @@
         </table>
         <div>
     <!-- 예: 권한 옆에 있는 설정 버튼 -->
-    <button @click="openModal('User')">권한 변경</button>
+  
 
     <!-- 모달 -->
     <RoleChangeModal
