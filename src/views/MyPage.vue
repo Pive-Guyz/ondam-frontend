@@ -97,7 +97,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import SideBar from '@/components/sidebar/MemberSideBar.vue'
+import SideBar from '@/components/sidebar/MemberSidebar.vue'
 import ChangePasswordModal from '@/components/member/ChangePasswordModal.vue'
 import ConfirmWithdrawalModal from '@/components/member/ConfirmWithdrawalModal.vue'
 import { useAuthStore } from '@/stores/auth'
