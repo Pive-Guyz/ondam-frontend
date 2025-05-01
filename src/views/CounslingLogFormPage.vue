@@ -1,91 +1,92 @@
 <template>
     <v-app style="background-color: #F5F7FA;">
-    <Header />
-    <!-- <MemberSidebar />  -->
-    <v-main>
-        <v-container class="py-10">
+        <Header />
+        <!-- <MemberSidebar />  -->
+        <v-main>
+            <v-container class="py-10">
 
-    <v-dialog v-model="isLoading" persistent max-width="300">
-        <v-card class="pa-5" style="text-align: center;">
-            <v-progress-circular indeterminate color="primary" size="40" class="mb-3" />
-            <div>GPT 분석 중입니다. 잠시만 기다려주세요...</div>
-        </v-card>
-    </v-dialog>
+                <v-dialog v-model="isLoading" persistent max-width="300">
+                    <v-card class="pa-5" style="text-align: center;">
+                        <v-progress-circular indeterminate color="primary" size="40" class="mb-3" />
+                        <div>GPT 분석 중입니다. 잠시만 기다려주세요...</div>
+                    </v-card>
+                </v-dialog>
 
-    <div class="counseling-log-form container">
-        <!-- <h2 class="page-title">상담 일지 입력 페이지</h2> -->
-        <div class="d-flex justify-end mb-6">
-        <v-btn color="deep-purple" class="list-btn" large @click="goToList">
-                        목록으로
-                    </v-btn>
-</div>
-        <div class="form-card">
-            <div class="text-h6 font-weight-bold mb-1" style="color: #344FA3;">{{ counseleeName }} 상담일지</div>
-            <p class="today-date">{{ today }}</p>
+                <div class="counseling-log-form container">
+                    <!-- <h2 class="page-title">상담 일지 입력 페이지</h2> -->
+                    <div class="d-flex justify-end mb-6">
+                        <v-btn color="deep-purple" class="list-btn" large @click="goToList">
+                            목록으로
+                        </v-btn>
+                    </div>
+                    <div class="form-card">
+                        <div class="text-h6 font-weight-bold mb-1" style="color: #344FA3;">{{ counseleeName }} 상담일지
+                        </div>
+                        <p class="today-date">{{ today }}</p>
 
-            <form @submit.prevent="submitForm">
-                <!-- 상담 유형 -->
-                <div class="form-group">
-                    <label>상담 유형</label>
-                    <input v-model="form.type" type="text" placeholder="상담 유형을 입력해주세요" />
-                </div>
+                        <form @submit.prevent="submitForm">
+                            <!-- 상담 유형 -->
+                            <div class="form-group">
+                                <label>상담 유형</label>
+                                <input v-model="form.type" type="text" placeholder="상담 유형을 입력해주세요" />
+                            </div>
 
-                <!-- 오늘 날씨 -->
-                <div class="form-group">
-                    <label>오늘 날씨</label>
-                    <select v-model="form.weather">
-                        <option value="">날씨 선택</option>
-                        <option value="맑음">맑음</option>
-                        <option value="흐림">흐림</option>
-                        <option value="비">비</option>
-                        <option value="눈">눈</option>
-                    </select>
-                </div>
+                            <!-- 오늘 날씨 -->
+                            <div class="form-group">
+                                <label>오늘 날씨</label>
+                                <select v-model="form.weather">
+                                    <option value="">날씨 선택</option>
+                                    <option value="맑음">맑음</option>
+                                    <option value="흐림">흐림</option>
+                                    <option value="비">비</option>
+                                    <option value="눈">눈</option>
+                                </select>
+                            </div>
 
-                <!-- 상담 내용 -->
-                <div class="form-group">
-                    <label>상담 내용</label>
-                    <textarea v-model="form.content" rows="6" placeholder="상담 내용을 입력해주세요"></textarea>
-                </div>
+                            <!-- 상담 내용 -->
+                            <div class="form-group">
+                                <label>상담 내용</label>
+                                <textarea v-model="form.content" rows="6" placeholder="상담 내용을 입력해주세요"></textarea>
+                            </div>
 
-                <!-- 상담사 소견 -->
-                <div class="form-group">
-                    <label>상담사 소견</label>
-                    <input v-model="form.opinion" type="text" placeholder="소견을 입력해주세요" />
-                </div>
+                            <!-- 상담사 소견 -->
+                            <div class="form-group">
+                                <label>상담사 소견</label>
+                                <input v-model="form.opinion" type="text" placeholder="소견을 입력해주세요" />
+                            </div>
 
-                <!-- 소요 시간 -->
-                <div class="form-group">
-                    <label>소요 시간</label>
-                    <div class="time-select">
-                        <select v-model="form.hour">
-                            <option value="">시</option>
-                            <option v-for="h in 24" :key="h" :value="h">{{ h }}시</option>
-                        </select>
-                        <select v-model="form.minute">
-                            <option value="">분</option>
-                            <option v-for="m in 60" :key="m" :value="m">{{ m }}분</option>
-                        </select>
+                            <!-- 소요 시간 -->
+                            <div class="form-group">
+                                <label>소요 시간</label>
+                                <div class="time-select">
+                                    <select v-model="form.hour">
+                                        <option value="">시</option>
+                                        <option v-for="h in 24" :key="h" :value="h">{{ h }}시</option>
+                                    </select>
+                                    <select v-model="form.minute">
+                                        <option value="">분</option>
+                                        <option v-for="m in 60" :key="m" :value="m">{{ m }}분</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- 다음 상담 일정 -->
+                            <div class="form-group">
+                                <label>다음 상담 일정</label>
+                                <input v-model="form.nextDate" type="date" />
+                            </div>
+
+                            <!-- 버튼 -->
+                            <div class="form-buttons">
+                                <button type="button" @click="cancelForm">취소하기</button>
+                                <button type="submit">등록하기</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
-
-                <!-- 다음 상담 일정 -->
-                <div class="form-group">
-                    <label>다음 상담 일정</label>
-                    <input v-model="form.nextDate" type="date" />
-                </div>
-
-                <!-- 버튼 -->
-                <div class="form-buttons">
-                    <button type="button" @click="cancelForm">취소하기</button>
-                    <button type="submit">등록하기</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</v-container>
-</v-main>
-</v-app>
+            </v-container>
+        </v-main>
+    </v-app>
 </template>
 
 <script setup>

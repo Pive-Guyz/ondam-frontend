@@ -23,22 +23,17 @@
             </section>
 
             <section ref="featureSection">
-                <LandingSection title="한눈에 정리되는 상담 회기 요약"
-                    description="상담 내용을 자유롭게 작성하면,<br />주요 키워드와 흐름을 자동으로 정리해 드려요.<br /><br/>
-                    ✅ 스크립트 기반 요약문 자동 생성<br />✅ 키워드 추출 및 강조<br />✅ 회기별 상담 히스토리 구성 가능"
-                    :image="counsel" />
+                <LandingSection title="한눈에 정리되는 상담 회기 요약" description="상담 내용을 자유롭게 작성하면,<br />주요 키워드와 흐름을 자동으로 정리해 드려요.<br /><br/>
+                    ✅ 스크립트 기반 요약문 자동 생성<br />✅ 키워드 추출 및 강조<br />✅ 회기별 상담 히스토리 구성 가능" :image="counsel" />
 
-                <LandingSection title="감정의 흐름을 눈으로 확인하세요"
-                    description="내담자의 감정 상태 변화를 시각화해서<br />상담 흐름을 더 깊이 이해할 수 있어요.<br /><br/>
-                    ✅ 감정 키워드 입력 기반 분석<br />✅ 세션별 감정 라인 차트 제공<br />✅ 상담 흐름 인사이트 시각화"
-                    :image="emotion_analysis" :reverse="true" />
+                <LandingSection title="감정의 흐름을 눈으로 확인하세요" description="내담자의 감정 상태 변화를 시각화해서<br />상담 흐름을 더 깊이 이해할 수 있어요.<br /><br/>
+                    ✅ 감정 키워드 입력 기반 분석<br />✅ 세션별 감정 라인 차트 제공<br />✅ 상담 흐름 인사이트 시각화" :image="emotion_analysis"
+                    :reverse="true" />
 
-                <LandingSection title="내담자 정보, 상담 내용, 감정 분석까지 한눈에"
-                    description="회기별 상담 내역과 요약, 감정 흐름, 메모 등을<br />내담자 단위로 통합 관리할 수 있습니다.<br /><br/>
+                <LandingSection title="내담자 정보, 상담 내용, 감정 분석까지 한눈에" description="회기별 상담 내역과 요약, 감정 흐름, 메모 등을<br />내담자 단위로 통합 관리할 수 있습니다.<br /><br/>
                     ✅ 내담자별 상담 히스토리 관리<br />✅ 최근 회기 빠른 복기 기능<br />✅ 상담 진행 상태 분류 및 정리" :image="counsel_counselees" />
 
-                <LandingSection title="감정 해소와 공감을 위한, 하루 한 편의 익명 일기"
-                    description="하루에 한 번 익명 일기를 쓰면<br/>다른 상담사 3명에게 전송되고, 나도 일기 3개를 받아요.<br />답장도 익명으로 주고받을 수 있어요.<br/><br/>
+                <LandingSection title="감정 해소와 공감을 위한, 하루 한 편의 익명 일기" description="하루에 한 번 익명 일기를 쓰면<br/>다른 상담사 3명에게 전송되고, 나도 일기 3개를 받아요.<br />답장도 익명으로 주고받을 수 있어요.<br/><br/>
                     ✅ 하루 1회 랜덤 일기 전송<br />✅ 익명 상담사 3명에게 공유<br />✅ 감정 해소 + 공감 기반 소통 지원" :image="diary"
                     :reverse="true" />
             </section>
