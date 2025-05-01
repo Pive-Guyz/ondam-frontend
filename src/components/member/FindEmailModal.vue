@@ -5,12 +5,10 @@
       <input v-model="name" class="input" type="text" placeholder="이름 입력" />
       <input v-model="phone" class="input" type="text" placeholder="전화번호 입력" />
 
-      <button class="submit-btn" @click="findEmail">이메일 찾기</button>
-      <button class="close-btn" @click="$emit('close')">닫기</button>
-
-      <p v-if="emailResult" class="result-text">
-        회원님의 이메일은 <strong>{{ emailResult }}</strong> 입니다.
-      </p>
+      <div class="button-group">
+        <button class="submit-btn" @click="findEmail">이메일 찾기</button>
+        <button class="close-btn" @click="$emit('close')">닫기</button>
+      </div>
     </div>
   </div>
 </template>
@@ -19,14 +17,21 @@
 import { ref } from 'vue'
 import { findEmailByNameAndPhone } from '@/api/member/memberQuery'
 
+const emit = defineEmits(['close', 'found'])
+
 const name = ref('')
 const phone = ref('')
-const emailResult = ref('')
 
 const findEmail = async () => {
+  if (!name.value.trim() || !phone.value.trim()) {
+    alert('이름과 전화번호를 모두 입력해주세요.')
+    return
+  }
+
   try {
     const res = await findEmailByNameAndPhone(name.value, phone.value)
-    emailResult.value = res.data
+    emit('found', res.data)
+    emit('close')
   } catch (e) {
     alert('일치하는 이메일이 없습니다.')
   }
@@ -61,12 +66,15 @@ const findEmail = async () => {
   margin-bottom: 12px;
   border: 2px solid #ccc;
   border-radius: 10px;
-  font-size: 14px;
+}
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 .submit-btn,
 .close-btn {
   padding: 10px 20px;
-  margin: 8px 5px 0;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -77,10 +85,5 @@ const findEmail = async () => {
 }
 .close-btn {
   background-color: #ddd;
-}
-.result-text {
-  margin-top: 20px;
-  font-size: 14px;
-  color: #333;
 }
 </style>
