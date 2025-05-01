@@ -132,14 +132,13 @@
   }
   
   const onDelete = () => {
-  // 삭제 확인 창이 취소되었을 때, 아무 동작도 하지 않음
-  const confirmDelete = confirm('정말 이 일기를 삭제할까요?')
+    const confirmDelete = confirm('정말 이 일기를 삭제할까요?')
 
-  if (confirmDelete && props.diary?.id) {
-    // 삭제가 확인되었을 때만 삭제 실행
-    emits('delete', props.diary.id)
+    if (confirmDelete && props.diary?.id) {
+      // 삭제가 확인되었을 때만 삭제 실행
+      emits('delete', props.diary.id)
+    }
   }
-}
   </script>
   
   <style scoped>
