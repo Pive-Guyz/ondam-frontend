@@ -17,3 +17,23 @@ export const reportDiary = (data) => {
 export const reportReply = (data) => {
     return axios.post(`${API_BASE}/reply`, data)
 }
+
+/**
+ * 신고 상태 수정
+ * @param {number} reportId
+ * @param {number} status
+ */
+export const updateReportStatus = (reportId, status) => {
+    return axios.put(`${API_BASE}/status`, {
+        reportId,
+        status
+    })
+}
+
+/**
+ * 신고 승인 및 블라인드 처리
+ * @param {number} reportId
+ */
+export const approveReport = (reportId) => {
+    return axios.put(`${API_BASE}/approve/${reportId}`)
+}

@@ -7,9 +7,9 @@
         </thead>
         <tbody>
             <tr v-for="(row, rowIndex) in items" :key="rowIndex" @click="emit('row-click', row)" class="clickable-row">
-                <td v-for="(value, key, colIndex) in row" :key="colIndex">
-                    <slot :name="key" :value="value" :item="row">
-                        {{ value }}
+                <td v-for="(header, colIndex) in headers" :key="colIndex">
+                    <slot :name="header" :value="row[header]" :item="row">
+                        {{ row[header] }}
                     </slot>
                 </td>
             </tr>
