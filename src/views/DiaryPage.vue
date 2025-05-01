@@ -51,7 +51,7 @@
         </v-row>
 
         <!-- 모달 -->
-        <DiaryModal v-if="selectedDiary" :diary="selectedDiary" @close="closeDiaryModal" />
+        <DiaryModal v-if="selectedDiary" :diary="selectedDiary" @close="closeDiaryModal" @delete="deleteDiary" />
         <WriteDiaryModal v-if="showWriteDiaryModal" @close="closeWriteDiaryModal" @writeDiary="fetchDiaries" />
       </v-card>
     </v-container>
@@ -96,9 +96,9 @@ const fetchDiaries = async () => {
 
 const deleteDiary = async (diaryId) => {
   try {
-    await deleteDiaryAPI(diaryId)
-    diaryList.value = diaryList.value.filter(d => d.id !== diaryId)
-    closeDiaryModal()
+      await deleteDiaryAPI(diaryId)
+      diaryList.value = diaryList.value.filter(d => d.id !== diaryId)
+      closeDiaryModal()
   } catch (e) {
     console.error('삭제 실패:', e)
   }

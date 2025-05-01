@@ -50,7 +50,6 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import axios from 'axios'
 import ReplyModal from '@/components/modal/ReplyModal.vue'
 import DiaryReportModal from '@/components/report/DiaryReportModal.vue'
 

@@ -42,7 +42,10 @@
                 <span class="card-title">{{ truncateTitle(diary.title) }}</span>
               </div>
               <p class="card-preview">
-                {{ truncateContent(diary.content || '일기 내용 미리보기입니다.') }}
+                {{ diary.content }}
+              </p>
+              <p class="card-preview">
+                {{ truncateContent(diary.content) }}
               </p>
               <button class="read-button">상세 보기</button>
             </div>
@@ -57,7 +60,6 @@
           :diary="selectedDiary"
           :diaryId="selectedDiary.diaryId"
           @close="closeDiaryModal"
-          @openReplyModal="openReplyModal"
         />
       </v-container>
     </v-main>
@@ -67,7 +69,6 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import ReceivedDiaryModal from '../components/modal/ReceivedDiaryModal.vue'
@@ -82,7 +83,11 @@ const receivedDiaryList = ref([])
 const selectedDiary = ref(null)
 
 const truncateTitle = (title) => title.length > 10 ? title.slice(0, 10) + '...' : title
-const truncateContent = (content) => content.length > 80 ? content.slice(0, 80) + '...' : content
+const truncateContent = (content) => {
+  if (!content) return ''
+  const result = content.length > 80 ? content.slice(0, 80) + '...' : content
+  return result
+}
 
 
 // 받은 다이어리 목록 조회
@@ -108,6 +113,7 @@ const fetchReceivedDiaries = async () => {
           return {
             ...diaryRecord,
             title: diaryData.title,
+            content: diaryData.content // ✅ 이 줄 빠졌을 수도 있음
           }
         } catch (error) {
           console.warn(`다이어리 ID ${diaryRecord.diaryId} 조회 실패`, error)
@@ -118,8 +124,8 @@ const fetchReceivedDiaries = async () => {
 
     // null 아닌 것만 필터링
     receivedDiaryList.value = diariesWithTitle.filter(
-  (d) => d !== null && d.title && d.title.trim() !== ''
-)
+      (d) => d !== null && d.title && d.title.trim() !== ''
+    )
 
   } catch (error) {
     console.error('받은 다이어리 조회 실패:', error)
@@ -128,19 +134,12 @@ const fetchReceivedDiaries = async () => {
 
 // 다이어리 상세보기 모달 열기
 const openDiaryDetail = (diary) => {
-  console.log('Selected Diary:', diary)  // 로그 추가
   selectedDiary.value = diary
 }
 
 // 다이어리 모달 닫기
 const closeDiaryModal = () => {
   selectedDiary.value = null
-}
-
-// 답장 모달 열기 (이 함수 추가)
-const openReplyModal = () => {
-  console.log("답장 모달을 여는 로직이 필요합니다.")
-  // 실제 답장 모달을 여는 로직을 추가하세요.
 }
 
 // 뒤로가기
