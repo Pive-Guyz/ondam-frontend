@@ -28,16 +28,19 @@
       @close="showEmailModal = false"
       @found="handleEmailFound"
     />
+
     <EmailFoundModal
       v-if="showEmailFoundModal"
       :email="foundEmail"
       @confirm="goToStartPage"
     />
+
     <FindPasswordModal
       v-if="showPasswordModal"
       @close="showPasswordModal = false"
       @found="handlePasswordFound"
     />
+
     <PasswordFoundModal
       v-if="showPasswordFoundModal"
       :password="foundPassword"
@@ -52,29 +55,27 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { loginMember } from '@/api/member/memberQuery'
 
+// 모달 컴포넌트
 import FindEmailModal from '@/components/member/FindEmailModal.vue'
 import EmailFoundModal from '@/components/member/EmailFoundModal.vue'
 import FindPasswordModal from '@/components/member/FindPasswordModal.vue'
 import PasswordFoundModal from '@/components/member/PasswordFoundModal.vue'
 
-const router = useRouter()
-const authStore = useAuthStore()
-
-// 로그인 관련 상태
+// 상태
 const email = ref('')
 const password = ref('')
+const foundEmail = ref('')
+const foundPassword = ref('')
 
-// 모달 상태
 const showEmailModal = ref(false)
 const showPasswordModal = ref(false)
 const showEmailFoundModal = ref(false)
 const showPasswordFoundModal = ref(false)
 
-// 찾은 결과 상태
-const foundEmail = ref('')
-const foundPassword = ref('')
+const router = useRouter()
+const authStore = useAuthStore()
 
-// 로그인 처리
+// 로그인
 const login = async () => {
   if (!email.value.trim() || !password.value.trim()) {
     alert('이메일과 비밀번호를 모두 입력해주세요.')
@@ -82,14 +83,9 @@ const login = async () => {
   }
 
   try {
-    const res = await loginMember({
-      email: email.value,
-      password: password.value,
-    })
-
+    const res = await loginMember({ email: email.value, password: password.value })
     const { id, point } = res.data
     authStore.login(id, point)
-
     alert('로그인 성공!')
     router.push('/main')
   } catch (error) {
@@ -102,28 +98,26 @@ const login = async () => {
   }
 }
 
-// 이메일 찾기 성공 처리
+// 이메일/비밀번호 찾기 완료 처리
 const handleEmailFound = (email) => {
   foundEmail.value = email
   showEmailModal.value = false
   showEmailFoundModal.value = true
 }
 
-// 비밀번호 찾기 성공 처리
 const handlePasswordFound = (password) => {
   foundPassword.value = password
   showPasswordModal.value = false
   showPasswordFoundModal.value = true
 }
 
-// 확인 버튼 눌렀을 때 이동
+// 모달 확인 시 홈 이동
 const goToStartPage = () => {
   showEmailFoundModal.value = false
   showPasswordFoundModal.value = false
   router.push('/')
 }
 
-// 회원가입 페이지 이동
 const goToSignUp = () => router.push('/SignUp')
 </script>
 

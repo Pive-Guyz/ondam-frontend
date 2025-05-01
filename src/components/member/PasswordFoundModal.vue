@@ -1,52 +1,64 @@
 <template>
-    <div class="modal-overlay" @click.self="confirm">
-      <div class="modal-box">
-        <p class="message">비밀번호 찾기가</p>
-        <p class="message">완료 되었습니다!</p>
-        <button class="confirm-btn" @click="confirm">확인</button>
-      </div>
+  <div class="modal-overlay">
+    <div class="modal-box">
+      <h2 class="title">임시 비밀번호 발급 완료!</h2>
+      <p class="result-message">
+        회원님의 임시 비밀번호는<br />
+        <strong>{{ password }}</strong> 입니다.<br />
+        로그인 후 반드시 비밀번호를 변경해주세요.
+      </p>
+      <button class="confirm-btn" @click="$emit('confirm')">확인</button>
     </div>
-  </template>
-  
-  <script setup>
-  const emit = defineEmits(['close'])
-  const confirm = () => emit('close')
-  
-  </script>
-  
-  <style scoped>
-  .modal-overlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-  }
-  .modal-box {
-    background: white;
-    border: 2px solid #3c8df3;
-    border-radius: 16px;
-    padding: 40px 30px;
-    text-align: center;
-    width: 300px;
-  }
-  .message {
-    color: #c3c3c3;
-    font-size: 16px;
-    margin: 6px 0;
-  }
-  .confirm-btn {
-    margin-top: 20px;
-    background: white;
-    border: 1px solid #c3c3c3;
-    border-radius: 9999px;
-    padding: 8px 20px;
-    font-size: 14px;
-    color: #999;
-    cursor: pointer;
-  }
-  </style>
-  
+  </div>
+</template>
+
+<script setup>
+defineProps({
+  password: String
+})
+
+defineEmits(['confirm'])
+</script>
+
+<style scoped>
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-box {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  width: 350px;
+  text-align: center;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.result-message {
+  font-size: 14px;
+  margin-bottom: 20px;
+  line-height: 1.6;
+  color: #333;
+}
+
+.confirm-btn {
+  background-color: #3c8df3;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+</style>
