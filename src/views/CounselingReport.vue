@@ -92,7 +92,6 @@ import { useRoute, useRouter } from 'vue-router';
 import { fetchCounselById } from '@/api/counsel/counselQuery';
 import { getAnalysisResult } from '@/api/analysis/analysisQuery';
 
-import SideBar from '@/components/common/Sidebar.vue';
 import TroubleSummary from '@/components/analysis/TroubleSummary.vue';
 import EmotionAnalysis from '@/components/analysis/EmotionAnalysis.vue';
 import EffectiveStatement from '@/components/analysis/EffectiveStatement.vue';
