@@ -9,6 +9,7 @@ DiaryPage.vue
     <v-container
       fluid
       class="d-flex justify-center"
+      :class="{ 'blur-background': selectedDiary || showWriteDiaryModal }"
       style="padding-top: 80px; padding-left: 280px; padding-right: 24px; padding-bottom: 32px; min-height: 100vh;"
     >
       <div
@@ -65,12 +66,13 @@ DiaryPage.vue
             <v-btn text color="grey" class="mx-2" @click="goHome">홈으로 돌아가기</v-btn>
           </v-row>
 
-          <!-- 모달 -->
-          <DiaryModal v-if="selectedDiary" :diary="selectedDiary" @close="closeDiaryModal" @delete="deleteDiary" />
-          <WriteDiaryModal v-if="showWriteDiaryModal" @close="closeWriteDiaryModal" @writeDiary="fetchDiaries" />
+          
         </v-card>
       </div>
     </v-container>
+    <!-- 모달 -->
+    <DiaryModal v-if="selectedDiary" :diary="selectedDiary" @close="closeDiaryModal" @delete="deleteDiary" />
+    <WriteDiaryModal v-if="showWriteDiaryModal" @close="closeWriteDiaryModal" @writeDiary="fetchDiaries" />
   </v-app>
 </template>
 
@@ -143,6 +145,12 @@ onMounted(() => {
 
 .main-container {
   padding-top: 80px; /* ✅ 헤더 공간 확보 */
+}
+
+/* 모달이 열릴 때 흐림 효과 */
+.blur-background {
+  filter: blur(4px);
+  pointer-events: none;
 }
 
 .v-application .v-app-bar {

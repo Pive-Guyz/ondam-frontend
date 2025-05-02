@@ -84,7 +84,6 @@
   
   <script setup>
     import { defineEmits, defineProps, ref, onMounted } from 'vue'
-    import axios from 'axios'
     import ReplyReportModal from '@/components/report/ReplyReportModal.vue'
 
     const isReportModalOpen = ref(false) 
