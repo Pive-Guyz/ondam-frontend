@@ -40,7 +40,7 @@
       </div>
 
       <!-- 회원가입 완료 모달 -->
-      <CompleteModal v-if="showModal" @close="closeModalAndRedirect" />
+      <SignupModal v-if="showModal" @close="closeModalAndRedirect" />
     </div>
 
     <Footer />
@@ -50,7 +50,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import CompleteModal from '@/components/member/SignupModal.vue'
+import SignupModal from '@/components/member/SignupModal.vue'
 
 // 헤더/푸터
 import Header from '../components/Header.vue'

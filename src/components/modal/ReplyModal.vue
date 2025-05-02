@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="visible" max-width="600px" scrollable>
+    <v-dialog v-model="visible" max-width="600px" scrollable persistent>
       <v-card class="reply-card">
         <!-- 헤더 -->
         <v-card-title class="headline" style="background-color: #0277bd; color: white;">
@@ -36,7 +36,6 @@
   
   <script setup>
   import { ref, computed } from 'vue'
-  import axios from 'axios'
   import { useAuthStore } from '../../stores/auth'
   const authStore = useAuthStore()
   

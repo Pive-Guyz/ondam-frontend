@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="dialogVisible" max-width="600px" scrollable>
+    <v-dialog v-model="dialogVisible" max-width="600px" scrollable persistent>
       <v-card>
         <v-card-title class="headline" style="background-color: #0277bd; color: white;">
           <span>{{ reply.title }}</span>
@@ -23,7 +23,6 @@
   
   <script setup>
   import { ref, computed, watch } from 'vue'
-  import axios from 'axios'
   
   const props = defineProps({
     reply: Object

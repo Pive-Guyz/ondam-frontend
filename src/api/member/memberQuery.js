@@ -13,9 +13,9 @@ export const fetchAllMembers = () => {
  * 로그인 요청
  * @param {Object} credentials { email, password }
  */
-export const loginMember = (credentials) => {
-  return axios.post('/api/v1/member/login', credentials);
-};
+export const loginMember = (email, password) => {
+  return axios.post('/api/v1/member/login', { email, password })
+}
 
 /**
  * ID로 회원 조회
