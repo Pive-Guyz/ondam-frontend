@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="isModalOpen" max-width="600px" scrollable>
+  <v-dialog v-model="isModalOpen" max-width="600px" scrollable persistent>
     <v-card class="modal-card">
       <div class="modal-header">
         <h2 class="modal-title">Today’s Diary</h2>

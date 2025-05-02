@@ -7,7 +7,9 @@
     <MemberSidebar /> 
 
     <v-main>
-      <v-container class="diary-container" fluid>
+      <v-container class="diary-container"
+      :class="{ 'blur-background': selectedDiary }"
+       fluid>
         <div class="diary-content">
           <div class="card-box">
             <div class="text-zone">
@@ -180,6 +182,12 @@ onMounted(() => {
 .diary-content {
   max-width: 800px;
   width: 100%;
+}
+
+/* 모달이 열릴 때 흐림 효과 */
+.blur-background {
+  filter: blur(4px);
+  pointer-events: none;
 }
 
 /* 카드 박스 스타일 */
