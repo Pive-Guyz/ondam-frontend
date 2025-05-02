@@ -90,7 +90,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import Header from '@/components/Header.vue'
 import MemberSidebar from '@/components/sidebar/MemberSidebar.vue'
@@ -102,11 +102,16 @@ import { useAuthStore } from '@/stores/auth'
 const auth = useAuthStore()
 const router = useRouter()
 
-const profileImageUrl = computed(() =>
-  auth.profile_image_url && auth.profile_image_url.trim() !== ''
-    ? `/images/profile/${auth.profile_image_url}`
-    : new URL('@/assets/img/logo/logo.png', import.meta.url).href
-)
+// ✅ 프로필 이미지 동적 처리
+const profileImageUrl = ref('')
+const updateProfileImage = () => {
+  profileImageUrl.value =
+    auth.profile_image_url && auth.profile_image_url.trim() !== ''
+      ? `/images/profile/${auth.profile_image_url}`
+      : new URL('@/assets/img/logo/logo.png', import.meta.url).href
+}
+onMounted(updateProfileImage)
+watch(() => auth.profile_image_url, updateProfileImage)
 
 const showPasswordModal = ref(false)
 const showWithdrawalModal = ref(false)
@@ -123,6 +128,7 @@ const form = ref({
   diaryReceive: false
 })
 
+// ✅ auth 변경 감지하여 form 값 동기화
 watch(
   () => auth.name,
   () => {
