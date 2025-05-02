@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="wrapper">
     <Header />
 
     <div class="page-container">
@@ -25,26 +25,25 @@
         <button class="login-btn" @click="login">로그인</button>
       </div>
 
-      <!-- 모달 연결 -->
       <FindEmailModal
-          v-if="showEmailModal"
-          @close="showEmailModal = false"
-          @found="handleEmailFound"
+        v-if="showEmailModal"
+        @close="showEmailModal = false"
+        @found="handleEmailFound"
       />
       <EmailFoundModal
-          v-if="showEmailFoundModal"
-          :email="foundEmail"
-          @confirm="goToStartPage"
+        v-if="showEmailFoundModal"
+        :email="foundEmail"
+        @confirm="goToStartPage"
       />
       <FindPasswordModal
-          v-if="showPasswordModal"
-          @close="showPasswordModal = false"
-          @found="handlePasswordFound"
+        v-if="showPasswordModal"
+        @close="showPasswordModal = false"
+        @found="handlePasswordFound"
       />
       <PasswordFoundModal
-          v-if="showPasswordFoundModal"
-          :password="foundPassword"
-          @confirm="goToStartPage"
+        v-if="showPasswordFoundModal"
+        :password="foundPassword"
+        @confirm="goToStartPage"
       />
     </div>
 
@@ -55,8 +54,12 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
-import { loginMember } from '@/api/member/memberQuery'
+import { useAuthStore } from '@/stores/auth.js'
+import { loginMember } from '@/api/member/memberQuery.js'
+
+// 레이아웃
+import Header from '../components/Header.vue'
+import Footer from '../components/Footer.vue'
 
 // 모달 컴포넌트
 import FindEmailModal from '@/components/member/FindEmailModal.vue'
@@ -64,15 +67,11 @@ import EmailFoundModal from '@/components/member/EmailFoundModal.vue'
 import FindPasswordModal from '@/components/member/FindPasswordModal.vue'
 import PasswordFoundModal from '@/components/member/PasswordFoundModal.vue'
 
-// 헤더/푸터 컴포넌트
-import Header from '../components/Header.vue'
-import Footer from '../components/Footer.vue'
-
+// 상태
 const email = ref('')
 const password = ref('')
 const foundEmail = ref('')
 const foundPassword = ref('')
-
 const showEmailModal = ref(false)
 const showPasswordModal = ref(false)
 const showEmailFoundModal = ref(false)
@@ -81,8 +80,6 @@ const showPasswordFoundModal = ref(false)
 const router = useRouter()
 const authStore = useAuthStore()
 
-// 로그인
-import { fetchAllMembers } from '@/api/member/memberQuery'
 const login = async () => {
   if (!email.value.trim() || !password.value.trim()) {
     alert('이메일과 비밀번호를 모두 입력해주세요.')
@@ -90,31 +87,34 @@ const login = async () => {
   }
 
   try {
-    const response = await fetchAllMembers()
-    const members = response.data
+    const response = await loginMember(email.value, password.value)
+    const member = response.data
 
-    const matchedMember = members.find(
-      member => member.email === email.value && member.password === password.value
+    authStore.login(
+      member.id,
+      member.point,
+      member.name,
+      member.authority,
+      member.email,
+      member.phone,
+      member.birthday,
+      member.address,
+      member.createdAt,
+      member.profile_image_url
     )
 
-    if (matchedMember) {
-      authStore.login(
-        matchedMember.id,
-        matchedMember.point,
-        matchedMember.name,         // ✅ name 전달
-        matchedMember.authority     // ✅ authority 전달
-      )
-      alert('로그인 성공!')
-      router.push('/')
-    } else {
-      alert('이메일 또는 비밀번호가 틀렸습니다.')
-    }
+    alert('로그인 성공!')
+    router.push('/')
   } catch (error) {
-    console.error('로그인 중 오류 발생:', error)
-    alert('서버 오류가 발생했습니다.')
+    if (error.response?.status === 401) {
+      alert('이메일, 비밀번호가 틀리거나 탈퇴한 회원입니다.')
+    } else {
+      console.error('로그인 오류:', error)
+      alert('서버 오류가 발생했습니다.')
+    }
   }
 }
-
+console.log(authStore.$state)
 const handleEmailFound = (email) => {
   foundEmail.value = email
   showEmailModal.value = false
@@ -137,6 +137,11 @@ const goToSignUp = () => router.push('/SignUp')
 </script>
 
 <style scoped>
+.wrapper {
+  position: relative;
+  min-height: 100vh;
+}
+
 .page-container {
   background-color: #f7f9fc;
   min-height: 80vh;

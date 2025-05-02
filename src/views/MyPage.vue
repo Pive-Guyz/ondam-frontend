@@ -1,6 +1,8 @@
 <template>
   <v-app style="background-color: #F5F7FA;">
-    <SideBar />
+    <Header />
+    <MemberSidebar />
+
     <v-main>
       <v-container class="py-15 d-flex justify-center">
         <div class="mypage-container">
@@ -15,35 +17,29 @@
               <div class="form-row">
                 <div class="form-group">
                   <label>이름</label>
-                  <input v-model="form.name" type="text" />
+                  <input v-model="form.name" type="text" readonly />
                 </div>
                 <div class="form-group">
                   <label>비밀번호</label>
-                  <input
-                    :value="form.password"
-                    type="password"
-                    readonly
-                    @click="openPasswordModal"
-                    style="cursor: pointer;"
-                  />
+                  <input :value="form.password" type="password" readonly @click="openPasswordModal" />
                 </div>
               </div>
 
               <div class="form-row">
                 <div class="form-group">
                   <label>이메일</label>
-                  <input v-model="form.email" type="email" />
+                  <input v-model="form.email" type="email" readonly />
                 </div>
                 <div class="form-group">
                   <label>생년월일</label>
-                  <input v-model="form.birthday" type="text" />
+                  <input v-model="form.birthday" type="text" readonly />
                 </div>
               </div>
 
               <div class="form-row">
                 <div class="form-group">
                   <label>전화번호</label>
-                  <input v-model="form.phone" type="tel" />
+                  <input v-model="form.phone" type="tel" readonly />
                 </div>
                 <div class="form-group">
                   <label>주소</label>
@@ -65,7 +61,7 @@
                 </div>
               </div>
 
-              <!-- ✅ 일기 수신 여부 토글 -->
+              <!-- 일기 수신 여부 -->
               <div class="form-row">
                 <div class="form-group">
                   <label>일기 수신 여부</label>
@@ -73,15 +69,12 @@
                     <div :class="['toggle-button', form.diaryReceive ? 'on' : 'off']">
                       <div class="toggle-circle" />
                     </div>
-                    <span class="toggle-label">
-                      {{ form.diaryReceive ? '수신함' : '수신 안함' }}
-                    </span>
+                    <span class="toggle-label">{{ form.diaryReceive ? '수신함' : '수신 안함' }}</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- 저장 & 탈퇴 버튼 -->
             <div class="save-btn-wrapper">
               <button class="delete-btn" @click="showWithdrawalModal = true">회원탈퇴</button>
               <button class="save-btn" @click="save">저장</button>
@@ -90,53 +83,63 @@
         </div>
       </v-container>
 
-      <ChangePasswordModal
-        v-if="showPasswordModal"
-        :memberId="auth.memberId"
-        @close="showPasswordModal = false"
-      />
-
-      <ConfirmWithdrawalModal
-        v-if="showWithdrawalModal"
-        @close="showWithdrawalModal = false"
-        @confirm="handleWithdrawal"
-      />
+      <ChangePasswordModal v-if="showPasswordModal" :memberId="auth.memberId" @close="showPasswordModal = false" />
+      <ConfirmWithdrawalModal v-if="showWithdrawalModal" @close="showWithdrawalModal = false" @confirm="handleWithdrawal" />
     </v-main>
   </v-app>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import SideBar from '@/components/sidebar/MemberSideBar.vue'
+import Header from '@/components/Header.vue'
+import MemberSidebar from '@/components/sidebar/MemberSidebar.vue'
 import ChangePasswordModal from '@/components/member/ChangePasswordModal.vue'
 import ConfirmWithdrawalModal from '@/components/member/ConfirmWithdrawalModal.vue'
+import { deleteMember } from '@/api/member/memberCommand.js'
 import { useAuthStore } from '@/stores/auth'
-import { deleteMember } from '@/api/member/memberCommand'
 
 const auth = useAuthStore()
 const router = useRouter()
 
+const profileImageUrl = computed(() =>
+  auth.profile_image_url && auth.profile_image_url.trim() !== ''
+    ? `/images/profile/${auth.profile_image_url}`
+    : new URL('@/assets/img/logo/logo.png', import.meta.url).href
+)
+
 const showPasswordModal = ref(false)
 const showWithdrawalModal = ref(false)
 
-const openPasswordModal = () => {
-  showPasswordModal.value = true
-}
-
-const profileImageUrl = ref('https://via.placeholder.com/150')
-
 const form = ref({
-  name: '서정훈',
+  name: '',
   password: '********',
-  email: 'charlenereed@gmail.com',
-  phone: '01026437581',
-  birthday: '19971216',
-  address: '연희동',
-  authority: '게스트',
-  createdAt: '2025-04-24',
-  diaryReceive: true
+  email: '',
+  phone: '',
+  birthday: '',
+  address: '',
+  authority: '',
+  createdAt: '',
+  diaryReceive: false
 })
+
+watch(
+  () => auth.name,
+  () => {
+    Object.assign(form.value, {
+      name: auth.name,
+      password: '********',
+      email: auth.email,
+      phone: auth.phone,
+      birthday: auth.birthday,
+      address: auth.address,
+      authority: auth.authority,
+      createdAt: auth.createdAt,
+      diaryReceive: auth.diaryReceive ?? false
+    })
+  },
+  { immediate: true }
+)
 
 const toggleDiaryReceive = () => {
   form.value.diaryReceive = !form.value.diaryReceive
@@ -148,6 +151,10 @@ const save = () => {
 
 const requestUpgrade = () => {
   alert('권한 승급 신청이 완료되었습니다.')
+}
+
+const openPasswordModal = () => {
+  showPasswordModal.value = true
 }
 
 const handleWithdrawal = async () => {
@@ -278,8 +285,6 @@ const handleWithdrawal = async () => {
 .delete-btn:hover {
   background-color: #c0392b;
 }
-
-/* ✅ 토글 스타일 */
 .toggle-box {
   display: flex;
   align-items: center;
