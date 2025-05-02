@@ -7,8 +7,8 @@ import axios from '../config/axios';
  * @param {Object} memberData - 회원 가입 정보 (name, email, password 등)
  */
 export const registerMember = (memberData) => {
-  return axios.post('/api/v1/member/regist', memberData);
-};
+  return axios.post('/api/v1/member/regist', memberData)
+}
 
 /**
  * 회원 탈퇴

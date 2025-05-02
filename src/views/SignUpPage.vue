@@ -39,7 +39,6 @@
         <button class="signup-btn" @click="signup">가입하기</button>
       </div>
 
-      <!-- 회원가입 완료 모달 -->
       <SignupModal v-if="showModal" @close="closeModalAndRedirect" />
     </div>
 
@@ -50,11 +49,10 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import SignupModal from '@/components/member/SignupModal.vue'
-
-// 헤더/푸터
 import Header from '../components/Header.vue'
 import Footer from '../components/Footer.vue'
+import SignupModal from '@/components/member/SignupModal.vue'
+import { registerMember } from '@/api/member/memberCommand.js'
 
 const router = useRouter()
 const showModal = ref(false)
@@ -65,18 +63,43 @@ const form = ref({
   password: '',
   passwordConfirm: '',
   birthday: '',
-  phone: '',
+  phone: ''
 })
 
-const signup = () => {
+const signup = async () => {
+  // 유효성 검사
+  if (
+    !form.value.name.trim() ||
+    !form.value.email.trim() ||
+    !form.value.password ||
+    !form.value.passwordConfirm ||
+    !form.value.birthday ||
+    !form.value.phone.trim()
+  ) {
+    alert('모든 항목을 입력해주세요.')
+    return
+  }
+
   if (form.value.password !== form.value.passwordConfirm) {
     alert('비밀번호가 일치하지 않습니다.')
     return
   }
 
-  // 실제로는 axios.post 등으로 백엔드 연동
-  console.log('회원가입 정보:', form.value)
-  showModal.value = true
+  try {
+    const payload = {
+      name: form.value.name,
+      email: form.value.email,
+      password: form.value.password,
+      birthday: form.value.birthday,
+      phone: form.value.phone
+    }
+
+    await registerMember(payload)
+    showModal.value = true
+  } catch (error) {
+    alert('회원가입에 실패했습니다: ' + (error.response?.data?.message || '서버 오류'))
+    console.error(error)
+  }
 }
 
 const closeModalAndRedirect = () => {
