@@ -8,7 +8,7 @@
                 <v-dialog v-model="isLoading" persistent max-width="300">
                     <v-card class="pa-5" style="text-align: center;">
                         <v-progress-circular indeterminate color="primary" size="40" class="mb-3" />
-                        <div>GPT 분석 중입니다. 잠시만 기다려주세요...</div>
+                        <div>GPT 분석 중입니다.<br/>잠시만 기다려주세요...</div>
                     </v-card>
                 </v-dialog>
 

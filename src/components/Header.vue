@@ -10,7 +10,7 @@
                 </router-link>
 
                 <div class="d-flex align-center ml-10">
-                    <v-btn text color="#2d2d5a" class="menu-btn">온:담이란?</v-btn>
+                    <v-btn text color="#2d2d5a" class="menu-btn" @click="goHome">온:담이란?</v-btn>
                     <v-btn text color="#2d2d5a" class="menu-btn" @click="onScrollToFeature">기능 소개</v-btn>
                 </div>
             </div>
@@ -33,7 +33,7 @@
                             <template v-if="auth.authority === 'ADMIN'">
                                 <v-list-item to="/report">신고 관리</v-list-item>
                                 <v-list-item to="/MemberList">회원 관리</v-list-item>
-                                <v-list-item to="/admin-profile">프로필</v-list-item>
+                                <v-list-item to="/AdminPage">프로필</v-list-item>
                             </template>
 
                             <template v-else>
@@ -62,17 +62,24 @@
 import { useAuthStore } from '@/stores/auth'
 import { fetchMemberById } from '@/api/member/memberQuery'
 import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
 const props = defineProps({
     onScrollToFeature: Function
 })
 
 const auth = useAuthStore()
+const router = useRouter()
 
 const handleLogout = () => {
     if (confirm('로그아웃하시겠습니까?')) {
         auth.logout()
+        router.push('/')
     }
+}
+
+const goHome = () => {
+    router.push('/')
 }
 
 onMounted(async () => {
