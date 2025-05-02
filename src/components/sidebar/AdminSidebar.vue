@@ -10,15 +10,15 @@
                 </div>
 
                 <v-list class="menu-list">
-                    <v-btn class="menu-item" variant="text" to="/report">
+                    <v-btn class="menu-item" :class="{ active: route.path.startsWith('/report') }"variant="text" to="/report">
                         <v-icon class="menu-icon mr-2">mdi-alarm-light</v-icon>
                         <span class="menu-title">신고 관리</span>
                     </v-btn>
-                    <v-btn class="menu-item" variant="text" to="/MemberList">
+                    <v-btn class="menu-item" :class="{ active: route.path.startsWith('/MemberList') }" variant="text" to="/MemberList">
                         <v-icon class="menu-icon mr-2">mdi-account-outline</v-icon>
                         <span class="menu-title">회원 관리</span>
                     </v-btn>
-                    <v-btn class="menu-item" variant="text" to="/admin-profile">
+                    <v-btn class="menu-item" :class="{ active: route.path === '/AdminPage' }" variant="text" to="/AdminPage">
                         <v-icon class="menu-icon mr-2">mdi-cog-outline</v-icon>
                         <span class="menu-title">프로필</span>
                     </v-btn>
@@ -44,7 +44,9 @@
 import { useAuthStore } from '@/stores/auth'
 import { fetchMemberById } from '@/api/member/memberQuery'
 import { onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const auth = useAuthStore()
 // const profileImage = '/src/assets/img/profile/counselorProfile.png'
 
