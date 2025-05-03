@@ -26,3 +26,8 @@ export const deleteMember = (id) => {
 export const changePassword = (id, passwordData) => {
   return axios.put(`/api/v1/member/${id}/password`, passwordData);
 };
+
+export const updateAuthority = (id, authority) => {
+  return axios.post('/api/v1/member/update-authority', {id, authority,
+  });
+};
