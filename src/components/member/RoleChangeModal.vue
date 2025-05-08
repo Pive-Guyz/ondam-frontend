@@ -25,7 +25,7 @@
 <script setup>
 import { ref } from 'vue'
 import { defineProps, defineEmits } from 'vue'
-
+import { updateAuthority } from '@/api/member/memberCommand'
 
 const emit = defineEmits(['close', 'updated'])
 
@@ -54,6 +54,7 @@ const submitChange = async () => {
   }
 }
 </script>
+
 
 <style scoped>
 .modal-overlay {

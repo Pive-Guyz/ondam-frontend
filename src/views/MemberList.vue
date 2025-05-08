@@ -66,11 +66,12 @@
 
           <!-- 권한 변경 모달 -->
           <RoleChangeModal
-            v-if="isModalOpen"
-            :currentRole="selectedRole"
-            @close="isModalOpen = false"
-            @updateRole="updateRole"
-          />
+       v-if="isModalOpen"
+       :memberId="selectedMemberForRole?.id"
+       :currentAuthority="selectedRole"
+       @close="isModalOpen = false"
+       @updated="handleUpdatedRole"
+      />
 
           <!-- 회원 상세 보기 모달 -->
           <MemberDetailModal
@@ -117,6 +118,12 @@ const selectedRole = ref('User')
 const selectedMemberForRole = ref(null)
 const selectedMember = ref(null)
 const showDetailModal = ref(false)
+
+const handleUpdatedRole = (newAuthority) => {
+  if (selectedMemberForRole.value) {
+    selectedMemberForRole.value.authority = newAuthority;
+  }
+}
 
 const openModalForMember = (member) => {
   selectedMemberForRole.value = member
